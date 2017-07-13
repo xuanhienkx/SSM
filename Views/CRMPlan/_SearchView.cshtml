@@ -1,0 +1,15 @@
+﻿@using SSM.Models
+@model SSM.Models.CRM.PlanFilter
+@{
+    var deptlist = (SelectList)ViewBag.AlldeptSalseList;
+}   
+<div class="form-group">
+    <label for="exampleInputName2">Year</label>
+    @Html.DropDownListFor(m => m.Year, new SelectList(Enumerable.Range(2006, (DateTime.Now.Year - 2006) + 5)), new { Class = "form-control", style = "width: 100px" })
+
+</div>
+<div class="form-group">
+    <label for="exampleInputEmail2">Office/Department</label>
+    @Html.DropDownListFor(m => m.Id, deptlist, new { Class = "form-control", style = "width: 220px" })
+</div>
+<button type="submit" class="btn btn-primary">Search</button>

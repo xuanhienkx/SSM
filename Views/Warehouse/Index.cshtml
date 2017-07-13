@@ -1,0 +1,84 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model GridNew<Warehouse, WareHouseModel>
+
+@{
+    ViewBag.Title = "Warehouse";
+    User User1 = (User)Session[AccountController.USER_SESSION_ID]; 
+  
+}
+
+@using (Ajax.BeginForm("Index", "Warehouse",new AjaxOptions()
+{
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "ListData",
+    HttpMethod = "Post"
+}))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>List Warehouse</h2>
+                    </div>
+                    <div id="ListData">
+                        @Html.Partial("_ListData",Model)
+                    </div>
+                    <div id="gridFooter">
+                        @if (Model.Pager.TotalRows > 50)
+                        {
+
+                            @Html.DropDownList("Pager.PageSize", Grid<Warehouse>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" })
+                            <label>Rows per page</label>
+                        }
+                    </div>
+                    <div style="height: auto; overflow: hidden;"> 
+                        @if (User1.IsDataTrading())
+                        {
+                            <input type="button" id="CreateDept1" onclick="edit(0)" value="Create a Warehouse" />
+                        }
+                        <input type="hidden" name="ModifyDept" value="@ViewData["ModifyDept"]" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="SectionBlock Expanded BoxL1" id="ModifyDeptZone">
+  
+</div>
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<script type="text/javascript">
+     
+    jQuery(document).ready(function () {
+        jQuery("#databaseTab").addClass("Active");
+        jQuery('#databaseTab').activeThisNav();
+        jQuery('#ModifyDeptZone').hide();
+    });
+    function edit(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("Edit", "Warehouse")',
+            data: { id: id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#ModifyDeptZone").html(result);
+                jQuery('#ModifyDeptZone').show(); 
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#","") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#Code').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+</script>

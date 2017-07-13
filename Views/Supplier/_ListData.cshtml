@@ -1,0 +1,93 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.ViewModels.Shared.GridNew<SSM.Models.Supplier,SSM.Models.SupplierModels>
+@{
+    
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.Partial("_TopPage", Model)
+
+<div style="height: auto; overflow: hidden;">
+    @if (User1.IsDataTrading())
+    {
+        <input type="button" onclick="return edit(0)" id="CreateDept" value="Create a Supplier" />
+    }
+
+</div>
+<table width="100%" class="grid">
+    <tr>
+
+        <th>
+            <a href="#" onclick="sortAction('CompanyName');">
+                <div class="SortHeader-label">Abb Name</div>
+                <div id="CompanyName_Title" class="SortHeader">  </div>
+            </a>
+        </th>
+
+        <th>
+            <a href="#" onclick="sortAction('FullName');">
+                <div class="SortHeader-label">Name</div>
+                <div id="FullName_Title" class="SortHeader">
+                    <img src="@Url.Content("~/Images/sort_asc.gif")" />
+                </div>
+            </a>
+        </th>
+        <th>
+            Address
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('Country.CountryName');">
+                <div class="SortHeader-label">Country</div>
+                <div id="Country_CountryName_Title" class="SortHeader">  </div>
+            </a>
+
+        </th>
+
+        <th>
+            Edit
+        </th>
+        <th>
+            Delete
+        </th>
+    </tr>
+    @if (Model.Data != null && Model.Data.Any())
+    {
+        int no = 0;
+        foreach (var it in Model.Data)
+        {
+            no++;
+            var hightline = no % 2 == 0 ? "GridLight" : string.Empty;
+            <tr class="@hightline">
+                <td>
+                    @it.CompanyName
+                </td>
+                <td>
+                    @it.FullName
+                </td>
+                <td>
+                    @it.Address
+                </td>
+                <td>
+                    @if (it.CountryId != null && it.CountryId > 0)
+                    {
+                        @it.Country.CountryName
+                    }
+                </td>
+
+                <td>
+                    @if (User1.IsDataTrading())
+                    {
+                        <a onclick="edit(@it.Id)"><img alt="Edit" src="@Url.Content("~/Images/btn-edit.png")" /></a>
+                    }
+                </td>
+                <td>
+                    @if (User1.IsDataTrading())
+                    {
+                        <a href="@Url.Action("SupplierDelete", "Supplier", new {id = it.Id})" onclick=" return confirm('Are you sure you want to delete?') "><img alt="Delete" src="@Url.Content("~/Images/btn-delete.png")" /></a>
+                    }
+                </td>
+            </tr>
+        }
+    }
+</table>

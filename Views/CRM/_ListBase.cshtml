@@ -1,0 +1,80 @@
+﻿@using SSM.Common
+@using SSM.Models.CRM
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CRM.CRMBaseModel>
+@{
+    ModelType modelType = ViewBag.ModelType;
+}
+@Html.Partial("_TopPage", Model)
+<div style="height:auto;overflow: hidden;">
+    @if (modelType != ModelType.CRMPlanProgram)
+    {
+        @Ajax.Link("Tạo mới", "AddBaseData", "CRM", new { modelType = modelType, isList = true }, new MyAjaxOptions()
+    {
+        HttpMethod = "get",
+        DataType = "json",
+        ContentType = "application/json; charset=utf-8"
+    }, new { @class = "btn btn-primary " })
+    }
+</div>
+<table class="grid table table-condensed">
+    <tr>
+        <th>
+            <a href="#" onclick="sortAction('Id');">
+                <div class="SortHeader-label">Id</div>
+                <div id="Id_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('Name');">
+                <div class="SortHeader-label">Name</div>
+                <div id="Name_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>Description</th>
+
+        <th>Delete</th>
+    </tr>
+    @if (Model.Data != null && Model.Data.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (CRMBaseModel it in Model.Data)
+        {
+            <tr>
+                <td class="crm-id">
+                    @Ajax.Link(it.Id.ToString("d3"), "EditBaseData", "CRM", new { id = it.Id, modelType = it.ModelType, isList = true }, new MyAjaxOptions()
+                                                {
+                                                    HttpMethod = "get",
+                                                    DataType = "json",
+                                                    ContentType = "application/json; charset=utf-8"
+                                                }, new { @class = " " })
+                </td>
+                <td>@it.Name</td>
+                <td>@it.Description</td>
+
+                @if (it.IsSystem == false)
+                {
+                    <td class="text-center deleteRow" id="del_@it.Id">
+                        @Ajax.Link("", "DelBaseData", "CRM", new { id = it.Id, modelType = it.ModelType }, new MyAjaxOptions()
+                            {
+                                HttpMethod = "get",
+                                DataType = "json",
+                                ContentType = "application/json; charset=utf-8",
+                                Confirm = "Bạn thực sự muốn xoá báo giá này không?",
+                                ClassDialog = "col-md-6"
+
+                            }, new { @class = "fa fa-trash trDel" })
+                    </td>
+                }
+                else
+                {
+                    <td class="text-center deleteRow" id="del_@it.Id">    </td>
+                }   
+            </tr>
+        }
+    }
+</table>

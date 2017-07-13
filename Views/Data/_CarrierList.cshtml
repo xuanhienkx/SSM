@@ -1,0 +1,177 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CarrierAirLine>
+@{
+
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.Partial("_TopPage", Model)
+<div style="height:auto;overflow: hidden;">
+    @if (User1.IsAdmin() || User1.AllowUpdatePartner)
+    {
+        <input type="button" onclick=" return edit(0) " id="CreateDept" value="Create a Carrier" />
+    }
+</div>
+<table width="100%" class="grid">
+    <tr>
+        <th style="width: 40px"></th>
+        <th style="min-width: 50px">
+
+            <a href="#" onclick="sortAction('AbbName');">
+                <div class="SortHeader-label">Abb Name</div>
+                <div id="AbbName_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+
+        <th style="min-width: 60px">
+            <a href="#" onclick="sortAction('CarrierAirLineName');">
+                <div class="SortHeader-label">CarrierAirLineName</div>
+                <div id="CarrierAirLineName_Title" class="SortHeader"></div>
+            </a>
+        </th>
+        <th style="width: 130px">
+            <a href="#" onclick="sortAction('Type');">
+                <div class="SortHeader-label"> Carrier Type</div>
+                <div id="Type_Title" class="SortHeader"></div>
+            </a>
+
+        </th>
+        <th>
+            Address
+        </th>
+
+        <th>
+            Description
+        </th>
+        @if (User1.IsAdmin())
+        {
+            @*<th>IsActived</th>*@
+
+            <th>
+                SEE
+            </th>
+
+            <th>
+                HideUser
+            </th>
+        }
+        <th>
+            Edit
+        </th>
+        <th>
+            Delete
+        </th>
+    </tr>
+    @if (Model.Data.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (var it in Model.Data)
+        {
+            no++;
+            bool hightline = no % 2 == 0;
+            if (hightline)
+            {
+                classLight = "GridLight";
+            }
+
+            <tr class="@classLight">
+                <td>@no</td>
+                <td>
+                    @it.AbbName
+                </td>
+                <td>
+                    @it.CarrierAirLineName
+                </td>
+
+                <td>
+                    @it.Type
+                </td>
+                <td>
+                    @it.Address
+                </td>
+                <td>
+                    @it.Description
+                </td>
+                @if (User1.IsAdmin())
+                {
+                    @*<td>
+                        @Html.CheckBox("IsActive", it.IsActive, new { @class = "serviceActive", @id = "IsActive_" + it.Id })
+                    </td>*@
+                    <td>
+                        @Html.CheckBox("IsSee", it.IsSee, new { @class = "checkIsSee", @id = "IsSee_" + it.Id })
+                    </td>
+                    <td>
+                        @Html.CheckBox("IsHideUser", it.IsHideUser, new { @class = "checkIsHideUser", @id = "IsHideUser_" + it.Id })
+                    </td>
+                }
+                <td>
+                    @if (User1.IsAdmin() || User1.AllowUpdatePartner)
+                    {
+                        <a href="javascript:void(0)" onclick="edit(@it.Id) "><img alt=" edit" src="/Images/btn-edit.png" /></a>
+                    }
+                </td>
+                <td>
+                    @if (User1.IsAdmin() || User1.AllowUpdatePartner)
+                    {
+                        <a href="@Url.Action("CarrierDelete", "Data", new {id = it.Id})" onclick=" return confirm('Are you sure you want to delete?') "><img alt="Delete" src="/Images/btn-delete.png" /></a>
+                    }
+                </td>
+            </tr>
+        }
+    }
+</table>
+<script type="text/javascript">
+    if (jQuery(".serviceActive").length > 0) {
+        jQuery(".serviceActive").on("click", function () {
+            var id = jQuery(this).attr("id").split("_")[1];
+            var check = jQuery(this).is(":checked");
+            var url = '@Url.Action("SetCarrierActive", "Data")';
+            var data = JSON.stringify({ "id": parseInt(id), "isActive": check });
+            jQuery.mbqAjax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: data,
+                success: function (result) {
+                }
+            });
+        });
+    }
+    jQuery(".checkIsSee").on("click", function () {
+        var id = jQuery(this).attr("id").split("_")[1];
+        var check = jQuery(this).is(":checked");
+        var url = '@Url.Action("SetCarrierIsSee", "Data")';
+        var data = JSON.stringify({ "id": parseInt(id), "isChecked": check });
+        jQuery.mbqAjax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: data,
+            success: function (result) {
+
+            }
+        });
+    });
+    jQuery(".checkIsHideUser").on("click", function () {
+        var id = jQuery(this).attr("id").split("_")[1];
+        var check = jQuery(this).is(":checked");
+        var url = '@Url.Action("SetCarrierIsHideUser", "Data")';
+        var data = JSON.stringify({ "id": parseInt(id), "isChecked": check });
+        jQuery.mbqAjax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: data,
+            success: function (result) {
+
+            }
+        });
+    });
+</script>

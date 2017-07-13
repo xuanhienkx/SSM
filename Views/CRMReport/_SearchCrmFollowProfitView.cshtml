@@ -1,0 +1,220 @@
+﻿@model SSM.Models.CRM.CRMFilterFollowProfit
+@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@{
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    var countrys = (IEnumerable<Country>)ViewBag.Countrys;
+    var agents = (IEnumerable<Agent>)ViewBag.Agents;
+    var users = (IEnumerable<User>)ViewBag.Users;
+    var depts = (IEnumerable<Department>)ViewBag.Depts;
+    var offices = (IEnumerable<Company>)ViewBag.Offices;
+}
+<style type="text/css">
+    .top-search {
+        margin-top: 3px;
+        /*width: 450px;*/
+    }
+
+        .top-search ul > li {
+            padding: 3px 5px;
+            background-color: white;
+            border: 1px solid #ddd;
+            display: block;
+        }
+</style>
+<div class="DivHeader">
+    <h2 class="inlin-item ">
+        @ViewBag.Title
+    </h2>
+    <div class="inlin-item  top-search" style="margin-left: 50px">
+        <ul class="list-group">
+            <li class="inlin-item " style="background-color: #afd9ee">
+                <label class="radio-inline">
+                    @Html.RadioButton("IsProfit", true, new { @class = "IsProfit-item" }) Shiment Profit
+                </label>
+            </li>
+            <li class="inlin-item bg-warning" style="background-color: #bdb76b;">
+                <label class="radio-inline">
+                    @Html.RadioButton("IsProfit", false, new { @class = "IsProfit-item" }) Product Qty
+                </label>
+            </li>
+            @*<li class="inlin-item bg-warning" style="background-color: #da70d6;">
+                    <label class="radio-inline">
+                        @Html.RadioButton("IsLost", false, new { @class = "IsLost-item" }) Crm Lost
+                    </label>
+                </li>*@
+        </ul>
+    </div>
+</div>
+<div class="row">
+    @Html.ValidationSummary()
+</div>
+<div class="form-group-sm clearfix" style="border: 1px solid cornflowerblue; border-radius: 5px">
+    <div class="col-md-12 row">
+
+        <div class="col-md-5 row">
+            <div class="form-group col-md-12 Shiment-Profit">
+                @Html.Label("Status", new { @class = "col-md-3 control-label" })
+                <div class="col-md-3">
+                    @Html.EnumDropDownListFor(m => m.Status, new { @class = "form-control " })
+                </div>
+                <div class="col-sm-6 row">
+                    <label class="radio-inline" style="margin-top: 8px">
+                        @Html.CheckBoxFor(m => m.IsLost, new { @class = "control-label", style = "margin-top:-2px" }) IsLost
+                    </label>
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.BeginDate, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3 ">
+                    @Html.TextBoxFor(m => m.BeginDate, "{0:dd-MM-yyyy}", new { @class = "form-control datepicker " })
+                </div>
+                <div class="col-sm-6 ">
+                    @Html.LabelFor(m => m.EndDate, new { @class = "col-sm-5 control-label" })
+                    @Html.TextBoxFor(m => m.EndDate, "{0:dd-MM-yyyy}", new { @class = "form-control datepicker col-sm-7 " })
+                </div>
+            </div>
+            <div class="form-group col-md-12   top-search">
+                @Html.LabelFor(m => m.Top, new { @class = "col-sm-3 control-label" })
+                <ul class="col-sm-9">
+                    <li class="inlin-item ">
+                        <label class="radio-inline">
+                            @Html.RadioButton("Top", 0, new { @class = "" }) All
+                        </label>
+                    </li>
+                    <li class="inlin-item ">
+                        <label class="radio-inline">
+                            @Html.RadioButton("Top", 10, new { @class = "" }) Top 10
+                        </label>
+
+                    </li>
+                    <li class="inlin-item ">
+                        <label class="radio-inline">
+                            @Html.RadioButton("Top", 20, new { @class = "" }) Top 20
+                        </label>
+                    </li>
+                    <li class="inlin-item ">
+                        <label class="radio-inline">
+                            @Html.RadioButton("Top", 30, new { @class = "" }) Top 30
+                        </label>
+                    </li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="col-md-3 row">
+            <div class="form-group  Shiment-Profit">
+                @Html.Label("Departure", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.DropDownListFor(m => m.DepartureId, new SelectList(countrys, "Id", "CountryName"), "--Select Country --", new { @class = "form-control ", style = "width: 150px" })
+                </div>
+            </div>
+            <div class="form-group  Shiment-Profit">
+                @Html.Label("Destination", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.DropDownListFor(m => m.DestinationId, new SelectList(countrys, "Id", "CountryName"), "--Select Country --", new { @class = "form-control ", style = "width: 150px" })
+                </div>
+            </div>
+            <div class="form-group  Shiment-Profit">
+                @Html.Label("Agent", new { @class = "col-md-3 control-label" })
+                <div class="col-md-9">
+                    @Html.DropDownListFor(m => m.AgentId, new SelectList(agents, "Id", "AbbName"), "--Select Agent--", new { @class = "form-control ", style = "width: 150px;margin-left: 3px;" })
+                </div>
+            </div>
+            <div class="form-group col-md-12  Product-Qty hidden">
+                @Html.Label("Product", new { @class = "ontrol-label" })
+                <div class="col-md-12 row">
+                    <span class="inlin-item">
+                        @Html.TextBoxFor(m => m.ProCode, new { @class = "autocomplete form-control", style = "width: 220px", maxlength = 12, placeholder = "Product code" })
+                    </span>
+                    <span class="inlin-item">
+                        @Html.TextBoxFor(m => m.ProName, new { @class = "autocomplete form-control", style = "width: 220px", placeholder = "Product Name" })
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 row">
+
+            @if (currentUser.IsDepOrDirecter())
+            {
+                <div class="form-group col-md-12">
+                    @Html.Label("Sales", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.UserId, new SelectList(users, "Id", "FullName"), "--Sale--", new { @class = "form-control " })
+                    </div>
+                </div>
+            }
+            @if (currentUser.IsDirecter())
+            {
+                <div class="form-group col-md-12">
+                    @Html.Label("Department", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.DeptId, new SelectList(depts, "Id", "DeptName"), "--Department--", new { @class = "form-control col-md-3", style = "width: 140px" })
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.Label("Office", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.OfficeId, new SelectList(offices, "Id", "CompanyName"), "--Office--", new { @class = "form-control col-md-3", style = "width: 150px" })
+                    </div>
+                </div>
+
+            }
+
+
+            <div class="form-group col-md-12">
+                <div class="col-md-3"></div>
+                <div class="col-md-9">
+                    <input type="submit" class="btn btn-primary left" value="Search" id="btn-search" />
+                </div>
+
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+<div class="clearfix" style="height: 10px"></div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        if (jQuery("img.ui-datepicker-trigger").length > 0) {
+            jQuery("img.ui-datepicker-trigger").remove();
+        }
+
+        jQuery("#ProCode").GetAutoSugget({
+            url: '@Url.Action("ProductCodeSuggest", "StockReceiving")',
+            targerId: "#ProName"
+        });
+        jQuery("#ProName").GetAutoSugget({
+            url: '@Url.Action("ProductNameSuggest", "StockReceiving")',
+            targerId: "#ProCode"
+        });
+
+        if (jQuery("#IsLost").is(":checked")) {
+            jQuery("#Status").attr("disabled", "disabled");
+        }  else {
+            jQuery("#Status").removeAttr("disabled", "disabled");
+        }
+        jQuery("#IsLost").on('click',  function() {
+            if (jQuery("#IsLost").is(":checked")) {
+                jQuery("#Status").attr("disabled", "disabled");
+            } else {
+                jQuery("#Status").removeAttr("disabled", "disabled");
+            }
+            });
+        jQuery(".IsProfit-item").on('click', function () {
+            var lv = jQuery(this).val();
+            if (jQuery(this).is(":checked") && lv === "True") {
+                jQuery(".Shiment-Profit").show();
+                jQuery(".Product-Qty").hide();
+            } else {
+                jQuery(".Shiment-Profit").hide();
+                jQuery(".Product-Qty").removeClass("hidden").show();
+            }
+            jQuery("#btn-search").click();
+        });
+    })
+</script>
+

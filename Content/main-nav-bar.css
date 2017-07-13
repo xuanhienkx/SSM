@@ -1,0 +1,300 @@
+#mainNav {
+    clear: both;
+    overflow: hidden;
+}
+.Compact {
+    height: 93px;
+}
+.MainNavHolder {
+    height: 50px;
+    background: #ed1b2e; 
+}
+.MainNavHolderL2 {
+    width: 1000px;
+    position: relative;
+    margin: 0px auto;
+    padding-top: 6px;
+    z-index: 900;
+}
+#mainNavBar {
+    height: 44px;
+    margin: 0px;
+    padding: 0px;
+}
+#mainNavMask {
+  /*  width: 1020px;*/
+    float: left;
+    position: relative;
+    z-index: 1;
+    overflow: hidden;
+    height: 44px;
+}
+#mainNavMask #mainNavBar {
+    position: relative;
+    left: 0px;
+}
+#mainNavNext,
+#mainNavPrev {
+    float: left;
+    width: 28px;
+    overflow: hidden;
+    height: 0px;
+    padding-top: 44px;
+    text-indent: -10000px;
+
+}
+#mainNavNext {
+    background: url(../Images/Menu/btn-nav-next.png) no-repeat left top;
+}
+#mainNavPrev {
+    background: url(../Images/Menu/btn-nav-prev.png) no-repeat left top;
+}
+.classNewinfo {
+     background: yellow none repeat scroll 0 0 !important;
+    border-radius: 8px 8px 0 0;
+}
+.classNewinfo >a {
+    color: red !important;
+}
+    li.MainNavTab {
+        float: left;
+        list-style: none;
+        display: inline!important;
+    }
+    li.MainNavTab > a {
+        float: left;
+        background: url(../Images/Menu/bg-nav2.png) no-repeat left top;
+        padding-left: 20px;
+        color: #fff;
+        font-size: 1.2em;
+        font-weight: bolder;
+        text-decoration: none;
+        margin-left: -1px;
+        display: inline!important;
+    }
+    li.MainNavTab > a strong {
+        line-height: 1em;
+    }
+    li.MainNavTab.FirstItem > a {
+        background: url(../Images/Menu/bg-nav2.png) no-repeat left top;
+        margin-left: 1px;
+    }
+    #mainNavMask #mainNavBar li.MainNavTab.FirstItem > a {
+        margin-left: 0px;
+    }
+    li.MainNavTab > a > span {
+        float: left;
+        background: url(../Images/Menu/bg-nav.png) no-repeat right top;
+        padding-right: 20px;
+        /*height: 29px;*/
+        padding-top: 10px;
+        padding-bottom: 10px;
+        text-align: center;
+        cursor: pointer;
+    }
+    li.MainNavTab.FirstItem > a span {
+        background: url(../Images/Menu/bg-nav.png) no-repeat right top;
+    }
+    li.MainNavTab.Active > a,
+    li.MainNavTab > a:hover {
+        background: url(../Images/Menu/bg-nav2.png) no-repeat left -44px;
+        color: #6e6d65;
+    }
+    li.MainNavTab.Active > a.FirstItem,
+    li.MainNavTab > a.FirstItem:hover {
+        background: url(../Images/Menu/bg-nav.png) no-repeat left -44px !important;
+    }
+    li.MainNavTab.Active > a > span,
+    li.MainNavTab > a:hover > span {
+        background: url(../Images/Menu/bg-nav.png) no-repeat right -44px;
+    }
+    li.MainNavTab.Active > a.FirstItem > span,
+    li.MainNavTab > a.FirstItem:hover > span {
+        background: url(../Images/Menu/bg-nav.png) no-repeat right -44px;
+    }
+
+#mainNav ul ul {
+    display: none;
+}
+#subNav ul {
+    margin: 0px;
+    padding: 0px;
+    position: relative;
+    clear: both
+}
+#subNav {
+    left: 1px;
+    top: 50px;
+    height: 133px;
+    position: absolute;
+    /*width: 988px;*/
+    padding: 10px 0px 0px 0px;
+    overflow: hidden;
+}
+div.Compact #subNav {
+    height: 41px !important;
+    padding: 2px 0px 0px 0px !important;    
+}
+    li.MainNavGroup {
+        float: left;
+        list-style: none;
+        margin: 0;
+        padding-right: 12px;
+        cursor: default;
+        overflow: hidden;
+    }
+    div.Compact li.MainNavGroup {
+    }
+    li.MainNavGroup.LastItem {
+        padding-right: 0px !important;
+    }
+    li.MainNavGroup > a {
+        color: #bfbfbf;
+        font-size: 1.5em;
+        text-transform: uppercase;
+        text-decoration: none;
+        padding-left: 2px;
+        cursor: default;
+        float: left;
+    }
+    div.Compact li.MainNavGroup > a {
+        padding: 13px 6px 0px 2px;
+        display: block;
+    }
+    #mainNav li.MainNavGroup ul {
+        display: block;
+        clear: left;
+        margin: 0px;
+        padding: 3px 0px 0px 0px;
+    }
+    div.Compact #subNav li.MainNavGroup ul {
+        padding: 0px;
+        clear: none;        
+        float: left;
+    }
+    li.MainNavGroup ul li {
+        float: left;
+        list-style: none;
+        background: url(../Images/Menu/bg-nav-button.gif) no-repeat -94px top;
+        height: 90px;
+    }
+    div.Compact li.MainNavGroup ul li {
+        background: url(../Images/Menu/bg-nav-button2.gif) no-repeat left -40px;
+        height: 40px;
+        width: 40px;
+    }
+    div.Compact li.MainNavGroup ul li:hover {
+        background: url(../Images/Menu/bg-nav-button2.gif) no-repeat left top;
+    }
+    li.MainNavGroup ul li:hover {
+        background: url(../Images/Menu/bg-nav-button.gif) no-repeat -94px -90px;
+    }
+    li.MainNavGroup ul li.FirstItem {
+        background: url(../Images/Menu/bg-nav-button.gif) no-repeat 0px top;
+    }
+    li.MainNavGroup ul li.FirstItem:hover {
+        background: url(../Images/Menu/bg-nav-button.gif) no-repeat 0px -90px;
+    }
+    li.MainNavGroup ul li.LastItem {
+        background: url(../Images/Menu/bg-nav-button.gif) no-repeat -194px top;
+    }
+    li.MainNavGroup ul li.LastItem:hover {
+        background: url(../Images/Menu/bg-nav-button.gif) no-repeat -194px -90px;
+    }
+    li.MainNavGroup ul li.OnlyItem {
+        background: url(../Images/Menu/bg-nav-button.gif) no-repeat -288px top;
+    }
+    li.MainNavGroup ul li.OnlyItem:hover {
+        background: url(../Images/Menu/bg-nav-button.gif) no-repeat -288px -90px;
+    }
+    li.MainNavGroup ul li.LastItem a,
+    li.MainNavGroup ul li.FirstItem a {
+        width: 94px;
+    }
+    li.MainNavGroup ul li.OnlyItem a {
+        width: 88px;
+    }    
+    li.MainNavGroup ul li a {
+        float: left;
+        text-align: center;
+        font-size: 0.88em;
+        color: #6e6d65;
+        font-weight: bolder;
+        text-decoration: none;
+        padding-top: 56px;
+        height: 34px;    
+        width: 100px;
+        background-repeat: no-repeat;
+        background-position: 50% 18px;
+    }
+    div.Compact li.MainNavGroup ul li a {
+        height: 0px;
+        padding-top: 40px;
+        width: 40px;
+        background-repeat: no-repeat;
+        background-position: 4px -91px;
+        overflow: hidden;
+        float: left;
+        text-indent: -1000px;
+    }
+    div.Admin li.MainNavGroup > a {
+        padding-left: 8px;
+    }
+    div.Admin li.MainNavGroup ul li {
+        background: none;
+        float: none;
+        padding-bottom: 4px;
+        min-height: 14px;
+        width: 181px;
+    }
+    div.Admin li.MainNavGroup ul li:hover {
+        background: none;
+    }
+    div.Admin li.MainNavGroup {
+        width: 192px;
+        border-right: 1px #e5e5e5 solid;
+        background-position: 115px 31px;
+        background-repeat: no-repeat;
+        padding-right: 0px;
+        margin-right: 6px;
+        min-height: 108px;
+    }
+    div.Admin li.MainNavGroup.LastItem {
+        border: none;
+        margin-right: 0px;
+    }
+    div.Admin li.MainNavGroup ul li a {
+        float: left;
+        text-align: left;
+        padding-top: 0px;
+        height: auto;    
+        width: auto;
+        background: none;
+    }
+    div#subNav.Admin ul ul {
+        padding: 15px 0px 0px 9px;
+    }
+    
+    
+a#navMode    {
+    display: block;
+    position: absolute;
+    right: 5px;
+    top: 59px;
+    background: url(../Images/Menu/nav-size.gif) no-repeat left top;
+    height: 0px;
+    padding-top: 20px;
+    width: 20px;
+    overflow: hidden;
+    text-indent: -10000px;
+    z-index: 101;
+}
+#mainNav a.Active,
+a#navMode:hover {
+    background: url(../Images/Menu/nav-size.gif) no-repeat left -20px;
+}
+
+.ShortMode {
+    width: 40px !important;
+    overflow: hidden;
+}

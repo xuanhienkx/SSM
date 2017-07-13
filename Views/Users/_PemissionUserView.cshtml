@@ -1,0 +1,390 @@
+﻿@using SSM.Models
+@model  SSM.Models.UsersModel
+<style type="text/css">
+    .userSecurity {
+        border: none;
+        border-spacing: 0;
+        border-collapse: collapse;
+        /*width: 100%;*/
+    }
+
+        .userSecurity tr th {
+            color: #336699;
+            padding-top: 15px;
+            border-bottom: 1px solid lightgray;
+            text-align: left;
+            font-size: 1.3em;
+            font-weight: bolder;
+        }
+
+        .userSecurity tr td.SettingUserTd {
+            width: 180px;
+        }
+
+    .titleSetting {
+        text-align: left;
+        font-size: 1.5em;
+        font-weight: bolder;
+        color: #dc143c;
+        text-transform: uppercase;
+        text-decoration: underline;
+    }
+</style>
+@{
+    ViewBag.Title = "title";
+    User User1 = (User)Session[SSM.Controllers.AccountController.USER_SESSION_ID];
+    List<Company> AllCompanies = (List<Company>)ViewData["AllCompanies"];
+    int step = 1;
+}
+<div id="Div2">
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="titleSetting">SETTING FOR USER</div>
+                    <table class="userSecurity">
+                        @*title="Additional function"*@
+                        <tr>
+                            <th colspan="8">
+                                Setting for additional function
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.SetPass)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.SetPass)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowUpdateAirRate)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowUpdateAirRate)
+                            </td>
+
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowUpdatePartner)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowUpdatePartner)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowAirPort)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowAirPort)
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowUpdateSeaRate)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowUpdateSeaRate)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowUpdateAgent)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowUpdateAgent)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowSeaPort)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowSeaPort)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowCustomer)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowCustomer)
+                            </td>
+
+                        </tr>
+                        @*title="follow up works"*@
+                        <tr>
+                            <th colspan="8">
+                                Allow follow up works
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowTrackSeaIn)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowTrackSeaIn)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowTrackAirIn)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowTrackAirIn)
+                            </td>
+
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowTrackInlandSer)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowTrackInlandSer)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowTrackOtherSer)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowTrackOtherSer)
+                            </td>
+
+                        </tr>
+                        <tr>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowTrackSeaOut)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowTrackSeaOut)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowTrackAirOut)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowTrackAirOut)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowTrackProjectSer)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowTrackProjectSer)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.CheckingRevenue)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.CheckingRevenue)
+                            </td>
+
+                        </tr>
+                        @*title="Trading function"*@
+                        <tr>
+                            <th colspan="8">
+                                Allow Trading function
+                            </th>
+                        </tr>
+                        <tr>
+                        <td class="SettingUserTd">
+                            @Html.LabelFor(m => m.AllowTrading)
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(m => m.AllowTrading)
+                        </td>
+                        <td class="SettingUserTd">
+                            @Html.LabelFor(m => m.AllowApprovedStockCard)
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(m => m.AllowApprovedStockCard)
+                        </td> 
+                        <td class="SettingUserTd">
+                            @Html.LabelFor(m => m.AllowFreight)
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(m => m.AllowFreight)
+                        </td>
+                        <td class="SettingUserTd">
+                            @Html.LabelFor(m => m.AllowDataTrading)
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(m => m.AllowDataTrading)
+                        </td> 
+                       </tr>
+                        @*title="Update infomation"*@
+                        <tr>
+                            <th colspan="8">
+                                Setting for Information
+                            </th>
+                        </tr>
+                    <tr> 
+
+                        <td class="SettingUserTd">
+                            @Html.LabelFor(m => m.AllowInforEdit)
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(m => m.AllowInforEdit)
+                        </td>
+                        <td class="SettingUserTd">
+                            @Html.LabelFor(m => m.AllowInfoAll)
+                        </td>
+                        <td>
+                            @Html.CheckBoxFor(m => m.AllowInfoAll)
+                        </td>
+
+                        <td class="SettingUserTd" colspan="4"></td>
+
+                    </tr>
+                        @*title="setting for Regulation"*@
+                        <tr>
+                            <th colspan="8">
+                                Setting for Regulation
+                            </th>
+                        </tr>
+                        <tr>
+
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowRegulationEdit)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowRegulationEdit)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowRegulationApproval)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowRegulationApproval)
+                            </td>
+
+                            <td class="SettingUserTd" colspan="4"></td>
+
+                        </tr>
+                        @*title="CMR function"*@
+                        <tr>
+                            <th colspan="8">
+                                Allow for CRM
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowFollowDept)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowFollowDept)
+                            </td>
+                            <td class="SettingUserTd">
+                                @Html.LabelFor(m => m.AllowEditReport)
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.AllowEditReport)
+                            </td>
+                            <td class="SettingUserTd" colspan="4"></td>
+                        </tr>
+                        <tr>
+
+                            <td colspan="8">
+                                @Html.HiddenFor(m => m.DeptFollowIds)
+                                <div class="listUserUpdate hidden">
+                                    <a href="javascript:void(0)" id="addUserUpdate">Add or remove Department</a>
+                                </div>
+                                @if (Model.AllowFollowDept)
+                                {                        
+                                    <div id="listUsercanupdate">
+                                        @if (Model.Departments != null && Model.Departments.Count() > 0)
+                                        {
+                                            <ul id="userUpdateList">
+                                                @foreach (var us in Model.Departments)
+                                                {
+                                                    <li class="list-group-item list-group-item-success" id="@us.Id">@us.DeptName</li>
+                                                }
+                                            </ul>
+                                        }
+                                    </div>
+                                }
+                                else
+                                {        
+                                    <div id="listUsercanupdate">
+                                        <ul id="userUpdateList"></ul>
+                                    </div>
+                                }
+                            </td>
+
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div id="Div2">
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="titleSetting">SETTING FOR DIRICTOR ONLY</div>   @*Allow control office*@
+
+                    <table class="userSecurity">
+                        <tr>
+                            <th colspan="8" style="color: #336699; padding-top: 15px">
+                                Allow Control Office
+                            </th>
+                        </tr>
+                        <tr>
+                            @foreach (Company CompanyItem in AllCompanies)
+                            {
+                                var isChecked = false;
+                                if (Model.ControlCompany != null && Model.ControlCompany.Any())
+                                {
+                                    isChecked = Model.ControlCompany.Any(x => x.ComId == CompanyItem.Id);
+                                } 
+                                string idattr = "Checkbox" + step;
+                                step++;
+
+                            <td class="SettingUserTd">
+                                <label for="@idattr">@CompanyItem.CompanyName </label>
+                            </td>
+                            <td>
+                                @if (isChecked == true)
+                                    {
+                                    <input type="checkbox" checked="checked" id="@idattr" value="@CompanyItem.Id " name="CompanyControls" />
+                                    }
+                                    else
+                                    {
+                                    <input type="checkbox" id="@idattr" value="@CompanyItem.Id " name="CompanyControls" />
+                                    }
+
+                            </td>
+
+                            }
+                            <td class="SettingUserTd"></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <th colspan="8">
+                                Function For Director
+                            </th>
+                        </tr>
+                        <tr>
+                            <td class="SettingUserTd">@Html.LabelFor(m => m.AllowQuotaOffice)</td>
+                            <td class="">@Html.CheckBoxFor(m => m.AllowQuotaOffice)</td>
+                            <td class="SettingUserTd"> @Html.LabelFor(m => m.AllowApproRevenue)      </td>
+                            <td class="">  @Html.CheckBoxFor(m => m.AllowApproRevenue)    </td>
+                            <td class="SettingUserTd">@Html.LabelFor(m => m.AllowSettingSystem)</td>
+                            <td class="">@Html.CheckBoxFor(m => m.AllowSettingSystem)</td>
+
+                            <td class="SettingUserTd"></td>
+                            <td></td>
+
+                        </tr>
+                        <tr>
+                            <td class="SettingUserTd">@Html.LabelFor(m => m.AllowQuotaDept)</td>
+                            <td class="">@Html.CheckBoxFor(m => m.AllowQuotaDept)</td>
+                            <td class="SettingUserTd">@Html.LabelFor(m => m.AllowSetSales)</td>
+                            <td class="">@Html.CheckBoxFor(m => m.AllowSetSales)</td>
+                            <td class="SettingUserTd"></td>
+                            <td></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jquery(document).read(function () {
+        jquery("AllowFollowDept").on("click", function(e) {      
+            if (jquery(this).is(":checked")) {
+                jquery(this).parents("tr:first").find(".listUserUpdate").addClass("show").removeClass("hidden");
+            } else {
+                jquery(this).parents("tr:first").find(".listUserUpdate").removeClass("show").addClass("hidden");
+            }
+        });
+    });
+</script>

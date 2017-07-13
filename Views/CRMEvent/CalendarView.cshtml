@@ -1,0 +1,24 @@
+﻿@model List<SSM.Models.CRMVisit>
+
+@{
+    ViewBag.Title = "Calendar View";         
+
+}    
+<div class="Expanded BoxL1 fullPage">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4" id="calendarData">   
+                @Html.Partial("_CalendarModelView", Model)
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+    });
+</script>
+

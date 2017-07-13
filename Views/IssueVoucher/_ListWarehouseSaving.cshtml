@@ -1,0 +1,227 @@
+﻿@model SSM.ViewModels.Shared.Grid<SSM.Models.IssueVoucherModel>
+@Html.Partial("_TopPage", Model)
+<table width="100%" class="grid">
+    <thead>
+        <tr>
+
+            <th style="width: 30px"> No </th>
+            <th style="width: 30px"> </th>
+            <th style="width: 80px">  Date </th>
+            <th>  Product Name </th>
+            <th style="width: 60px">Code</th>
+            <th style="width: 100px">  Supplier </th>
+            <th style="width: 100px">  Customer </th>
+            <th style="width: 60px">  Quantity  </th>
+            <th style="width: 50px">  Unit </th>
+            <th style="width: 60px"> price </th>
+            <th style="width: 80px">  ValueInt </th>
+            <th style="width: 80px">  ValueOut </th>
+            <th style="width: 80px;color: #ff8c00; text-align: right" class="text-right"> Stock </th>
+            <th style="width: 70px; color: #0000ff">  Profit </th>
+            <th style="width: 70px">Phiếu NK/XK </th>
+            <th style="width: 70px">  Warehouse </th>
+        </tr>
+    </thead>
+    <tbody id="Databody" class="tb-grabText">
+        @if (Model.Data != null && Model.Data.Any())
+        {
+            int no = 0;
+            var proNo = 0;
+            var hightline = string.Empty;
+            var colorText = string.Empty;
+            var inSum = Model.Data.Where(x => string.IsNullOrEmpty(x.VoucherNo)).Sum(x => x.Amount);
+            var invetorySum = 0M;
+            var profitSum = 0M;
+            var outSum = Model.Data.Where(x => string.IsNullOrEmpty(x.VoucherNo)).Sum(x => x.AmountOut);
+            foreach (var it in Model.Data)
+            {
+                colorText = Model.SearchCriteria.HashOut && it.StockIn ? "stockin" : Model.SearchCriteria.HashOut && it.StockOut ? "stockout" : string.Empty;
+                var classColer = string.Empty;
+                var newQty = it.Quantity - it.QuantityOut;
+                var invetory = it.AmountInventory;
+                if (newQty <= 0)
+                {
+                    invetory = 0;
+                }
+                invetorySum += invetory;
+                var profit = it.AmountOut - it.Amount;
+                profitSum += profit;
+                if (it.Quantity < 0 || (it.Quantity - it.QuantityOut) < 0)
+                {
+                    classColer = "text-danger";
+                }
+                if (string.IsNullOrEmpty(it.VoucherNo))
+                {
+                    //      hightline = no % 2 == 0 ? "GridLight" : string.Empty;
+                    no++;
+                    proNo = 0;
+                    <tr class="@hightline" style=" font-weight: bold">
+                        <td>
+                            @no
+                        </td>
+                        <td>
+                            <span style="cursor: pointer" class="productExt Expand" proid="@it.Product.Id">
+                                <i class="ui-icon ui-icon-plus"></i>
+                            </span>
+                        </td>
+                        <td></td>
+                        <td>
+                            @it.Product.Name
+                        </td>
+                        <td>
+                            @it.Product.Code
+                        </td>
+
+                        <td></td>
+                        @if (Model.SearchCriteria.HashOut)
+                        {
+                            <td></td>
+                        }
+                        <td class="text-right @classColer">
+                            @string.Format("{0:N2}", newQty)
+                        </td>
+                        <td class="text-danger">@it.Product.Uom</td>
+                        <td> </td>
+                        <td class="text-right">
+                            @string.Format("{0:N2}", it.Amount)
+                        </td>
+                        @if (Model.SearchCriteria.HashOut)
+                        {
+                            <td class="number2">
+                                @it.AmountOut
+                            </td>
+                            <td class="text-right" style="color: #ff8c00">
+                                @string.Format("{0:N2}", invetory)
+                            </td>
+                        }
+                        <td style="color: #0000ff" class="text-right"> @string.Format("{0:N2}", profit)</td>
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                }
+                else
+                {
+                    proNo++;
+
+
+                    <tr class="hide productItem-@it.Product.Id @colorText">
+                        <td></td>
+                        <td>
+                            @proNo
+                        </td>
+                        <td>
+                            @string.Format("{0:dd/MM/yyyy}", it.VoucherDate)
+                        </td>
+                        <td></td>
+                        <td></td>
+
+                        <td>
+                            @if (it.Supplier != null)
+                            {
+                                @it.Supplier.FullName
+                            }
+                        </td>
+                        @if (Model.SearchCriteria.HashOut)
+                        {
+                            <td>
+                                @if (it.Customer != null)
+                                {
+                                    @it.Customer.FullName
+                                }
+                            </td>
+                        }
+                        <td style="text-align: right">
+
+                            @if (Model.SearchCriteria.HashOut && it.StockOut)
+                            {
+                                <span>-</span> <span class="number2">@it.QuantityOut</span>
+                            }
+                            else
+                            {
+                                <span class="number2">@it.Quantity</span>
+                            }
+                        </td>
+                        <td class="">@it.Product.Uom</td>
+                        <td class="text-right">
+                            @if (Model.SearchCriteria.HashOut && it.StockOut)
+                            {
+                                <span>-</span> <span class="number2">@it.PriceOut</span>
+                            }
+                            else
+                            {
+                                <span class="number2">@it.Price</span>
+                            }
+
+                        </td>
+                        <td style="text-align: right">
+                            @if (Model.SearchCriteria.HashOut && it.StockOut)
+                            {
+                                <span></span>
+                            }
+                            else
+                            {
+                                <span class="number2">@it.Amount</span>
+                            }
+                        </td>
+
+                        @if (Model.SearchCriteria.HashOut)
+                        {
+                            <td class="number2">@it.AmountOut</td>
+                            <td class=""></td>
+                            <td class=""></td>
+                        }
+                        <td>@it.VoucherNo</td>
+                        <td>@it.Warehouse.Name</td>
+                    </tr>
+                }
+
+            }
+         <tr>
+             <td colspan="10" class="text-right totalSum">Total</td>
+             <td class="text-right totalSum" style="font-weight: bold">  @string.Format("{0:N2}", inSum)</td> 
+             <td class="text-right totalSum" style="font-weight: bold">  @string.Format("{0:N2}", outSum)</td> 
+             <td class="text-right totalSum" style="font-weight: bold">  @string.Format("{0:N2}", invetorySum)</td> 
+             <td class="text-right totalSum" style="font-weight: bold">  @string.Format("{0:N2}", (outSum - inSum))</td> 
+                <td></td>
+                <td></td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                @if (Model.SearchCriteria.HashOut)
+                {
+                    <td colspan="14" style="text-align: center"> No Data</td>
+                }
+                else
+                {
+                    <td colspan="12" style="text-align: center"> No Data</td>
+                }
+
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery(".productExt").each(function () { 
+            jQuery(this).click(function () {
+                var $pro = jQuery(this);
+                var proId = $pro.attr("proid");
+                if ($pro.hasClass("Expand")) {
+                    $pro.removeClass("Expand");
+                    $pro.find("i").removeClass("ui-icon-plus").addClass("ui-icon-minus"); //<i class="ui-icon ui-icon-plus"></i>
+                    jQuery("#Databody").find("tr.productItem-" + proId).removeClass("hide");
+                   
+                } else {
+                    $pro.addClass("Expand");
+                    $pro.find("i").removeClass("ui-icon-minus").addClass("ui-icon-plus");
+                    jQuery("#Databody").find("tr.productItem-" + proId).addClass("hide");
+                  
+                }
+            });
+        });
+    });
+</script>

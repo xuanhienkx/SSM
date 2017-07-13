@@ -1,0 +1,64 @@
+﻿@using SSM.Common
+@using SSM.Models.CRM
+@model SSM.ViewModels.Reports.FilterProfit
+
+<div class="row">
+    @Html.ValidationSummary()
+</div>
+<div class="row form-group-sm">
+
+    <div class="col-md-12 form-horizontal">
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(m => m.TypeFilterProfit, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9 ">
+                    @Html.EnumDropDownListFor(m => m.TypeFilterProfit, new { @class = "form-control " })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Top, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9 ">
+                    <label class="radio-inline">
+                        @Html.RadioButton("Top", 0, new { @class = "" })<label> All</label>
+                    </label>
+                    <label class="radio-inline">
+                        @Html.RadioButton("Top", 10, new { @class = "" }) <label> Top 10</label>
+                    </label>
+                    <label class="radio-inline">
+                        @Html.RadioButton("Top", 20, new { @class = "" }) <label> Top 20</label>
+                    </label>
+                    <label class="radio-inline">
+                        @Html.RadioButton("Top", 30, new { @class = "" }) <label> Top 30</label>
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                @Html.LabelFor(m => m.BeginDate, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9 ">
+                    @Html.TextBoxFor(m => m.BeginDate, "{0:dd-MM-yyyy}", new { @class = "form-control datepicker " })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.EndDate, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9 ">
+                    @Html.TextBoxFor(m => m.EndDate, "{0:dd-MM-yyyy}", new { @class = "form-control datepicker " })
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="pull-right col-md-push-3">
+            <input type="submit" class="btn btn-primary" value="Search" id="btn-search" />
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        if (jQuery("img.ui-datepicker-trigger").length > 0) {
+            jQuery("img.ui-datepicker-trigger").remove();
+        }
+    })
+</script>

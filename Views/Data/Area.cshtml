@@ -1,0 +1,139 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.AreaModel>
+@{
+    ViewBag.Title = "Area List";
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("Area", "Data", new AjaxOptions()
+{
+    UpdateTargetId = "ListData",
+    HttpMethod = "post",
+    InsertionMode = InsertionMode.Replace
+}))
+{
+
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>
+                            List Area
+                        </h2>
+
+                    </div>
+                    <div id="SearchBlock" style="float:left;height:auto;"></div>
+                    <div class="SectionHeading"> 
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper" style="display: none;">
+                        <table id="table-sarch">
+                            <tr>
+                                <td class="TDClass"><label>Province/City</label></td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.AreaAddress, new { maxlength = "20" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="TDClass">
+                                    <label>
+                                        Country
+                                    </label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.DropDownList("SearchCriteria.CountryId", (SelectList)ViewData["CountryList"], "--Select--", new { ReadOnly = "true" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>
+                                        IsTrading
+                                    </label>
+                                </td>
+                                <td class="">
+                                    @Html.CheckBoxFor(x=>x.SearchCriteria.IsTrading)
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Search" id="btn-search" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div id="ListData">
+                        @Html.Partial("_AreaList", Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<Area>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label>
+                    </div>
+                    <div style="height:auto;overflow: hidden;">
+                        @if (User1.IsAdmin())
+                        {
+                            <input type="button" onclick="return edit(0)" id="CreateDept1" value="Create a Area" />
+                        }
+                        <input type="hidden" name="ModifyDept" value="@ViewData["ModifyDept"]" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="SectionBlock Expanded BoxL1" id="ModifyDeptZone">
+
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#databaseTab").addClass("Active");
+        jQuery('#databaseTab').activeThisNav();
+        jQuery('#CreateDept1,#CreateDept').click(function () {
+            jQuery("#ModifyHeader").html("New Area");
+        });
+        jQuery(".checkTrading").on("click", function () {
+            var id = jQuery(this).attr("id").split("_")[1]; //checkTrading_126
+            var check = jQuery(this).is(":checked");
+            var url = '@Url.Action("SetAreaTrading", "Data")';
+            var data = JSON.stringify({ "id": parseFloat(id), "istrading": check });
+            jQuery.ajax({
+                url: url,
+                type: 'post',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: data,
+                success: function (result) {
+                }
+            });
+        });
+    });
+
+    function edit(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("EditArea", "Data")',
+            data: { id: id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#ModifyDeptZone").html(result);
+                jQuery('#ModifyDeptZone').show();
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#", "") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#AbbName').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+</script>
+

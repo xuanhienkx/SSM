@@ -1,0 +1,342 @@
+/*
+*  orange: #ea9a07
+*  light-orange: 
+*  green: #23a249
+*  light-green: #e2f7e6
+*  blue: #3166ce
+*  light-blue: #e6ecf8
+* dark-grey: #6d6d65
+*/
+div.HomeContent {
+    width: 990px;
+    margin: 0 auto;
+}
+/**/
+.MessageBlock {
+    width: 990px;
+    position: relative;
+    margin: 0px auto;
+}
+    .MessageBlock .BoxL4 {
+        padding: 15px;
+    }
+    .MessageBlock p {
+        margin: 0px;
+        font-size: 1.2em;
+        padding-left: 47px;
+    }
+    .MessageBlock .MessageContents {
+        min-height: 32px;
+    }
+.Warning {
+    background-color: #f5ebd3;
+}
+    .Warning p {
+        color: #eb9909;
+    }
+    .Warning .MessageContents {
+        background: url(../Images/Menu/icon12.png) no-repeat left top;
+    }
+
+.Validation {
+    background-color: #e3f7e5;
+}
+    .Validation p {
+        color: #24a249;
+    }
+    .Validation .MessageContents {
+        background: url(../Images/Menu/icon11.png) no-repeat left top;
+    }
+    
+.Help {
+    background-color: #e6edf9;
+}
+    .Help p {
+        color: #3366cc;
+    }
+    .Help .MessageContents {
+        background: url(../Images/Menu/icon08.png) no-repeat left top;
+    }    
+    .Help ul {
+        margin: 0px;
+        padding: 9px 0px 0px 47px;
+        overflow: hidden;
+    }
+        .Help ul li {
+            float: left;
+            clear: left;
+            list-style: none;
+            padding-bottom: 3px;
+        }
+        .Help ul li a {
+            float: left;
+            color: #3366cc;
+            font-size: 1.2em;
+            font-weight: bolder;
+            height: 16px;
+            padding-left: 20px;
+            background-position: left top;
+            background-repeat: no-repeat;
+        }
+/**/
+h3.SectionTitle01,
+h3.SectionTitle02,
+h3.SectionTitle03 {
+    font-size: 2.4em;
+    padding: 10px 0 10px 40px;
+    margin: 0 0 0 15px;
+}
+h3.SectionTitle01 {
+    color: #6d6d65;
+    background: url("../Images/Menu/icon07.gif") no-repeat left center;
+}
+h3.SectionTitle02 {
+    color: #3166ce;
+    background: url("../Images/Menu/icon08.gif") no-repeat left center;
+}
+h3.SectionTitle03 {
+    color: #6d6d65;
+    background: url("../Images/Menu/icon09.gif") no-repeat left center;
+}
+div.Container01,
+div.Container02 {
+    float: left;
+    width: 288px;
+    padding: 0 12px 0 0;
+}
+    div.MessageBlock {
+        width: 100%;
+    }
+    div.MessageBlock .BoxL4 {
+        padding: 10px 15px;
+    }
+    div.MessageBlock {
+    }
+        div.MessageBlock h4 {
+            padding: 0 0 10px;
+            margin: 0;
+            font-size: 1.8em;
+        }
+        div.Warning h4 {
+            color: #ea9a07;
+        }
+    div.Validation {
+        margin: 12px 0 0;
+    }
+        div.Validation h4 {
+            color: #23a249;
+        }
+    div.Help {
+    }
+        div.Help div.MessageContents {
+            background: url("../Images/Menu/icon01.gif") no-repeat left top;
+        }
+        div.Help div.MessageContents ul li a {
+            padding: 0;
+        }
+    div.Type01 {
+        margin: 12px 0 0;
+    }
+        div.Type01 div.MessageContents {
+            background: none;
+        }
+        div.Type01 hr {
+            display: block;
+            border: none;
+            border-top: 1px solid #c1cfea;
+            border-bottom: 1px solid #fff;
+            margin: 10px 0;
+        }
+        div.Type01 div.MessageContents p,
+        div.Type01 div.MessageContents ul {
+            padding: 0;
+        }
+            div.Type01 div.MessageContents p span {
+                font-weight: bolder;
+            }
+        div.Type01 div.MessageContents ul {
+            padding-top: 10px;
+        }
+                div.Type01 div.MessageContents ul li a {
+                    background: url("../Images/Menu/icon05.gif") no-repeat left 2px;
+                    padding: 0 0 0 20px;
+                }
+        div.Help h4 {
+            color: #3166ce;
+        }
+    div.Board {
+        background-color: #f6f6f4;
+    }
+        div.Board div.MessageContents {
+            background: url("../Images/Menu/icon02.gif") no-repeat left top;
+        }
+        div.Board h4 {
+            color: #6e6e64;
+        }
+            div.Board h4 span {
+                color: #3266cb;
+            }
+            ul.FuncList {
+                width: 100%;
+                overflow: hidden;
+                margin: 15px 0 0 47px;
+                padding: 0 0 5px;
+            }
+                ul.FuncList li {
+                    float: left;
+                    margin: 0 12px 0 0;
+                    list-style: none;
+                }
+
+    div.Profile,
+    div.Extranautes {
+        margin: 12px 0 0 0;
+    }
+        div.Profile div.MessageContents {
+            background: url("../Images/Menu/icon03.gif") no-repeat 12px top;
+        }
+        div.Extranautes div.MessageContents {
+            background: url("../Images/Menu/icon04.gif") no-repeat 3px top;
+        }
+
+    div.Actualites {
+        margin: 12px 0 0;
+    }
+        div.Actualites {
+            background: url("../../Images/Menu/box-1-border.png") no-repeat left top;
+        }
+        div.Actualites .BoxL2{
+            background: url("../../Images/Menu/box-2-border.png") no-repeat right top;
+        }
+        div.Actualites .BoxL3 {
+            background: url("../../Images/Menu/box-3-border.png") no-repeat right bottom;
+        }
+        div.Actualites .BoxL4 {
+            background: url("../../Images/Menu/box-4-border.png") no-repeat left bottom;
+            padding: 0 9px;
+        }
+        div.Actualites .BoxL5 {
+            border-top: 1px solid #dbdcd6;
+            border-bottom: 1px solid #dbdcd6;
+            padding: 8px 0;
+        }
+        div.Actualites .BoxL6 {
+            border-left: 1px solid #dbdcd6;
+            border-right: 1px solid #dbdcd6;
+            width: 100%;
+            padding: 0 8px;
+            position: relative;
+            left: -9px;
+        }
+        div.Actualites h4 {
+            color: #6d6d65;
+        }
+        div.Actualites div.MessageContents {
+            background: none;
+        }
+        div.Actualites hr {
+            display: block;
+            border: none;
+            border-top: 1px solid #dbdcd6;
+            border-bottom: 1px solid #fff;
+            margin: 10px 0;
+        }
+        div.Actualites div.MessageContents p,
+        div.Actualites div.MessageContents ul {
+            padding: 0;
+        }
+            div.Actualites div.MessageContents p span {
+                font-weight: bolder;
+            }
+        div.Actualites div.MessageContents ul {
+            padding: 10px 0 0;
+            margin: 0;
+            list-style: none;
+            overflow: hidden;
+            width: 100%;
+        }
+            div.Actualites div.MessageContents ul li {
+                margin: 0;
+                padding: 0 0 3px;
+                float: left;
+                overflow: hidden;
+                width: 100%;
+            }
+                div.Actualites div.MessageContents ul li a {
+                    background: url("../Images/Menu/icon06.gif") no-repeat left 2px;
+                    padding: 0 0 0 20px;
+                    font-size: 1.2em;
+                    font-weight: bolder;
+                    color: #6d6d65;
+                    float: left;
+                }
+
+div.Container03 {
+    float: left;
+    width: 390px;
+}
+
+div.SelectWrapper {
+    margin: 20px 0 0 48px;
+}
+/* Form  select customize */
+.MessageContents p.SelectReplace {
+    margin: 0px;
+    background: url(../Images/Menu/bg-select-dropbtn.gif) no-repeat left top;
+    width: 195px;
+    height: 20px;
+    padding: 5px 20px 0px 5px;
+    cursor: default;
+    color: #6e6d65;
+    font-size: 1.1em;
+    font-weight: bolder;
+}
+.MessageContents .SelectReplaceHolder {
+    border: 1px #bfbfbf solid;
+    width: 184px;
+    position: absolute;
+    left: 0px;
+    top: 24px;
+    z-index: 1000;
+    background: #fff;
+    overflow: hidden;
+}
+.MessageContents div.jScrollPaneTrack {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    background: #ececec;
+    z-index: 1000;
+    height: 100%;
+}
+.MessageContents div.jScrollPaneTrack .jScrollPaneDrag {
+    position: absolute;
+    background: #cccccc;
+}
+.MessageContents ul.SelectReplaceDropdownList {
+    margin: 0px;
+    padding: 0px;
+}
+    .MessageContents ul.SelectReplaceDropdownList li {
+        list-style: none;
+        padding: 1px 0px 1px 15px;
+        cursor: default;
+        color: #6e6d65;
+        font-size: 1.1em;
+        white-space: nowrap;
+    }
+    .MessageContents ul.SelectReplaceDropdownList li.OptionGroup    {
+        font-size: 1.2em;
+        padding: 3px 0px 3px 5px;
+        font-weight: bolder;        
+    }    
+
+
+    .MessageContents ul.SelectReplaceDropdownList li.OnSelect {
+        background: #eeeeee !important;
+    }    
+
+#home .ButtonType3Small,
+#home .ButtonType3 {
+    margin: 0px;
+}

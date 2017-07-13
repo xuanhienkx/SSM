@@ -1,0 +1,24 @@
+.FooterBar {
+    background: url(../Images/bg-footer.gif) repeat-x top;
+    height: 62px;
+    clear: both;
+}
+.FooterBar ul {
+    margin: 0px auto;
+    padding: 20px 0px 0px 0px;
+    min-height: 42px;
+    width: 990px;
+    position: relative;
+}
+.FooterBar ul li {
+        list-style: none;
+    }
+    .FooterBar ul li.Copyright {
+        float: left;
+    }
+.FooterBar ul li.Copyright p {
+        color: #c1c2c2;
+        margin: 0px;
+        padding: 15px 0px 0px 22px;
+        font-size: 1em;
+    }

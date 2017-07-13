@@ -1,0 +1,59 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.ViewModels.Shared.Grid<SSM.Models.NewsModel>
+
+@{
+    ViewBag.Title = "Abount us";
+    User user = (User)Session[AccountController.USER_SESSION_ID];
+}          
+@Styles.Render("~/Content/info")  
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<div class="info-new-main">
+    <div class="col-md-3">
+        <div class="marginDiv">
+            <div class="left-body">
+                <h3 class="title">Thông báo</h3>
+                <div class="left-top-conten-info">
+                    @{Html.RenderAction("GetTopNew", new { newType = "Info", top = 10 });}
+                </div>
+                <div style="height: 10px; background: #fff"></div>
+                <h3 class="title">Tin Tức</h3>
+                <div class="left-top-conten-info">
+                    @{Html.RenderAction("GetTopNew", new { newType = "NEW", top = 10 });}
+                </div>
+                <div style="height: 10px; background: #fff"></div>
+            </div>
+            <h3 class="">
+                @if (user.IsEditNew())
+                {
+                    <input class="btn btn-primary" type="button" value="Create New" id="createNewLink" />
+                }
+            </h3>
+        </div>
+    </div>
+    <div class="col-md-8 right-content" id="dataInfo">
+        @{Html.RenderAction("List", "OutNew");}
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#AbountUsTab").addClass("Active");
+        jQuery('#AbountUsTab').activeThisNav();
+
+        jQuery('#createNewLink').on('click', function () {
+            jQuery.mbqAjax({
+                url: '/OutNew/CreateNews',
+                method: "GET",
+                dataType: 'html',
+                success: function (result) {
+                    jQuery("#dataInfo").html(result);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Error getting prospect list: " + textStatus);
+                }
+            });
+        });
+    });
+</script>

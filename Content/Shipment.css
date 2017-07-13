@@ -1,0 +1,2258 @@
+﻿hr {
+    color: #000;
+    height: 1px;
+    text-align: center;
+    width: 100%;
+}
+
+.tableNormal td 
+{
+  padding: 5px; 
+  font-size:12px; 
+  border-right: 1px solid #CCCCCC; 
+}
+
+.tableNormal th
+{
+  padding: 6px 5px;
+  text-align: left;
+  font-size:12px;
+  border-right: 1px solid #CCCCCC; 
+}
+.tableNormal tr:hover td {
+	background-color: #7b9de5;
+	color: #ffffff;
+}
+.tableCom td 
+{
+  padding: 5px; 
+  font-size:12px; 
+  border-right: 1px solid #CCCCCC; 
+}
+
+.tableCom th
+{
+  padding: 6px 5px;
+  text-align: left;
+  font-size:12px;
+  border-right: 1px solid #CCCCCC; 
+}
+
+
+.SortHeader
+{
+    float:left;    
+}
+.LinkClass{
+    float: left;
+    font-size: 1.2em;
+    font-weight: bolder;
+    line-height: 1em;
+    margin: 0;
+    padding-right: 15px;
+    padding-top: 5px;
+    width: auto;
+}
+
+.DivRealUpload 
+{
+ width:90px;
+    float:left;
+	background:url(../../Images/browse.gif) no-repeat 100% 50%;
+    
+}
+.realupload {
+	position:relative;
+	top:0;
+	right:0;
+float:left;
+	/* start of transparency styles */
+	opacity:0;
+	-moz-opacity:0;
+	filter:alpha(opacity:0);
+	/* end of transparency styles */
+
+	z-index:2; /* bring the real upload interactivity up front */
+	width:70px !important;
+}
+form .fakeupload 
+{
+    height:auto;
+    width:270px;
+    float:left;
+}
+form .fakeupload input 
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+	width:250px;
+}
+ 
+#tooltip {
+	position:absolute;
+	z-index:9999;
+	color:#fff;
+	font-size:10px;
+	width:180px;
+	
+}
+
+#tooltip .tipHeader {
+	height:8px;
+}
+
+#tooltip .tipBody {
+	background-color:#000;
+	padding:5px 5px 5px 15px;
+}
+
+#tooltip .tipFooter {
+	height:8px;
+}
+ 
+#SearchBlock 
+{
+    width :900px;
+    height : 70px;
+    position:relative;
+    float:left;
+ }
+    .ShipmentRow 
+    {
+        float:left;
+        min-height: 25px;
+        height:auto;
+        padding:2px 2px 0 0;
+    }
+   
+.ShipmentRow label
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:30px;
+    padding-top:5px;
+    text-align:right;
+    width:120px;
+}
+
+.Label
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+}
+
+.ShipmentRow input
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:150px;   
+}
+
+.QuickView
+{
+    border:1px solid #BFBFBF;
+    color:White !important;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px !important;
+    width:50px !important;   
+}
+.QuickView:hover 
+{
+    border:1px solid #BFBFBF;
+    color:Yellow !important;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px !important;
+    width:50px !important;   
+}
+
+.ShipmentRow textarea 
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:81px;
+    padding:1px 1px 1px 7px;
+    width:150px;
+}
+
+.ShipmentRow select {
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px;
+    width:166px;
+}
+
+.ButtonZone
+{
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    margin:0px 0 60px 80px;
+    overflow:hidden;
+    padding:0 0 0 30px;
+}
+
+.DOZone
+{
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    margin:0px 0 60px 80px;
+    overflow:hidden;
+    padding:0 0 0 100px;
+}
+
+.ButtonZone1 
+{
+    padding-bottom:15px;    
+}
+
+.ButtonZone1 input[type=button],.ButtonZone1 input[type=submit] 
+{
+   border:1px solid #BFBFBF; 
+   padding: 10px 7px;
+   background-color:#338899;
+   color:White;
+   font-weight:bold;
+}
+
+.ButtonZone1 input[type=button]:hover,.ButtonZone1 input[type=submit]:hover 
+{
+    border:1px solid #BFBFBF; 
+   padding: 8px 7px;
+   background-color:#338899;
+   color:Silver;
+   font-weight:bold;
+}
+
+.ShipmentLink 
+{ 
+   font-family:Arial Baltic; 
+   border:1px solid #BFBFBF; 
+   padding: 11px 7px;
+   background-color:#338899;
+   color:White;
+   font-weight:bold;
+   line-height:27px;
+   text-decoration: none;
+}   
+    
+ .DisabledLink 
+ {
+    background-color:Silver !important;
+    border:1px solid #FFFFFF !important;
+    color:White;
+    font-weight:bold;
+    line-height:27px;
+    padding: 11px 7px;
+    text-decoration: none;
+}
+   
+.AddNewAgent 
+{
+    font-family:Arial,Helvetica,sans-serif; 
+   border:1px solid #BFBFBF; 
+   padding: 5px 7px;
+   background-color:Silver;
+   color:White;
+   font-size: 12px;
+   font-weight:bold;
+   line-height:20px;
+   text-decoration: none;
+ } 
+.RevenueLink 
+{ 
+   font-family:Arial,Helvetica,sans-serif; 
+   border:1px solid #BFBFBF; 
+   padding: 11px 7px;
+   background-color:#338899;
+   color:White;
+   font-size: 14px;
+   font-weight:bold;
+   line-height:20px;
+   text-decoration: none;
+ }
+    
+.RevenueLink:hover
+{
+   border:1px solid #BFBFBF; 
+   padding: 9px 7px;
+   background-color:#338899;
+   color:Silver;
+   font-size:14px;
+   line-height:20px;
+   text-decoration: none;
+   font-weight:bold;
+}  
+    
+.Revenuebutton
+{
+   border:1px solid #BFBFBF; 
+   padding: 8px 7px;
+   background-color:#338899;
+   color:White;
+   font-weight:bold;
+   font-size:1.2em;
+   line-height:16px;
+   text-decoration: none;
+ }
+    
+.Revenuebutton:hover
+{
+   border:1px solid #BFBFBF; 
+   padding: 6px 7px;
+   background-color:#338899;
+   color:Silver;
+   font-size:1.2em;
+   line-height:16px;
+   text-decoration: none;
+   font-weight:bold;
+ }  
+    
+.RevenueCancel 
+{ 
+   border:1px solid #BFBFBF; 
+   padding: 8px 7px;
+   background-color:#ED1B2E;
+   color:White;
+   font-weight:bold;
+   font-size:1.2em;
+   line-height:16px;
+   text-decoration: none;
+ }
+    
+.RevenueCancel:hover
+{
+   border:1px solid #BFBFBF; 
+   padding: 6px 7px;
+   background-color:#ED1B2E;
+   color:Teal;
+   font-size:1.2em;
+   line-height:16px;
+   text-decoration: none;
+   font-weight:bold;
+    }  
+/*--------------------------------------------*/
+.ShipmentLabel
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:15px;
+    padding-top:5px;
+    text-align:right;
+    width:120px;
+}
+
+.ShipmentLabelValue
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:15px;
+    padding-top:5px;
+    text-align:left;
+    width:120px;
+}
+
+.ShipmentLabelShort
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:15px;
+    padding-top:5px;
+    text-align:right;
+    width:50px;
+}
+
+.ShipmentInput
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:165px;   
+}
+
+.BillDetailInput
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:120px;   
+}
+
+.ShipmentTextArea {
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:81px;
+    padding:1px 1px 1px 7px;
+    width:171px;
+    overflow:visible;
+}
+.ShipmentSelect {
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px;
+    width:181px;
+}   
+
+.ShipmentSelectShort {
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px;
+    width:70px;
+}
+   
+.ShipmentInputShort
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:70px;   
+}  
+    
+.ShipmentPayableLabel
+{
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    font-weight:bold;
+    border: none;
+}
+   
+.ShipmentPayableHeader
+{
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    font-weight:bold;
+    border: none;
+    padding:4px 7px;
+    width:180px;
+    background:none repeat scroll 0 0 #E3F7E5;
+}
+   
+.ShipmentPayableHeaderLong
+{
+    color:#ED1B2E;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    font-weight:bold;
+    border: none;
+    padding:4px 7px;
+    width:270px;
+    background:none repeat scroll 0 0 #E3F7E5;
+}
+   
+.ShipmentPayableText
+{
+    border:1px solid #BFBFBF;
+    color:#000;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:155px;
+    background-color:#e6edf9;
+ }
+    
+.InvoiveVietnam {
+    background:none repeat scroll 0 0 SIlver;
+    border:1px solid #BFBFBF;
+    color:#ED1B2E;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:180px;
+}
+    
+    .ShipmentPayable
+    {
+        border:1px solid #BFBFBF;
+        color:#000;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:4px 7px;
+        width:180px;
+    }
+    
+     .ShipmentPayableLong
+    {
+        border:1px solid #BFBFBF;
+        color:#6E6D65;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:4px 7px;
+        width:270px;
+    }
+    
+     .ShipmentPayableRemark
+    {
+        border:1px solid #BFBFBF;
+        color:#000;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:4px 7px;
+        width:270px;
+        height:240px
+    }
+    
+   .ShipmentPayableRemark2 {
+        border:1px solid #BFBFBF;
+        color:#000;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        height:210px;
+        padding:4px 7px;
+        width:270px;
+    } 
+    
+    .RevenueInv 
+    {
+        border:1px solid #BFBFBF;
+        color:#000;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:4px 7px;
+        width:120px;
+   }
+   .RevenueInvText 
+   {
+       border:1px solid #BFBFBF;
+        color:#6E6D65;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:4px 7px;
+        width:104px;
+       }
+   
+   .RevenueInvSelect
+   {
+        border:1px solid #BFBFBF;
+        color:#000;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:4px 7px;
+        width:132px; 
+    }
+    
+   .RevenueInvDate
+   {
+        border:1px solid #BFBFBF;
+        color:#6E6D65;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:4px 7px;
+        width:90px;
+  }
+   
+ .RevenueInputDate 
+ {
+    background:url("../../Images/bg-date.png") no-repeat scroll left top transparent;
+    cursor:pointer;
+    display:inline;
+    float:right;
+    height:0;
+    margin-left:6px;
+    overflow:hidden;
+    padding:25px 0 0;
+    text-indent:-10000px;
+    width:25px;
+}
+    
+.TableNormal th 
+{
+    border-right:1px solid #CCCCCC;
+    padding:6px 5px;
+    text-align:left;
+    color:White;
+}  
+ 
+.TableNormal td {
+    border-right:1px solid #CCCCCC;
+    padding:5px;
+}
+
+.BookingLabel
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    width:120px;
+}
+
+.BookingTable 
+{
+    border: 1px solid Silver;
+}.BookingTable tr 
+    {
+        height:35px;
+    }
+        
+.BillDetailTable 
+{
+    }.BillDetailTable tr 
+    {
+        height:35px;
+    }        
+        
+.BillTextArea
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:81px;
+    padding:1px 1px 1px 7px;
+    width:251px;
+}
+.Bill1TextArea
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:150px;
+    padding:1px 1px 1px 7px;
+    width:251px;
+}    
+.Bill2TextArea
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:150px;
+    padding:1px 1px 1px 7px;
+    width:351px;
+}    
+.Bill3TextArea
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:150px;
+    padding:1px 1px 1px 7px;
+    width:120px;
+}    
+.BillInput
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:245px;
+ }
+ .BillInputLong
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:370px;
+ }   
+ .BillLabel 
+ {
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:20px;
+    margin:0;
+}
+
+.SoMAWB .NormalLabel 
+ {
+    float:left;
+    font-size:1.2em;
+    line-height:20px;
+    margin:0;
+    min-width:150px;
+}
+.NormalLabel 
+ {
+    float:left;
+    font-size:1.2em;
+    line-height:20px;
+    margin:0;
+}
+#overlay {
+background-color:#000000;
+height:500px;
+left:0;
+position:absolute;
+top:0;
+width:100%;
+z-index:1000;
+}
+
+#lightbox {
+    left:0;
+    line-height:0;
+    position:absolute;
+    text-align:center;
+    width:100%;
+    z-index:1001;
+}
+
+#lightboxContainer {
+    background-color:#F6F6F3;
+    height:250px;
+    margin:0 auto;
+    position:relative;
+    width:250px;
+}
+
+.LightboxBlock {
+    background-color:#F6F6F3;
+    position:relative;
+    z-index:500;
+}
+
+.LightboxButtonZone {
+    float:left;
+    font-family:Arial;
+    font-size:12px;
+    margin:10px 0 10px 20px;
+    overflow:hidden;
+    padding:0 0 0 25px;
+    text-align:left;
+    width:100%;
+}
+
+.TemplateForm {
+    color:White;
+    font-family:Arial Baltic;
+    font-weight:bold;
+    line-height:30px;
+    padding:11px 7px;
+    text-decoration:none;
+    width:200px;
+}
+
+.LinkButton 
+{
+    /*width:150px;*/
+    background-color:#338899;
+    float:left;
+    border: 2px solid #F6F6F3;
+ }
+ .LinkActive 
+{
+    width:150px;
+    background-color:#ED1B2E;
+    float:left;
+    border: 2px solid #F6F6F3;
+ }
+ .LinkButton:hover{
+    background-color: #ED1B2E;
+    border: 2px solid yellow;
+}  
+ 
+.DocLinkButton 
+{
+    width:120px;
+    background-color:#338899;
+    float:left;
+    border: 2px solid #F6F6F3;
+    text-align:center;
+ }
+ .DocLinkButton:hover{
+    background-color: #ED1B2E;
+    border: 2px solid yellow;
+}   
+.LinkForm {
+    color: White;
+    font-family: Arial Baltic;
+    font-weight: bold;
+    line-height: 30px;
+    padding: 11px 7px;
+    text-decoration: none;
+    width: 120px;
+    text-align:center;
+}   
+.LinkClose 
+{
+    overflow:hidden;
+    height:34px; 
+    padding:7px 5px;
+    vertical-align:top;
+    text-align:right;
+    font-weight:bold;
+    float:left;
+    background:#ED1B2E;
+    border: 2px solid #F6F6F3;    
+}   
+ .LinkDisable
+{
+    width:150px;
+    background-color:#999999;
+    float:left;
+    border: 2px solid #F6F6F3;
+}
+ .LinkDisable:hover
+{
+    background-color:#999999;
+    float:left;
+    border: 2px solid yellow;
+}
+    
+.DisabledButton, .DisabledButton:hover {
+    background-color:Silver !important;
+    border:1px solid #ffffff !important;
+    color:White !important;
+    font-weight:bold;
+    padding:4px 7px;
+}  
+  
+.NormalZone 
+{
+    overflow:hidden;
+    height:auto;
+}
+
+.SOAInputShort 
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    float:left;
+    width:100px;
+}
+
+.BOLShipperLabel
+{
+    height: auto;
+    overflow: hidden;
+    padding-left:10px;    
+
+}
+.BOLLeftLabel
+{
+    height: auto;
+    overflow: hidden;
+    padding-left:10px;    
+
+}
+.BOLShipper 
+{
+    height: auto;
+    overflow: hidden;
+    padding-left:50px;    
+    min-height:81px;
+}
+.BOLShipperText
+{
+    height: auto;
+    overflow: hidden;
+    padding-left:30px;    
+}
+.GoodsLabel 
+{
+    height:auto;
+    overflow:hidden;
+    text-align:center;
+    padding-left:20px;
+}
+.BookinNoteShipper 
+{
+    height:auto;
+    overflow:hidden;
+    padding:0;
+    float:left;
+}
+.BookinNoteVesel
+{
+    height:auto;
+    overflow:hidden;
+    padding-left:30px;
+}
+.BookinNoteText
+{
+    height:auto;
+    overflow:hidden;
+    padding-left:30px;
+}
+.BookingLabel2
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    width:150px;
+}
+.BKNIcon
+{
+   height:auto;
+   overflow:hidden;
+   float:left; 
+   padding:0 15px 0 30px;
+} 
+.BKNTitle
+{
+   height:auto;
+   overflow:hidden;
+   float:left; 
+   padding-top:20px;
+}   
+.BKNTitle .Title1
+{
+    font-size:14px;
+    font-weight:bolder;
+    line-height:1em;
+    font-style:italic;
+}   
+.BKNTitle .Title2
+{
+    font-size:11px;
+    font-weight:bolder;
+    line-height:1em;
+    font-style:italic;
+    padding-left:15px;
+    padding-top:10px;
+}
+.CompanyAddress
+{
+    font-size:9px;
+    line-height:10px;
+}
+.ArriveNotice th {
+    border-bottom:1px solid #CCCCCC;
+    border-right:1px solid #CCCCCC;
+    font-size:1.4em;
+    padding:10px 5px;
+    text-align:left;
+}
+.ArriveNotice th :last-child {
+border:medium none;
+border-bottom:1px solid #CCCCCC;
+}
+.ArriveNotice td :last-child {
+border:medium none;
+}
+.ArriveNotice td {
+border-right:1px solid #CCCCCC;
+font-size:1.2em;
+padding:5px;
+}
+
+.PrintArriveNotice th {
+    border-bottom:1px solid #000;
+    border-right:1px solid #000;
+    font-size:1.4em;
+    padding:10px 5px;
+    text-align:left;
+}
+.PrintArriveNotice th :last-child {
+border:medium none;
+border-bottom:1px solid #000;
+}
+.PrintArriveNotice td :last-child {
+border:medium none;
+}
+.PrintArriveNotice td {
+border-right:1px solid #000;
+font-size:1.2em;
+padding:5px;
+}
+
+.DivBody {
+    color:#6E6D65;
+    font-family:Arial;
+    font-size:14px;
+ } 
+ .PrintDivBody {
+    color:#000;
+    font-family:Arial;
+    font-size:13px;
+ } 
+ .ArriveNoticeBody {
+    color:#6E6D65;
+    font-family:Arial;
+    font-size:12px;
+ }         
+ .DebitNoteContent 
+ {
+    color:#6E6D65;
+    font-family:Arial;
+    font-size:14px;
+    width:850px;
+    height:auto;
+    overflow:hidden;
+ }
+ .DebitNoteContentPrint 
+ {
+    color:#000;
+    font-family:Arial;
+    font-size:12px;
+    width:850px;
+    height:auto;
+    overflow:hidden;
+ }
+ .DebitNoteTo
+ {
+    width:400px;
+    min-height:110px;
+    overflow:hidden;
+    float:left;
+    border:2px solid #a0a0a0;
+    margin-right:50px;
+    padding: 15px 0;
+ }
+ .DebitNoteTo .Title 
+ {
+    width:40px;
+    height:auto;
+    overflow:hidden;
+    font-weight:bold;
+    float:left;
+ }
+ .DebitNoteTo .Content 
+ {
+    width:350px;
+    height:auto;
+    overflow:hidden;
+    float:left;
+ }
+ .DebitNoteTo .Content .ShipmentTextArea {
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:150px;
+    overflow:visible;
+    padding:1px 1px 1px 7px;
+    width:330px;
+}
+.DescriptionZone
+{
+color:#000!important;
+float:left;
+min-height:200px;
+overflow:visible;
+width:500px;
+
+}
+.DebitNoteRef 
+{
+    width:280px;
+    height:auto;
+    overflow:hidden;
+    float:left;
+}
+.DebitNoteContent .TableNormal th {
+border-right:1px solid #a0a0a0;
+color:#6E6D65;
+padding:6px 5px;
+text-align:center;
+background-color:#cccccc;
+}
+.DebitNoteContentPrint .TableNormal th {
+border-right:1px solid #a0a0a0;
+color:#000;
+padding:6px 5px;
+text-align:center;
+background-color:#cccccc;
+}
+.DebitNoteContent .TableNormal th :last-child {
+border-left:none;
+}
+.DebitNoteContent .TableNormal 
+{
+    border:2px solid #000;
+    min-height:100px;
+    vertical-align:top;
+    width:100%;
+}
+.DebitNoteContent .ShipmentTextArea {
+border:1px solid #BFBFBF;
+color:#000;
+float:left;
+height:81px;
+overflow:visible;
+padding:1px 1px 1px 7px;
+width:100px;
+}
+.DebitNoteContent .ShipmentInput {
+border:1px solid #BFBFBF;
+color:#000;
+float:left;
+font-family:Arial,Helvetica,sans-serif;
+font-size:1.2em;
+padding:4px 7px;
+width:125px;
+}
+.DebitNoteContent .FlightNoInput {
+border:1px solid #BFBFBF;
+color:#000;
+float:left;
+font-family:Arial,Helvetica,sans-serif;
+font-size:1.2em;
+padding:4px 7px;
+width:200px;
+}
+.DescriptionTextArea {
+border:1px solid #BFBFBF;
+color:#000;
+float:left;
+height:200px;
+overflow:visible;
+padding:1px 1px 1px 7px;
+width:500px;
+}
+.FromTextArea {
+    border:1px solid #BFBFBF;
+    color:#000;
+    float:left;
+    height:100px;
+    overflow:visible;
+    padding:1px 1px 1px 7px;
+    width:500px;
+}
+.InWords 
+{
+    float:left;
+    height:auto;
+    width:100px;
+    padding:4px 7px;
+    font-weight:bold;
+}
+.InWordsInput
+{
+    float:left;
+    height:auto;
+    width:600px;
+}
+.InWordsInput input
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:500px;
+}
+.DebitHr 
+{
+    color:#a0a0a0;
+   width:200px;
+   display:block;
+}
+.Borderdotted
+{
+   border-bottom: 1px dotted Silver; 
+}
+.ShipmentAgentCarierInput
+{
+    border: 1px solid #BFBFBF;
+    color: #6E6D65;
+    float: left;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 1.2em;
+    padding: 4px 7px;
+    width: 523px;
+}
+
+.NoteLabel 
+{
+     float: left;
+    font-size: 1.2em;
+    font-style:italic;
+    line-height: 1em;
+    margin: 0; 
+}
+
+.ShipmentCheckBox 
+{
+   border: 1px solid #BFBFBF;
+    color: #6E6D65;
+    float: left;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 1.2em;
+    padding: 4px 7px;
+    width: 15px;   
+}
+
+.RequestPaymentContent 
+{
+    overflow:hidden;
+    height:auto;
+    font-family:Arial;
+    font-size:14px;
+    padding: 50px 0 50px 0px;
+    width:850px;
+    }
+    .Print
+{
+    color:#000 !important;
+    padding: 0px !important;
+    }
+    .RequestPaymentContent .Title 
+    {
+        padding: 0 0 20px 0;
+        font-size:16px;
+        font-weight:bold;
+        text-align:center;
+        width: 800px;
+        }
+        .RequestPaymentContent .Element 
+    {
+        min-height:18px;
+        overflow:hidden;
+        clear:both;
+        padding:10px 0 0px 0;
+        }
+    .RequestPaymentContent .Element div
+    {
+        min-height:15px;
+    }
+    .RequestPaymentContent .RefNO
+    {
+        text-align:right;
+        padding-left:400px;
+        padding-bottom:20PX;
+        height:auto;
+        overflow:hidden;
+    }
+    .RequestPaymentContent .DearTo
+    {
+        overflow:hidden;
+        height:auto;
+        font-weight:bold;
+        font-size:13px;
+        padding-left:20px;
+    }
+    .RequestPaymentContent .PaymentLabel
+    {
+        float:left;
+        width:auto;
+        padding: 0 20px;
+    }
+    .RequestPaymentContent .PaymentDiv
+    {
+        float:left;
+        text-align:center;
+        width: 300px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+    .RequestPaymentContent .PaymentDivShipmentNo
+    {
+        float:left;
+        text-align:center;
+        width: 180px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+    
+    .RequestPaymentContent .PaymentDivBHL
+    {
+        float:left;
+        text-align:center;
+        width: 214px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+   .RequestPaymentContent .PaymentDivCustomer
+   {
+        float:left;
+        text-align:center;
+        width: 649px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+     .RequestPaymentContent .PaymentDivCarrier
+   {
+        float:left;
+        text-align:center;
+        width: 473px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+     .RequestPaymentContent .PaymentDivFee
+   {
+        float:left;
+        text-align:center;
+        width: 381px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+     .RequestPaymentContent .PaymentDivTotal
+   {
+        float:left;
+        text-align:center;
+        width: 317px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+      .RequestPaymentContent .PaymentDivCurrency
+   {
+        float:left;
+        text-align:center;
+        width: 250px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+       .RequestPaymentContent .PaymentDivDate
+   {
+        float:left;
+        text-align:center;
+        width: 326px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+       .RequestPaymentContent .PaymentDivType
+   {
+        float:left;
+        text-align:center;
+        width: 606px;
+        height:auto;
+        border-bottom: 1px dotted Silver;
+    }
+    .AuthorLetterContent 
+    {
+    overflow:hidden;
+    height:auto;
+    font-family:Arial;
+    font-size:14px;
+    padding: 50px 0;
+    width:850px;
+    padding-left:50px;
+    }
+    .AuthorLetterContentPrint 
+    {
+         font-size:12px !important;
+         color:#000;
+         padding: 0px 0px 0px 30px !important;
+         padding-left:50px;
+        }
+    .AuthorLetterContent  .Title1
+    {
+        padding-left:200px;
+        padding-top:30px;
+    }
+    .AuthorLetterContent  .Title2
+    {
+        padding-left:230px;
+        padding-top:5px;
+    }
+    .AuthorLetterContent  .Title3
+    {
+       border-bottom: 1px solid Silver;
+        margin-left: 180px;
+        padding-top: 20px;
+        width: 315px;
+        
+    }
+     .AuthorLetterContentPrint  .Title3
+    {
+       border-bottom: 1px solid #000;
+        margin-left: 180px;
+        padding-top: 20px;
+        width: 280px;
+        
+    }
+    .AuthorLetterContent .Title4
+    {
+        font-size:12px;
+        font-style:italic;
+        padding-top:20px;
+    }
+    .AuthorLetterContent .Title4 .TitleLeft 
+    {
+        float:left;
+        width:400px;
+    }
+    .AuthorLetterContent .Title4 .TitleLeft 
+    {
+        float:left;
+        width:400px;
+    }
+     .AuthorLetterContent .RefNo
+    {
+       clear: both;
+    height: auto;
+    overflow: hidden;
+    padding:10px 0 20px 0;
+    }
+     .AuthorLetterContent .DearTo
+    {
+       clear: both;
+    height: auto;
+    overflow: hidden;
+    padding:0px 0 20px 0;
+    }
+     .AuthorLetterContent .DearTo .DearLeft
+    {
+       float:left;
+    height: auto;
+    width:100px;
+    }
+     .AuthorLetterContent .DearTo  .DearRight
+    {
+       float:left;
+    height: auto;
+    width:599PX;
+    }
+    .ShipmentDearTo 
+    {
+        border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:70px;
+    padding:1px 1px 1px 7px;
+    width:400px;
+    overflow:visible;
+     }
+      .AuthorLetterContent .SideA,
+      .AuthorLetterContent .SideB
+    {
+       clear: both;
+    height: auto;
+    overflow: hidden;
+    }
+       .AuthorLetterContent .SideA  span,
+        .AuthorLetterContent .SideB  span
+    {
+       font-weight:bold;
+       border-bottom: 1PX solid #696969;
+    }
+    
+     .ShipmentSideA
+     {
+        border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:70px;
+    padding:1px 1px 1px 7px;
+    width:600px;
+    overflow:visible;
+     } 
+    .AuthorLetterContent .SoMAWB
+    {
+         clear: both;
+        height: auto;
+        overflow: hidden;
+        padding:5px 0;
+    }.AuthorLetterContent .SoMAWB .ContentTitle
+    {
+        float:left;
+        width:250px;
+        }
+    .AuthorLetterContent .DetailAuthor1 
+    {
+        padding:5px 0;
+     }
+   .AuthorLetterContent .BehalfAuthor 
+   {
+        padding:20px 0 100px 450px;
+        text-align:center;
+    }
+    .AuthorLetterContent .BehalfAuthorName 
+   {
+        padding-left:470px;
+        text-align:center;
+    }
+    .AuthorLetterContent .Title6
+    {
+          clear: both;
+        height: auto;
+        overflow: hidden;  
+        font-size:11px;
+     }
+    .AuthorLetterContent .Title6 .NormalLabel
+    {
+         float:left;
+         font-size:12px;
+     }
+    .PaymentVoucherContent 
+    {
+        font-family:Arial;
+        font-size:14px;
+        overflow:hidden;
+        padding:70px 50px 100px 50px;
+        width:800px;
+        height:auto;
+    }
+    .PaymentVoucherContentPrint 
+    {
+        color:#000;
+        padding:10px 50px 100px 50px !important;
+    }
+    .PaymentVoucherContent .Element,
+    .PaymentVoucherContent .Header
+    {
+        clear:both;
+        height:auto;
+        overflow:hidden; 
+        padding-bottom:5px;
+        padding-top:5px;  
+    }
+    .PaymentVoucherContent .Footer
+    {
+        clear:both;
+        height:auto;
+        overflow:hidden; 
+        padding-bottom:7px;
+        padding-top:20px;  
+    }
+    .PaymentVoucherContent .Header .CompanyIcon
+    {
+        float:left;
+        width:200px;    
+        min-height:20px;
+    }
+    .PaymentVoucherContent .Header .Title
+    {
+        float:left;
+        font-size:18px;
+       text-align:center;
+       padding-top:25px;
+       font-weight:bold;
+       padding-left:50px;
+    }
+    .PaymentVoucherContent .Element .ELabel
+    {
+       float:left;
+       width:200px;
+       min-height:10px;
+    }
+    .PaymentVoucherContent .Element .ELabel2
+    {
+       float:left;
+       width:250px;
+       min-height:10px;
+    }
+    .PaymentVoucherContent .Element .ELabel3
+    {
+       float:left;
+       width:150px;
+       min-height:10px;
+    }
+    .PaymentVoucherContent .Element .EContent
+    {
+         border-bottom: 1px dotted Silver;
+         float:left; 
+         min-height:20px;
+         width:600px;
+    }
+    .PaymentVoucherContent .Element .EContent2
+    {
+         border-bottom: 1px dotted Silver;
+         float:left; 
+         min-height:20px;
+         width:550px;
+    }
+    .PaymentVoucherContent .Element .EContent3
+    {
+         border-bottom: 1px dotted Silver;
+         float:left; 
+         min-height:20px;
+         width:650px;
+    }
+    .PaymentVoucherContent .Element .DateRegion
+    {
+         border-bottom: 1px dotted Silver;
+         float:left; 
+         margin-left:500px;
+    }
+    .BookingRequest 
+    {
+        font-family:Arial;
+        font-size:14px;
+        overflow:hidden;
+        margin:70px 50px 100px 50px;
+        width:1000px;
+        height:auto;
+        border:1px solid Silver;
+    }
+    
+    .PrintBookingRequest
+    {
+        font-family:Arial;
+        font-size:13px;
+        overflow:hidden;
+        margin-top:30px;
+        width:900px;
+        height:auto;
+        border:1px solid #000;
+        color:#000 !important;
+    }
+    .BookingRequest .BElement
+    {
+        height:auto;
+        overflow:hidden; 
+    }
+    .BookingRequest .Title,
+    .BookingRequest .BElement .Title
+    {
+        height:auto;
+        overflow:hidden; 
+        text-align:center;
+        font-size:16px;
+        font-weight:bold;
+        background-color: #338899;
+        color:White;
+        padding:5px 0;
+    }
+    .BookingRequest .BElement .NormalLabel
+    {
+        float: left;
+        font-size: 14px;
+        line-height: 20px;
+        margin: 0;
+        }
+    .BookingRequest .BElement .Label
+    {
+        float: left;
+        font-size: 14px;
+        font-weight: bolder;
+        line-height: 1em;
+        margin: 0;
+    }
+     .BookingRequest .BElement .Shipper
+    {
+        border-bottom: 1px solid Silver;
+        height:auto;
+        padding-left: 20px;
+    }
+     .BookingRequest .BElement .Shipper
+    {
+        border-bottom: 1px solid Silver;
+        height:auto;
+        padding-left: 20px;
+    }
+     .BookingRequest .BElement .Commodity
+    {
+        clear:both;
+        height:25px;
+        padding:5px 0;
+    }
+    .BookingRequest .BElement .CustomerSignature{
+        clear:both;
+        height:139px;
+        padding:5px 30px;
+        /*border:1px solid silver;*/
+        font-weight:bold;
+    }
+    .BookingRequest .BElement .FinishLeft
+    {
+        float:left;
+        height:auto;
+        padding:10px 20px;
+        width:560px;
+        
+    }
+    .BookingRequest .BElement .FinishRight
+    {
+        float:left;
+        height:auto;
+        padding:10px 20px;
+        width:359px;
+        border-left: 1px solid silver;
+    }
+    .BookingRequest .BElement .EndLeft
+    {
+        border-right: 1px solid Silver;
+        float:left;
+        height:auto;
+        padding:10px 40px;
+        width:419px;
+    }
+    .BookingRequest .BElement .EndRight
+    {
+        float:left;
+        height:auto;
+        padding:10px 40px;
+        width:420px;
+        /* border-left: 1px solid silver;*/
+    }
+    
+    
+    /**/
+    .PrintBookingRequest .BElement
+    {
+        height:auto;
+        overflow:hidden; 
+    }
+    .PrintBookingRequest .Title
+    {
+        border: 1px solid #000000;
+        height:auto;
+        overflow:hidden; 
+        text-align:center;
+        font-size:15px;
+        font-weight:bold;
+        background-color: #338899;
+        color:White;
+        padding:5px 0;
+        }
+        
+    .PrintBookingRequest .BElement .Title
+    {
+        border: 1px solid #000000;
+        height:auto;
+        overflow:hidden; 
+        text-align:center;
+        font-size:15px;
+        font-weight:bold;
+        background-color: #338899;
+        color:White;
+        padding:5px 0;
+    }
+    .PrintBookingRequest .BElement .NormalLabel
+    {
+        float: left;
+        font-size: 13px;
+        line-height: 20px;
+        margin: 0;
+        }
+    .PrintBookingRequest .BElement .Label
+    {
+        float: left;
+        font-size: 13px;
+        font-weight: bolder;
+        line-height: 1em;
+        margin: 0;
+    }
+     .PrintBookingRequest .BElement .Shipper
+    {
+        border-bottom: 1px solid #000;
+        min-height:120px;
+        padding-left: 20px;
+    }
+     .PrintBookingRequest .BElement .ShipperEnd
+    {
+        min-height:150px;
+        padding-left: 20px;
+    }
+     .PrintBookingRequest .BElement .Commodity
+    {
+        clear:both;
+        height:15px;
+        padding:5px 0;
+    }
+    .PrintBookingRequest .BElement .CustomerSignature{
+        clear:both;
+        height:auto;
+        padding:5px 30px;
+        /*border:1px solid silver;*/
+        font-weight:bold;
+    }
+    .PrintBookingRequest .BElement .FinishLeft
+    {
+        float:left;
+        height:auto;
+        padding:10px 20px;
+        width:510px;
+        
+    }
+    .PrintBookingRequest .BElement .FinishRight
+    {
+        float:left;
+        height:auto;
+        padding:10px 20px;
+        width:309px;
+        border-left: 1px solid #000;
+    }
+    .PrintBookingRequest .BElement .EndLeft
+    {
+        float:left;
+        height:auto;
+        padding:10px 40px;
+        width:369px;
+         border-right: 1px solid #000;
+    }
+    .PrintBookingRequest .BElement .EndRight
+    {
+        float:left;
+        height:auto;
+        padding:10px 40px;
+        width:370px;
+       
+    }
+    /**/
+    
+    
+    .TransitmentAdvisedContrainer 
+    {
+        font-family:Arial;
+        font-size:14px;
+        overflow:hidden;
+        margin:70px 50px 100px 50px;
+        width:900px;
+        height:auto;
+    }
+    .TransitmentAdvisedContrainer .RefZone {text-align:right;
+                                            padding-right:100px;}
+    .TransitmentAdvisedContrainer .TransitmentTo
+    {
+        padding-right:30px;
+        font-weight:bold;
+    }
+    .TransitmentAdvisedContrainer .TransitmentTo,
+    .TransitmentAdvisedContrainer .TransitmentATTN
+    {
+        clear:both;
+        }
+    .TransitmentAdvisedContrainer .TransitmentTo span,
+    .TransitmentAdvisedContrainer .TransitmentATTN span
+    {
+        padding-right:30px;
+        font-weight:bold;
+        float:left;
+        width:50px;
+    }
+    .TransitmentAdvisedContrainer .TransitmentTo textarea,
+    .TransitmentAdvisedContrainer .Textarea
+    {
+        border:1px solid #BFBFBF;
+        color:#6E6D65;
+        float:left;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        height:120px;
+        padding:1px 1px 1px 7px;
+        width:180px;
+        overflow:visible;
+    }
+    .TransitmentAdvisedContrainer .TransitmentATTN input,
+    .TransitmentAdvisedContrainer .TransitmentBL input
+    {
+        border:1px solid #BFBFBF;
+        color:#6E6D65;
+        float:left;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:1px 1px 1px 7px;
+        width:180px;
+        overflow:visible;
+    }
+    .TransitmentAdvisedContrainer .TransitmentTitle 
+    {
+        clear:both;
+        font-size:20px;
+        font-weight:bold;
+        padding:30px 0;
+    }
+    .TransitmentAdvisedContrainer .TransitmentBL span {width:50px;float:left;}
+    .TransitmentAdvisedContrainer .GrossWeightLeft {width:450px;float:left;}
+    .TransitmentAdvisedContrainer .GrossWeight {clear:both;}
+    .TransitmentAdvisedContrainer .GrossWeightRight 
+    {
+        font-weight:bold;
+        border: 1px solid Silver;
+        float:left;
+        height:auto;
+        overflow:hidden;
+        padding:20px;
+    }
+    .TransitmentAdvisedContrainer .MainContent
+    {
+        height:auto;
+        overflow:hidden;
+        clear:both;   
+        padding-top:160px;   
+        padding-bottom:30px;                                 
+     }
+    .MainContent td 
+{
+  padding: 5px; 
+  border-right: 1px solid silver; 
+}
+
+.MainContent th
+{
+  padding: 6px 5px;
+  text-align: left;
+  border-right: 1px solid silver; 
+}
+.TransitmentAdvisedContrainer .Note,
+.TransitmentAdvisedContrainer .Tell
+{padding:5px 15px;}
+.TransitmentAdvisedContrainer .CustomerServices
+{padding:15px 15px 5px;}
+.TransitmentAdvisedContrainer .Thanhks
+{
+    padding:20px 15px 10px 15px;
+ }
+.TransitmentAdvisedContrainer .PayCharge 
+{
+    overflow:hidden;
+    height:auto;
+    padding-top:20px;
+}
+.TransitmentAdvisedContrainer .PayCharge .PayChargeLeft
+{
+    border:1px solid Silver;
+    padding: 5px 30px 0 30px;
+    margin: 5px 50px 0 50px;
+}
+.TransitmentAdvisedContrainer .PayCharge .PayChargeRight
+{
+    border:1px solid Silver;
+    padding:10px;
+}
+.TransitmentAdvisedContrainer .PayCharge .PayChargeRight .PayTitle
+{
+    border-bottom:1px solid Silver;
+    font-weight:bold;   
+    font-style:italic;
+ }
+.ManifestContainer
+{
+    font-family:Arial;
+    font-size:14px;
+    overflow:hidden;
+    margin:50px 30px 50px 30px;
+    width:900px;
+    height:auto;
+    clear:both;
+    
+}
+.ManifestContainer .CompanyName 
+{
+    clear:both;
+        font-size:20px;
+        font-weight:bold;
+        padding:30px 0;
+        text-align:center;
+        padding:20px;
+}
+.ManifestContainer .Address  
+{
+    height:auto;
+    overflow:hidden;
+     text-align:center;
+     padding: 5px 0;
+}
+.ManifestContainer .ManifestName
+{
+    clear:both;
+        font-size:20px;
+        font-weight:bold;
+        padding:30px 0;
+        text-align:center;
+        padding:30px 0 50px;
+}
+.ManifestContainer .MainContent
+{
+    padding-top:20px;
+    }
+    
+.ManifestContainer .TextArea
+    {
+        border:1px solid #BFBFBF;
+        color:#6E6D65;
+        float:left;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:1px 1px 1px 7px;
+        width:120px;
+        height:120px;
+        overflow:visible;
+    }
+    .ManifestContainer .InputShort
+    {
+        border:1px solid #BFBFBF;
+        color:#6E6D65;
+        float:left;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:1px 1px 1px 7px;
+        width:70px;
+        overflow:visible;
+    }
+    .ManifestContainer .Input
+    {
+        border:1px solid #BFBFBF;
+        color:#6E6D65;
+        float:left;
+        font-family:Arial,Helvetica,sans-serif;
+        font-size:1.2em;
+        padding:1px 1px 1px 7px;
+        width:150px;
+        overflow:visible;
+    }
+.HAirWayBill 
+{
+    width:100%;
+}
+.HAirWayBillCommon 
+{
+     width:100%;
+    }
+.HAirWayBillCommon td 
+{
+  border-right: none !important; 
+ 
+}
+.HAirWayBill td 
+{
+  border-right: 1px solid #BFBFBF; 
+ 
+}
+.HouseAirWayBill
+{
+    padding:70px 0 50px 0;
+    width:990px;
+    color:#205090;
+}
+.HouseAirWayBillPrint
+{
+    margin-left:50px;
+}
+.HouseAirWayBill .IssueTo 
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    padding:4px 7px;
+    width:15px; 
+    color:#205090;
+}
+.HouseAirWayBill .IssueCurrency 
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    padding:4px 7px;
+    width:30px; 
+    color:#205090;
+}
+
+.HouseAirWayBill .ByfirstCarrier 
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    padding:4px 7px;
+    width:120px; 
+    color:#205090;
+}
+.HouseAirWayBill .OtherCharges
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    padding:4px 7px;
+    width:580px; 
+    color:#205090;
+}
+.HouseAirWayBill .ShipperAddress 
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    padding:4px 7px;
+    width:450px; 
+    height:50px;
+    font-size:12px;
+    color:#205090;
+}
+.HouseAirWayBill .ShipperAccount
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    font-family:Arial,Helvetica,sans-serif;
+    padding:4px 7px;
+    width:220px; 
+    color:#205090;
+}
+.HouseAirWayBill .AirWaybill
+{
+    width:500px;
+}
+.HouseAirWayBill .AirportofDestination 
+{
+    border:1px solid #BFBFBF;
+    color:#205090;
+    font-family:Arial,Helvetica,sans-serif;
+    padding:4px 7px;
+    width:150px; 
+}
+.HouseAirWayBill .HandlingInformation
+{
+     width:950px; 
+    }
+.HouseAirWayBill .TextVerySmall
+{
+     width:20px; 
+    }  
+.HouseAirWayBill .TextSmall
+{
+     width:40px; 
+    }  
+.HouseAirWayBill .TextMedium
+{
+     width:60px; 
+    }  
+.HouseAirWayBill .TextRatherBig
+{
+     width:90px; 
+    }  
+.HouseAirWayBill .TextBig
+{
+     width:160px; 
+    }   
+.HouseAirWayBill .TextHeight
+{
+     height:180px; 
+    }  
+    
+.HouseAirWayBill .TextHeighter
+{
+     height:210px; 
+    }
+.CompanyInfor
+{
+    font-family:Arial;
+    font-size:14px;
+    overflow:hidden;
+    margin:50px 30px 50px 30px;
+    width:900px;
+    height:auto;
+    clear:both;
+}
+.BillLandingZone {
+     font-size: 14px;
+}      
+.PaymentVoucherInputLong 
+{
+    
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:1px 1px 1px 7px;
+    width:450px;
+    overflow:visible;    
+}
+.PaymentVoucherDeliveryDate
+{
+    
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    clear:both;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:1px 1px 1px 7px;
+    width:150px;
+    overflow:visible;    
+}
+.RevenueLabel
+{
+    float:left;
+    font-size:12px;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:15px;
+    padding-top:5px;
+    text-align:right;
+    width:120px;
+}
+
+.RevenueInput
+{
+    border:1px solid #BFBFBF;
+    color:#000;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:12px;
+    padding:4px 7px;
+    width:200px;   
+}
+.RevenueInputShort {
+    border: 1px solid #BFBFBF;
+    color: #000;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 12px;
+    padding: 4px 7px;
+    width: 60px;
+}
+.RevenuePrint {
+    background-color: #338899;
+    border: 1px solid #BFBFBF;
+    color: White;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    padding: 5px 3px;
+    text-decoration: none;
+}
+.RevenuePrint:hover {
+    background-color: #338899;
+    border: 1px solid yellow;
+    color: White;
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 14px;
+    font-weight: bold;
+    line-height: 20px;
+    text-decoration: none;
+}

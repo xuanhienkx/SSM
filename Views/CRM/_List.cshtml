@@ -1,0 +1,231 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<CRMFilterProfitResult>
+
+@{
+
+  var user = (User)Session[AccountController.USER_SESSION_ID];                                             
+}
+@Html.Partial("_TopPage", Model)
+<div style="height:auto;overflow: hidden;">
+    @Html.ActionLink("Tạo mới khách hàng", "Create", null, new { @class = "btn btn-default" })
+    @if (user.IsDirecter() && Model.Pager.TotalRows > 0)
+    {
+    @Html.ActionLink("ExportXlsx", "ExportExcel", null, new { @class = "btn btn-info" })
+    }
+</div>
+<div class="col-lg-12 summaryCrmHeard">
+    <div class="inlin-item">Summary of your Search:</div>
+    <div class="inlin-item">
+        @Html.Raw(ViewBag.TotalSummaryDisplay)
+    </div>
+    <div class="inlin-item">
+        @Html.Raw(ViewBag.TotalSummaryCots)
+    </div>
+</div>
+<table class="grid table table-condensed">
+    <tr>
+        <th>
+            <a href="#" onclick="sortAction('Id');">
+                <div class="SortHeader-label">Id</div>
+                <div id="Id_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('CompanyShortName');">
+                <div class="SortHeader-label">Abb Name</div>
+                <div id="CompanyShortName_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>Customer Name</th>
+        <th>Description</th>
+        <th>Status</th>
+        <th class="text-center">
+            <a href="#" onclick="sortAction('CreatedDate');">
+                <div class="SortHeader-label">Created Date</div>
+                <div id="CreatedDate_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th class="text-center">
+
+            <a href="#" onclick="sortAction('ModifyDate');">
+                <div class="SortHeader-label">Up-Date</div>
+                <div id="ModifyDate_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>Quotation</th>
+        <th>Visit</th>
+        <th>Event</th>
+        <th>Shipment</th>
+        <th>SaleType</th>
+        <th>Sales Name</th>
+        <th>Source</th>
+        @if (user.IsAdmin())
+        {
+        <th>Data Ref</th>
+        }
+        <th>Delete</th>
+        <th>Follow</th>
+    </tr>
+    @if (Model.Data != null && Model.Data.Count() > 0)
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (var item in Model.Data)
+        {
+            if (item != null)
+            {
+                CRMCustomer it = item.Customer;
+                string delColor = it.IsUserDelete ? "text-red" : "";
+                string tip = it.IsUserDelete ? "Khách hàng này Sale muốn xoá" : "";
+                var classColor = string.Empty;
+                var statusCode = (CRMStatusCode)item.Code;
+                //if (statusCode == CRMStatusCode.Regularly)
+                //{
+                //    classColor = "text-crm-successed"; // "text-crm-regular";
+                //}
+                //else
+                if (statusCode == CRMStatusCode.Success)
+                {
+                    classColor = "text-crm-successed";
+                }
+                else if (statusCode == CRMStatusCode.Client)
+                {
+                    classColor = "text-crm-finished";
+                }
+                else
+                {
+                    classColor = "text-default";
+                }
+
+                <tr>
+                    <td class="crm-id">@Html.ActionLink(it.Id.ToString("D6"), "Edit", "CRM", new { id = it.Id }, new { @class = classColor })</td>
+                    <td>@it.CompanyShortName</td>
+                    <td>@it.CompanyName</td>
+                    <td>@it.Description</td>
+                    <td class="@classColor">@item.Code</td>
+                    <td class="text-center">@string.Format("{0:dd/MM/yyyy}", it.CreatedDate)</td>
+                    <td class="text-center">@string.Format("{0:dd/MM/yyyy}", it.ModifyDate)</td>
+                    <td class="text-right numcount">
+                        @if (item.TotalQuotation > 0)
+                        {
+                        @Ajax.Link(item.TotalQuotation.ToString(), "ListByCus", "PriceQuotation", new { refId = it.Id }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8"
+
+                       }, new { @class = "" })
+                        }
+                        else
+                        { @:0
+                        }
+
+                    </td>
+                    <td class="text-right numcount">@item.TotalVisit</td>
+                    <td class="text-right numcount">@item.TotalEvent</td>
+                    <td class="text-right numcount">
+                        @if (item.TotalShipmentSuccess > 0)
+                        {
+                        @Ajax.Link(string.Format("{0}", item.TotalShipmentSuccess), "ShipmentDetail", "CRM", new { id = it.Id }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8"
+
+                       }, new { @class = "=" })
+                        }
+                        else
+                        {
+                        @:0
+                        }
+                    </td>
+                    <td>@item.SaleType</td>
+                    <td>@item.CreaterdBy.FullName</td>
+                    <td>@item.Source</td>
+                    @if (user.IsAdmin())
+                    {
+                    <td class="@delColor">@it.SsmCusId</td>
+                    }
+
+                    <td class="text-center deleteRow" id="del_@it.Id" title="@tip">
+                        @if (user.IsDepOrDirecter() || user.Id == it.CreatedById)
+                        {
+                            if (it.IsUserDelete)
+                            {
+                            @Ajax.Link("", "UndoCustomer", "CRM", new { id = it.Id }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8",
+                           Confirm = "Bạc muốn khôi phục lại khách hàng này?"
+
+                       }, new { @class = "fa fa-undo", id = it.Id, Style = "color: green" })
+                            }
+                        @Ajax.Link("", "Delete", "CRM", new { id = it.Id }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8",
+                           Confirm = "Bạn chắc chắn muốn xoá khách hàng này không? Các dự liệu liên quan Bài viết, báo giá, viếng thăm sẽ bị xoá!"
+
+                       }, new { @class = "fa fa-trash trDel " + delColor, id = it.Id })
+
+                        }
+
+                    </td>
+                    <td>
+                        <span>@item.FollowName</span>
+                    </td>
+
+                </tr>
+            }
+        }
+    }
+    else
+    {
+    <tr>
+        <td colspan="16" class="text-center">No data</td>
+    </tr>
+    }
+    <tfoot>
+        <tr class="16">
+            <td colspan="17">
+                <div id="gridFooter">
+                    <div class="col-md-3 row">@Html.DropDownList("Pager.PageSize", Grid<CRMFilterProfitResult>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label></div>
+                    <div class="col-md-9 row display-crm-total">
+                        <div class="inlin-item">Sumarry of page: </div>
+                        <div class="inlin-item">
+                            @Html.Raw(ViewBag.TotalDisplay)
+                        </div>
+                        <div class="inlin-item">
+                            @Html.Raw(ViewBag.TotalCots)
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </td>
+        </tr>
+    </tfoot>
+</table>
+<script type="text/javascript">
+    jQuery(".numcount").each(function () {
+        var $td = jQuery(this);
+        var value = parseInt($td.text());
+        if (value > 0) {
+            $td.css("font-weight", "bold");
+        }
+    })
+</script>

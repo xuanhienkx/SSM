@@ -1,0 +1,119 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model System.Collections.Generic.IList<SSM.Models.Unit>
+
+@{
+    ViewBag.Title = "title";
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+<div class="SectionBlock Expanded BoxL1">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4">
+                <div class="DivHeader">
+                    <h2>
+                        List Unit
+                    </h2>
+                </div>
+                <div style="height:auto;overflow: hidden;">
+                    <input type="button" onclick="edit(0)" id="CreateUnit" value="New Unit" />
+                </div>
+                <table width="100%" class="grid">
+                    <tr>
+                        <th>
+                            Unit
+                        </th>
+                        <th>
+                            Service dependency
+                        </th>
+                        <th>
+                            Description
+                        </th>
+                        <th>
+                            Edit
+                        </th>
+                        <th>
+                            Delete
+                        </th>
+                    </tr>
+
+                    @if (Model.Count > 0)
+                    {
+                        int no = 0;
+                        var classLight = string.Empty;
+                        foreach (SSM.Models.Unit Unit1 in Model)
+                        {
+                            no++;
+                            bool hightLine = no % 2 != 0;
+                            if (hightLine)
+                            {
+                                classLight = "GridLight";
+                            }
+
+                            <tr class="@classLight ">
+                                <td>
+                                    @Unit1.Unit1
+                                </td>
+                                <td>
+                                    @Unit1.ServiceType
+                                </td>
+                                <td>
+                                    @Unit1.Description
+                                </td>
+                                <td>
+                                    <a href="javascript:void(0)" onclick="edit(@Unit1.Id)"><img alt="Edit" src="/Images/btn-edit.png" /></a>
+                                </td>
+                                <td>
+                                    <a onclick="return confirm('Are you sure you want to delete?')" href="@Url.Action("DeleteUnit","Data",new { id=Unit1.Id}) "><img alt="Edit" src="/Images/btn-delete.png" /></a>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                </table>
+                <div style="height:auto;overflow: hidden;">
+                    @if (User1.IsAdmin())
+                    {
+                        <input type="button" onclick=" edit(0) " id="CreateUnit1" value="New Unit" />
+                    }
+                    <input type="hidden" name="ModifyUnit" value="@ViewData[" modifyunit"] " />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="SectionBlock Expanded BoxL1" id="ModifyUnitZone">
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery("#databaseTab").addClass("Active");
+        jQuery('#databaseTab').activeThisNav();
+        jQuery('#CreateUnit,#CreateUnit1').click(function () {
+            jQuery("#ModifyHeader").html("New Unit");
+
+        });
+    });
+
+    function edit(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("EditUnit", "Data")',
+            data: { id: id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#ModifyUnitZone").html(result);
+                jQuery('#ModifyUnitZone').show();
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#", "") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#CompanyName').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+</script>

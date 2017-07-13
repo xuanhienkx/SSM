@@ -1,0 +1,389 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model SSM.Models.CRM.CRMCustomerModel
+@{
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.AntiForgeryToken()
+@Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.DataType)
+@Html.HiddenFor(m => m.SsmCusId)
+<div class="SectionBlock Expanded BoxL1 fullPage">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4 form-horizontal">
+                <h1 class="Subject">@ViewBag.Title</h1>
+                <div>
+                    <p>Những thông tin có đánh dấu <span style="color: red">*</span> là bắt buộc nhập.</p>
+                </div>
+                <div class="row">
+                    @Html.ValidationSummary(true)
+                </div>
+                <div class="col-md-12">
+                    <div style="border-bottom: 2px solid lightblue;">
+                        <h3 class="inlin-item">Customer Infomation</h3> @if (Model.Id > 0)
+                        {
+                            <h3 class="inlin-item" style="color: #5bc0de; border: 1px solid lightblue ">ID=@Model.Id.ToString("D6")</h3>
+                            <h3 class="inlin-item" style="color: #5bc0de; margin-left: 50px">Sales:@Model.CreatedBy.FullName</h3>
+                        }
+                        <span class="inlin-item" style="color: #4169e1; font-size: 1.6em; font-weight: bold; margin-left: 30px ">
+                            @Html.Raw(ViewBag.searchTime)
+                        </span>
+                    </div>
+
+                </div>
+                <div class="form-group-sm col-md-9 row">
+                    <div class="col-md-6 ">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CRMSource, "Source", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9 col-md-offset-0">
+                                <div class="pull-left">
+                                    @Html.DropDownListFor(m => m.CRMSource.Id, new SelectList((IEnumerable<CRMSource>)ViewData["Sources"], "Id", "Name"), "---Chọn nguồn---", new { @class = "form-control" })
+                                    <div class="icon-required center-block">*</div>
+                                </div>
+                                <div class="col-sm-3 form-inline pull-left media-middle ">
+                                    @if (currentUser.IsAdmin())
+                                    {
+                                    <div id="plus-CrmSourceId" class="btn btn-info AdminPlus" aria-label="Add">
+                                        <i class="fa fa-plus-square"></i>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CompanyName, "Customer Name", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9 ">
+                                @Html.TextBoxFor(m => m.CompanyName, new { @class = "form-control" })
+                                <div>@Html.ValidationMessageFor(x => x.CompanyName)</div>
+                                <div class="icon-required center-block">*</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CompanyShortName, "Abb Name", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9">
+                                @Html.TextBoxFor(m => m.CompanyShortName, new { @class = "form-control" })
+                                <div>@Html.ValidationMessageFor(x => x.CompanyShortName)</div>
+                                <div class="icon-required center-block">*</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CRMGroup.Id, "Group", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9 col-md-offset-0">
+                                <div class="pull-left">
+                                    @Html.DropDownListFor(m => m.CRMGroup.Id, new SelectList((IEnumerable<CRMGroup>)ViewData["Groups"], "Id", "Name"), "---Chọn nhóm---", new { @class = "form-control" })
+                                    <div class="icon-required center-block">*</div>
+                                </div>
+                                <div class="col-sm-3 form-inline col-md-offset-0 pull-left media-middle ">
+                                    @if (currentUser.IsAdmin())
+                                    {
+                                    <div id="plus-CrmGroupId" class="btn btn-info AdminPlus" aria-label="Add">
+                                        <i class="fa fa-plus-square"></i>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CRMJobCategory, "Category", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9 col-md-offset-0">
+                                <div class="pull-left col-sm-9 row">
+                                    @Html.DropDownListFor(m => m.CRMJobCategory.Id, new SelectList((IEnumerable<CRMJobCategory>)ViewData["JobCategories"], "Id", "Name"), "---Chọn ngành nghề---", new { @class = "form-control" })
+                                    <div class="icon-required center-block">*</div>
+                                </div>
+                                <div class="col-sm-2 form-inline col-md-offset-0 pull-left media-middle ">
+                                    @if (currentUser.IsAdmin())
+                                    {
+                                    <div id="plus-CRMJobCategoryId" class="btn btn-info AdminPlus" aria-label="Add">
+                                        <i class="fa fa-plus-square"></i>
+                                    </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Description, "Description", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9">
+                                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 3 })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 ">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CRMStatus, "Status", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9 col-md-offset-0">
+                                <div class="pull-left">
+                                    @*@Html.DropDownListFor(m => m.CRMStatus.Id, new SelectList((IEnumerable<CRMStatus>)ViewData["Statuses"], "Id", "Name"), "---Chọn trạng thái---", new { @class = "form-control" })
+                                        <div class="icon-required center-block">*</div>*@
+                                    @Html.TextBoxFor(m => m.CRMStatus.Name, new { @class = "form-control", @readonly = "readonly" })
+                                    @Html.HiddenFor(x => x.CRMStatus.Id)
+                                </div>
+                                @*<div class="col-sm-3 form-inline pull-left media-middle ">
+                                        @if (currentUser.IsAdmin())
+                                        {
+                                            <div id="plus-CrmStatusId" class="btn btn-info AdminPlus" aria-label="Add">
+                                                <i class="fa fa-plus-square"></i>
+                                            </div>
+                                        }
+                                    </div>*@
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.SaleType, "Type", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9">
+                                <div class="pull-left">
+                                    @Html.DropDownListFor(m => m.SaleType.Id, new SelectList((IEnumerable<SaleType>)ViewData["SaleTypes"], "Id", "Name"), "---Chọn trạng thái---", new { @class = "form-control" })
+                                    <div class="icon-required center-block">*</div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CrmPhone, "Phone", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9">
+                                @Html.TextBoxFor(m => m.CrmPhone, new { @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CountryName, "Country", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9">
+                                @Html.TextBoxFor(m => m.CountryName, new { @class = "form-control" })
+                                <div class="icon-required center-block">*</div>
+                                @Html.HiddenFor(m => m.CrmCountryId)
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.StateName, "Ctity/Province", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9">
+                                @Html.TextBoxFor(m => m.StateName, new { @class = "form-control" })
+                                <div class="icon-required center-block">*</div>
+                                @Html.HiddenFor(m => m.Province.Id)
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.CrmAddress, "Address", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9">
+                                @Html.TextAreaFor(m => m.CrmAddress, new { @class = "form-control", rows = 3 })
+                                <div class="icon-required center-block">*</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="crmcontact">
+                        <fieldset>
+                            <div class="list-inline" style="border-bottom: 2px solid lightblue">
+                                <h3 class="">
+                                    Contact Infomation
+                                    @if ((currentUser.IsDepOrDirecter() || (Model.CreatedBy != null && currentUser.Id == Model.CreatedBy.Id) || Model.Id == 0) && Model.StatusCode != CRMStatusCode.Client)
+                                    {
+                                        <span id="plus-crmcontact" class="btn btn-info AdminPlus" aria-label="Add">
+                                            <i class="fa fa-plus-square"></i>
+                                        </span>
+                                    }
+                                </h3>
+
+                            </div>
+
+                            <div class="clearfix"></div>
+                            <div class="row col-md-9" id="data-contact">
+                                @{
+                                    var starbindex = 6;
+                                    ViewData["tabindex"] = starbindex;
+                                }
+                                @if (Model.CRMContacts != null && Model.CRMContacts.Any())
+                                {
+                                    foreach (var item in Model.CRMContacts)
+                                    {
+                                        Html.RenderPartial("_CrmContractView", item);
+                                        starbindex = starbindex + 5;
+                                        ViewData["tabindex"] = starbindex;
+                                    }
+                                }
+                                else
+                                {
+                                    Html.RenderPartial("_CrmContractView", new CRMContactModel());
+                                }
+                            </div>
+                            <div class="col-md-2"></div>
+                        </fieldset>
+                    </div>
+                </div>
+                @Html.Partial("_RightTemplateEditView", Model)
+                <div class="col-md-12">
+                    <div class="pull-right clearfix" style="font-size: 12px">
+
+                        <a class="btn btn-primary" href="@Url.Action("Create")" role="button">New</a>
+
+                        @if ((currentUser.IsDepOrDirecter() || (Model.CreatedBy != null && currentUser.Id == Model.CreatedBy.Id) || Model.Id == 0) && Model.StatusCode != CRMStatusCode.Client)
+                        {
+                            <button class="btn btn-success" type="submit">Save</button>
+                            <input class="btn btn-default" type="reset" value="Reset" />
+                        }
+
+                        <a class="btn btn-info" href="@Url.Action("Index")" role="button">Close</a>
+                        @if (ViewContext.RouteData.GetRequiredString("action") == "Edit")
+                        {
+                            @*if (Model.StatusCode == CRMStatusCode.Client && currentUser.IsDepOrDirecter())
+                                {
+                                    <a class="btn btn-danger" href="@Url.Action("ResetCrmCus", new {id = Model.Id})" role="button">Khởi động lại</a>
+                                }*@
+                        if (currentUser.IsDepOrDirecter() || currentUser.Id == Model.CreatedBy.Id)
+                        {
+                            <button class="btn btn-warning" type="button" id="movetoCus" role="button">Update to Data</button>
+                            }
+                        }
+                    </div>
+                </div>
+
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+        jQuery('#CountryName').GetAutoSugget({
+            url: '@Url.Action("CoutrySuggest", "CRM")',
+            targerId: "#CrmCountryId"
+        });
+        jQuery("#StateName").keyup(function () {
+            var countryId = parseInt(jQuery("#CrmCountryId").val());
+            jQuery(this).GetAutoSugget({
+                url: '@Url.Action("ProvinceSuggest", "CRM")',
+                targerId: "#Province_Id",
+                params: ', countryId: ' + countryId
+            });
+        });
+        jQuery("#JobCategoryName").GetAutoSugget({
+            url: '@Url.Action("CategorySuggest", "CRM")',
+            targerId: "#CrmCategoryId"
+        });
+        '@Url.Action("MoveToCus", new { id = Model.Id })'
+        jQuery('#movetoCus').on('click', function () {
+            jQuery.mbqConfirm({
+                title: "@Resources.Resource.CRM_MOVE_CUS_TITLE",
+                theme: 'bootstrap',
+                content: "@Resources.Resource.CRM_MOVE_TO_CUS_CONTENT",
+                confirm: function () {
+                    var url = '@Url.Action("MoveToCus", "CRM")';
+                    var data = JSON.stringify({ "id": @Model.Id });
+                    jQuery.mbqAjax({
+                        url: url,
+                        type: 'post',
+                        dataType: 'json',
+                        contentType: "application/json; charset=utf-8",
+                        data: data,
+                        success: function (result) {
+                            jQuery.mbqAlert({
+                                content: result.Message,
+                                type: result.Success == true ? 'info' : 'error',
+                                columnClass: 'col-md-7 col-md-offset-5',
+                            });
+                        }
+                    });
+
+                }
+            });
+        });
+        jQuery('.AdminPlus').on('click', function () {
+            var id = jQuery(this).attr("id");  //plus-CrmSourceId
+            var nameheader = '';
+            var model = '';
+            switch (id) {
+                case 'plus-CrmSourceId':
+                    nameheader = 'Nguồn';
+                    model = '@ModelType.CRMSource';
+                    break;
+                case 'plus-CrmGroupId':
+                    nameheader = 'Nhóm';
+                    model = '@ModelType.CRMGroup';
+                    break;
+                case 'plus-CRMJobCategoryId':
+                    nameheader = 'Ngành nghề kinh doanh';
+                    model = '@ModelType.CRMJobCategory';
+                    break;
+                case 'plus-CrmStatusId':
+                    nameheader = 'Trạng thái';
+                    model = '@ModelType.CRMStatus';
+                    break;
+                case 'plus-AddUsers':
+                    nameheader = 'người cùng theo dõi';
+                    model = '@ModelType.UserModel';
+                    DelRow();
+                    break;
+                case 'plus-crmcontact':
+                    jQuery.mbqAjax({
+                        url: '@Url.Action("BlankContactRow", "CRM")',
+                        method: 'GET',
+                        //  data: { tabindex: nexttab },
+                        dataType: "html",
+                        contentType: "application/html; charset=utf-8",
+                        success: function (html) {
+                            jQuery('#data-contact').append(html);
+                            InitContact();
+                        }
+                    });
+                    return false;
+                    break;
+                default:
+                    break;
+            }
+
+            jQuery.mbqAjax({
+                url: '@Url.Action("AddBaseData", "CRM")',
+                data: { modelType: model },
+                method: "GET",
+                dataType: 'html',
+                success: function (result) {
+                    ShowInputBaseData(nameheader, result);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Error getting prospect list: " + textStatus);
+                }
+            });
+        });
+        jQuery("#listPriceCus").on('click', function() {
+            var url = '@Url.Action("ListByCus", "PriceQuotation")';
+            var data = JSON.stringify({ "refId": @Model.Id });
+            jQuery.mbqAjax({
+                url: url,
+                type: 'get',
+                dataType: 'json',
+                contentType: "application/json; charset=utf-8",
+                data: data,
+                success: function (result) {
+                    jQuery.mbqDialog({
+                        content: result.value.Views,
+                        title: result.value.Title,
+                        columnClass: 'col-md-10 col-md-offset-2',
+                    });
+                }
+            });
+        });
+        InitContact();
+        DelRow();
+      /*  var status = jQuery("#CRMStatus_Id").val();
+        if (status === "4") {
+            jQuery(".contact-deleteRow").remove();
+            jQuery("input[type='text'],textarea, select").prop("disabled", "disabled");
+        }*/
+    });
+
+    function InitContact() {
+        jQuery(".contact-deleteRow").on('click', function (e) {
+            e.preventDefault();
+            jQuery(this).parent('.crm-contact:first').remove();
+            return false;
+        });
+    }
+</script>

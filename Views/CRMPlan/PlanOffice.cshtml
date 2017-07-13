@@ -1,0 +1,50 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model System.Collections.Generic.List<SSM.Models.CRM.CRMSalesPlanOffice>
+ 
+@{
+    ViewBag.Title = "Kế hoạch công ty";
+    PlanFilter filter = (PlanFilter)ViewBag.PlanFilter;
+}
+@Styles.Render("~/Content/CRM")
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<div class="SectionBlock Expanded BoxL1 ">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4">
+                <div class="DivHeader">
+                    <h2>
+                        Kế hoạch Office
+                    </h2>
+                </div>
+                <div class="">
+                    @using (Ajax.BeginForm("PlanOffice", "CRMPlan", null, new AjaxOptions()
+                    {
+                        HttpMethod = "post",
+                        UpdateTargetId = "ListData"
+                    }, new { @class = "form-inline" }))
+                    {
+                        @Html.Partial("_SearchView", filter)
+                    } 
+                  
+
+                </div>
+                <div id="ListData">
+                    @Html.Partial("_OfficeDepList", Model)
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+    });
+
+</script>
+

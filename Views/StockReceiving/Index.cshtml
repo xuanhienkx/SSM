@@ -1,0 +1,62 @@
+﻿ @using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.OrderModel>
+<style>
+    .page {
+        width: auto !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+@{
+    ViewBag.Title = "List StockReceiving";
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("Index", "StockReceiving", new AjaxOptions()
+{
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "post",
+    UpdateTargetId = "ListData"
+}, new { id = "frmTrading" }))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>List Purchase Order</h2>
+                    </div> 
+                    @Html.Partial("_SearchView", (TradingStockSearch)ViewBag.SearchingMode)
+                   
+                    <div id="ListData">
+                        @Html.Partial("_ListData",Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<OrderModel>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" })
+                        <label>Rows per page</label>
+                        @Html.Partial("_StatusNote")
+                    </div>
+                    <div style="height: auto; overflow: hidden;">
+                        @if (User1.IsEditTrading())
+                        {
+                            @Html.ActionLink("Create a StockReceiving", "Create", "StockReceiving", new { @class = "btn btn-primary" })
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    jQuery(function () {
+        jQuery("#TradingTab").addClass("Active");
+        jQuery('#TradingTab').activeThisNav();
+        
+    }); 
+</script>

@@ -1,0 +1,20 @@
+﻿div.option-SeachCheckType {
+    display: inline;
+    left: 150px;
+    position: absolute;
+    top: -2px;
+} 
+.option-SeachCheckType ul li {
+    display: inline;
+    padding-right: 10px;
+    list-style: none;
+}
+.option-SeachCheckType ul li> * {
+    display: inline;
+    font-weight: bold;
+    font-size: 1.6em;
+
+}
+.option-SeachCheckType ul li> span {
+    top: 5px;
+}

@@ -1,0 +1,26 @@
+﻿@using SSM.Common
+@using SSM.Models
+@{
+    User User1 = (User)Session[SSM.Controllers.AccountController.USER_SESSION_ID];
+}
+            
+<div id="topNav">
+    <ul id="topNavBar">
+        <li class="logotop"><img src="@Url.Content(Helpers.Logo)" alt="logo" /> </li>
+        <li class="SiteList">
+            <label class="Label">    @User1.FullName  </label>
+        </li>
+        @if (UsersModel.isAdminOrDirctor(User1))
+        {
+        <li>
+            <a style="background-image: url(../../Images/Menu/bg-home.gif);" href="@Url.Action("about", "Home" , new {id=0})" title="Home">
+                Home
+            </a>
+        </li>
+        }
+        <li><a style="background-image: url(../../Images/Menu/bg-logout.gif);" href="@Url.Action("logoff", "Account" )" title="Disconnect">Disconnect</a></li>
+        <li><a href="http://sanco.smartlog.vn/" title="Smartlog" target="_blank">Quản ly xe</a></li>  
+       
+    </ul>  
+    
+</div>

@@ -1,0 +1,26 @@
+﻿@using SSM.Common
+@using SSM.Models.CRM
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CRM.CRMEmailHistoryModel>
+           @{
+               var price = (CRMPriceQuotationModel) ViewBag.PriceQuotation;
+           }
+           
+@if (Model.Data != null && Model.Data.Any())
+{
+    foreach (var emailHistory in Model.Data)
+    {
+        <tr>
+            <td>@emailHistory.ToAddress</td>
+            <td>@emailHistory.Subject</td>
+            <td>@Html.ToDateDisplay(emailHistory.DateSend)</td>
+        </tr>
+    }
+}
+else
+{
+    <tr>
+        <td class="tab-content" colspan="3">Chưa có báo giá nào được gửi</td>
+    </tr>
+}
+ 

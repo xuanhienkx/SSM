@@ -1,0 +1,212 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels
+@model SSM.ViewModels.Shared.Grid<SSM.Models.Shipment>
+
+@{
+    var Agents = (IEnumerable<Agent>)ViewData["Agents"];
+    var Shippers = (IEnumerable<Customer>)ViewData["ShippersFull"];
+    var Cnees = (IEnumerable<Customer>)ViewData["Cnees"];
+    var User1 = (User)Session[AccountController.USER_SESSION_ID];
+    var shipmentCheck = (ShipmentCheck)Session[ShipmentController.SHIPMENT_SEARCH_CHECK]?? new ShipmentCheck();
+}
+<div id="SearchBlock" style="float: left; height: auto;"></div>
+<div class="SectionHeading" id="SectionHeading">
+    @Html.Partial("_HearderSearch")
+    <div class="option-SeachCheckType hearder-search-ext">
+        @if (ViewContext.RouteData.GetRequiredString("action") == "Index")
+        {
+            <ul style="display: inline">
+
+                @if (User1.IsTrading())
+                {
+                    <li>
+
+                        <label style="color: red">Trading</label>
+                        <samp>@Html.CheckBox("IsTradingCheck", shipmentCheck.IsTradingCheck, new { onchange = "return submitForm()" }) </samp>
+                    </li>
+                    <li>
+                        <label style="color: blue">Freight</label>
+                        <samp>@Html.CheckBox("IsFreightCheck", shipmentCheck.IsFreightCheck, new { onchange = "return submitForm()" }) </samp>
+                    </li>
+
+                }
+                <li>
+                    <label style="color: goldenrod">Consol</label>
+                    <samp>@Html.CheckBox("IsControl", shipmentCheck.IsControl, new { onchange = "return submitForm()" }) </samp>
+                </li>
+
+            </ul>
+        }         
+        @Html.Hidden("ColorStatus", shipmentCheck.ColorStatus)
+        <ul style="display: inline">
+            <li>
+                <label>HouseNum</label>
+                <samp>@Html.TextBoxFor(m => m.SearchCriteria.HouseNum) </samp>
+            </li>
+            <li>
+                <label>  MasterNum </label>
+                @Html.TextBoxFor(m => m.SearchCriteria.MasterNum)
+            </li>
+            <li>
+                <label>  Ref </label>
+                @Html.TextBoxFor(m => m.SearchCriteria.Id)
+            </li>
+            <li>
+                <label>
+                </label>
+                <input type="button" id="outFind" style=" margin-top: -6px;   padding: 0 10px;" class=" btn btn-primary" value="Search" onclick='preSubmit(0);' />
+            </li>   
+            <li>
+               
+                <div class="SaleNotif onbtn" onclick="preSubmit(1);"></div>
+            </li>
+            <li><div class="AccoutantNotif onbtn" onclick="preSubmit(2);"></div></li>
+            <li><div class="bgorangeNotif onbtn" onclick="preSubmit(3);"></div></li>
+        </ul>
+    </div>
+</div>
+<div class="SectionBlockWrapper" style="display: none;">
+    <table width="100%" id="table-sarch">
+        <tr>
+            <td>
+                <table width="100%">
+                    <tr>
+                        <td style="width: 400px">
+                            @*  <div class="ShipmentRow">
+                                    <label>
+                                        Ref
+                                    </label>
+                                    @Html.TextBoxFor(m => m.SearchCriteria.Id)
+                                </div>*@
+                        </td>
+                        <td>
+                            <div class="ShipmentRow">
+                                <label>
+                                    Sale Name
+                                </label>
+                                @if (ViewData["Sales"] != null)
+                                {
+                                    @Html.DropDownList("SearchCriteria.SaleId", (SelectList)ViewData["Sales"], "-- Please select --")
+                                }
+                                else
+                                {
+                                    <select>
+                                        <option>-- Please select --</option>
+                                    </select>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="ShipmentRow">
+                                <label>
+                                    Revenue Status
+                                </label>
+                                @Html.DropDownList("SearchCriteria.RevenueStatus", (SelectList)ViewData["Statuses"])
+                                <label>
+                                </label>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="ShipmentRow">
+                                <label>
+                                    Quick View
+                                </label>
+                                <input type="button" class="QuickView btn btn-primary" value="Today" onclick="goToQuickView(1);" />
+                                <input type="button" class="QuickView btn btn-primary" value="Week" onclick="goToQuickView(2);" />
+                                <input type="button" class="QuickView btn btn-primary" value="Plan" onclick="goToQuickView(3);" />
+                                <input type="button" class="QuickView  btn btn-primary" value="All" onclick="goToQuickView(4);" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <div class="BreakLine">
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table width="100%">
+                    <tr>
+                        <td style="width: 400px">
+                            <div class="ShipmentRow">
+                                <label>
+                                    Agent
+                                </label>
+                                @Html.DropDownList("SearchCriteria.AgentId", new SelectList(Agents, "Id", "AgentName"), "---Select---")
+                            </div>
+                        </td>
+                        <td>
+                            <div class="ShipmentRow">
+                                <label>
+                                    Shipper
+                                </label>
+                                @Html.DropDownList("SearchCriteria.ShipperId", new SelectList(Shippers, "Id", "CompanyName"), "---Select---")
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width: 400px">
+                            <div class="ShipmentRow">
+                                <label>
+                                    Carrier
+                                </label>
+                                @Html.DropDownList("SearchCriteria.CarrierAirId", (SelectList)ViewData["Carriers"], "---Select---")
+                            </div>
+                        </td>
+                        <td>
+                            <div class="ShipmentRow">
+                                <label>
+                                    Cnee
+                                </label>
+                                @Html.DropDownList("SearchCriteria.CneeId", new SelectList(Cnees, "Id", "CompanyName"), "---Select---")
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="ShipmentRow">
+                                <label>
+                                    Sale type
+                                </label>
+                                @Html.DropDownList("SearchCriteria.SaleType", (SelectList)ViewData["SaleTypes"], "---Select---")
+                            </div>
+                        </td>
+                        <td>
+                            <div class="ShipmentRow">
+                                <label>
+                                    Service
+                                </label>
+                                @Html.DropDownList("SearchCriteria.ServiceId", (SelectList)ViewData["ServicesAll"])
+                            </div>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table width="100%">
+                    <tr>
+                        <td style="width: 400px">
+                            <div class="ShipmentRow">
+                                <label>
+                                </label>
+                                <input type="submit" style="color: White;" value="Search" class=" btn btn-primary" onclick='preSubmit();' />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+

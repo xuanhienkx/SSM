@@ -1,0 +1,116 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.NewsModel
+
+@{
+    User user = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Styles.Render("~/Content/info")
+<div class="marginDiv info-new-main">
+    <div class="right-body col-md-12">
+        <h3 class="title title-sub col-md-12" title="Subject title"> @Html.Raw(Model.Header)</h3>
+    </div>
+    <div class="col-md-12 smaill-title">
+        <span> Create by: @string.Format("{0} - at :{1}", Model.CreaterBy.FullName, Model.DateCreate.ToString("dd/MM/yyyy"))</span>
+        <span>Type:@Html.DisplayFor(m => m.Catelory.NameTypeViet)- RefDoc:@Html.DisplayFor(m => m.RefDoc)</span>
+    </div>
+    <div id="edit-document" class="col-md-12 info-new-main" style="color: black">
+        @Html.Raw(Model.Contents)
+    </div>
+
+    <div class="col-md-12" id="attachment-show">
+
+        @if (Model.FilesList.Count > 0)
+        {
+            <label class="title-filed" style="font-size: 10px!important">Attachment</label>
+            <div id="attachment">
+                <table>
+                    <thead>
+                        <tr><th>FileName</th><th>File Size(Kb)</th></tr>
+                    </thead>
+                    <tbody id="listfileView">
+                        @foreach (var serverFile in Model.FilesList)
+                        {
+                            var size = serverFile.FileSize / (1024);
+                            <tr>
+                                <td>@Html.ActionLink(serverFile.FileName, "Download", "Infomation", new { id = serverFile.Id }, new { target = "_blank" })</td>
+                                <td style="text-align: right">@size</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+
+    </div>
+
+    <br />
+    <div class="col-md-12">
+        <div id="btn-area">
+           
+            @if (Model.IsApproved)
+            {
+                <label class="viewApprove">@string.Format("Approved by:{0} at {1}", Model.ApprovedBy.FullName, Model.DateApproved.Value.ToString("dd/MM/yyyy"))</label>
+                <br />
+                if (user.IsEditReula(Model))
+                {
+                    <a class="btn btn-linkNew" href="@Url.Action("Edit", "Infomation", new { id = Model.Id })">Edit </a>
+                }
+                if (user.IsApprovedRegula())
+                {
+                    <input id="btn-Approved" class="btn btn-primary" type="button" value="DisApproved" />
+                }
+
+            }
+            else
+            {
+                <label class="viewApprove"></label>
+                <br />
+                if (user.IsEditReula(Model))
+                {
+                    <a class="btn btn-primary btn-linkNew" href="@Url.Action("Edit", "Infomation", new { id = Model.Id })">Edit </a>
+                }
+                if (user.IsApprovedRegula())
+                {
+                    <input id="btn-Approved" class="btn btn-primary" type="button" value="Approved" />
+                }
+
+            }
+        </div>
+       
+    </div>
+</div>
+@if (Model.FilesList.Count > 0)
+{
+    <script type="text/javascript">
+        jQuery("#attachment-show").show();
+    </script>
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#AbountUsTab").addClass("Active");
+        jQuery('#AbountUsTab').activeThisNav();
+        jQuery("#btn-Approved").on('click', function (e) {
+            var url = '@Url.Action("Approval","Infomation", new {id= Model.Id})';
+            jQuery.mbqAjax({
+                method: "POST",
+                dataType: 'html',
+                url: url,
+                //data: { id: idNew },
+                success: function (result) {
+                    var obj = JSON.parse(result);
+                    if (obj.IsApproved == true) {
+                        jQuery("#btn-Approved").val("DisApproved");
+                        var html = obj.ApproveMess;
+                        jQuery(".viewApprove").text(html);
+                    } else {
+                        jQuery("#btn-Approved").val("Approved");
+                        jQuery(".viewApprove").text('');
+                    }
+                }
+            });
+        });
+    });
+</script>

@@ -1,0 +1,67 @@
+﻿@using SSM.Models
+@model  SSM.Models.UsersModel
+
+@{
+    ViewBag.Title = "title";
+    User User1 = (User)Session[SSM.Controllers.AccountController.USER_SESSION_ID];
+    List<Company> AllCompanies = (List<Company>)ViewData["AllCompanies"];
+}
+@using (Html.BeginForm())
+{
+    @Html.Partial("_UserEditTemplateView", Model)
+    @Html.Partial("_PemissionUserView", Model)
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#StaffManagementTab").addClass("Active");
+        jQuery('#StaffManagementTab').activeThisNav();
+        if (jQuery('#RoleName').val() != 'Director') {
+            //jQuery('#showLevelZone').hide();
+            //jQuery('#showOfficeControlZone').hide();
+            jQuery('#AllowApprovedStockCard').removeAttr('checked');
+            jQuery('#AllowApprovedStockCard').attr('disabled', 'disabled');
+            jQuery('#showOfficeControlZone,#showLevelZone').find('input[type=checkbox]').attr('disabled', 'disabled');
+            jQuery('#showOfficeControlZone').find('input[type=checkbox]').removeAttr('checked');
+        } else {
+            jQuery('#showOfficeControlZone,#showLevelZone').find('input[type=checkbox]').removeAttr('disabled');
+            if (jQuery('#Level').val() == '1') {
+                jQuery('#AllowApprovedStockCard').removeAttr('disabled');
+            }
+
+        }
+        jQuery('#RoleName').change(function () {
+            if (jQuery('#RoleName').val() == 'Director') {
+                jQuery('#showLevelZone').show();
+                jQuery('#showOfficeControlZone').show();
+                jQuery('#showOfficeControlZone,#showLevelZone').find('input[type=checkbox]').removeAttr('disabled');
+                if (jQuery('#Level').val() == '1') {
+                    jQuery('input[type=checkbox]').attr('checked', 'checked');
+                    jQuery('#AllowApprovedStockCard').removeAttr('disabled');
+                    jQuery('#showOfficeControlZone').find('input[type=checkbox]').attr('checked', 'checked');
+
+                }
+            }
+            else {
+                //jQuery('#showLevelZone').hide();
+                //jQuery('#showOfficeControlZone').hide();
+                jQuery('#showOfficeControlZone,#showLevelZone').find('input[type=checkbox]').attr('disabled', 'disabled');
+                jQuery('#AllowApprovedStockCard').removeAttr('checked');
+                jQuery('#AllowApprovedStockCard').attr('disabled', 'disabled');
+                jQuery('#showOfficeControlZone').find('input[type=checkbox]').removeAttr('checked');
+            }
+        });
+
+        jQuery('#Level').change(function () {
+            if (jQuery('#RoleName').val() == 'Director' && jQuery('#Level').val() == '1') {
+                jQuery('input[type=checkbox]').attr('checked', 'checked');
+                jQuery('input[type=checkbox]').attr('checked', 'checked');
+                jQuery('#AllowApprovedStockCard').removeAttr('disabled');
+            } else {
+                //  Uncheck
+                jQuery('#AllowApprovedStockCard').removeAttr('checked');
+                jQuery('#AllowApprovedStockCard').attr('disabled', 'disabled');
+                jQuery('#showOfficeControlZone').find('input[type=checkbox]').removeAttr('checked');
+            }
+        });
+    });
+</script>

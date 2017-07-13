@@ -1,0 +1,210 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CRM.CRMEventModel>
+
+@{
+    bool isEventAction = (bool)ViewBag.IsEventAction;
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    List<int> repeatDay = new List<int>();
+    var listDay = ModelExtensions.GetListOfDescription<DayOfWeek>();
+}
+@Html.Hidden("isEventAction", isEventAction)
+<table class="grid table table-condensed">
+    <tr>
+        <th>JobRef</th>
+        <th>Tiêu đề</th>
+        <th>Khách hàng</th>
+        <th>Tình trạng</th>
+        <th>Type</th>
+        <th>Sales</th>
+        <th style="width: 50px">Delete</th>
+        <th style="width: 50px">Reminder</th>
+        <th style="width: 50px">Email</th>
+        <th style="width: 50px">User Follow</th>
+    </tr>
+    @if (Model != null && Model.Data.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (var events in Model.Data.GroupBy(x => x.DateEvent))
+        {
+            <tr style="color: red; font-weight: bold;text-align: left">
+                <th>Ngày:</th>
+                @if (isEventAction)
+                {
+
+                    <td colspan="8">
+                        @Html.ToDateDisplay(events.Key, false)
+                    </td>
+                }
+                else
+                {
+                    <td colspan="7">
+                        @Html.ToDateDisplay(events.Key, false)
+                    </td>
+                }
+
+            </tr>
+            foreach (var it in events.ToList())
+            {
+                var classColor = string.Empty;
+                var status = it.Status;
+                if (status == CRMEventStatus.Follow)
+                {
+                    classColor = "text-crm-regular";
+                }
+                else if (status == CRMEventStatus.Finished)
+                {
+                    classColor = "text-crm-successed";
+                }
+                <tr>
+                    <td class="crm-id">
+                        @Ajax.Link(it.Id.ToString("D4"), "Edit", "CRMEvent", new { id = it.Id }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8"
+
+                   }, new { @class = classColor })
+
+                    </td>
+                    <td>@it.Subject</td>
+                    <td>@it.CRMCustomer.CompanyShortName</td>
+                    <td class="@classColor">@string.Format("{0}", status)</td>
+                    @if (it.CRMEventType != null && !string.IsNullOrEmpty(it.CRMEventType.Name))
+                    {
+
+                        <td><b class="text-info">Event: </b> @it.CRMEventType.Name</td>
+                    }
+                    else
+                    {
+                        <td><b class="text-info">Visited</b></td>
+                    }
+                    <td>@it.CreatedBy.FullName</td>
+                    <td class="text-center deleteRow" id="del_@it.Id">
+                        @if (currentUser.IsDepOrDirecter() || currentUser.Id == it.CreatedBy.Id)
+                        {
+                            @Ajax.Link("", "Delete", "CRMDocument", new { id = it.Id, cusId = it.CrmCusId }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8"
+
+                       }, new { @class = "fa fa-trash trDel", id = it.Id })
+                        }
+                    </td>
+                    <td>
+                        @if (it.IsSchedule)
+                        {
+                            if (!string.IsNullOrEmpty(it.DayWeekOfRemider))
+                            {
+                                repeatDay = it.DayWeekOfRemider.Split(',').Where(x => !string.IsNullOrEmpty(x)).Select(x => int.Parse(x)).ToList();
+                            }
+                            <div class="show-reminder">
+                                <i class="fa fa-clock-o"></i>
+                                <div class="col-md-6 hidden reminder-detail">
+                                    <div class="col-md-12">
+                                        <label class="control-label inlin-item "> Repeat Day </label>
+                                        <ul class="list-inline inlin-item" style="margin-right: -30px; margin-left: 8px">
+                                            @foreach (DayOfWeek dayOfWeek in listDay)
+                                            {
+                                                <li class="checkbox">
+                                                    <label>
+                                                        @if (repeatDay.Contains((int)dayOfWeek))
+                                                        {
+                                                            <input type="checkbox" checked="checked" disabled="disabled" class="checkbox" value="true" />
+                                                           <b>@dayOfWeek.ToString().Substring(0, 3)</b>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" class="checkbox"disabled="disabled"  />
+                                                            @dayOfWeek.ToString().Substring(0, 3)
+                                                        }
+                                                       
+                                                    </label>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="control-label inlin-item" style="margin-right: 15px"> Begin Date </label>
+                                        @string.Format("{0:dd/MM/yyyy}", it.DateBegin)
+                                        <label class="control-label inlin-item"> Time </label>
+                                        @string.Format("{0}", it.TimeOfRemider)
+                                        <label class="control-label inlin-item"> End Date </label>
+                                        @string.Format("{0:dd/MM/yyyy}", it.DateEnd)
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </td>
+                    @if (currentUser.IsDepOrDirecter() || currentUser.Id == it.CreatedBy.Id)
+                    {
+                        <td class="text-center">
+                            @if (it.UsersFollow != null && it.UsersFollow.Any())
+                            {
+                                @Ajax.Link("", "SendEventEmail", "CRMEvent", new { id = it.Id }, new MyAjaxOptions()
+                           {
+                               HttpMethod = "get",
+                               DataType = "json",
+                               ContentType = "application/json; charset=utf-8"
+
+                           }, new { @class = "fa fa-envelope-o", id = "mail_" + it.Id })
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        @if (it.UsersFollow != null && it.UsersFollow.Any())
+                        {
+                            var str = it.UsersFollow.Aggregate("", (current, u) => current + (u.User.FullName + ";"));
+                            @Html.Raw(str)
+                        }
+                    </td>
+                </tr>
+            }
+        }
+    }
+    else
+    {
+        <tr>
+            @if (isEventAction)
+            {
+
+                <td colspan="9" class="text-center">No data</td>
+            }
+            else
+            {
+                <td colspan="8" class="text-center">No data</td>
+            }
+
+
+        </tr>
+    }
+</table>
+<div id="gridFooter">
+    @Html.DropDownList("Pager.PageSize", Grid<CRMEventModel>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label>
+    <span class="display-crm-total" >
+        @Html.Raw(ViewBag.TotalDisplay)
+    </span>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        if (jQuery('.show-reminder').length > 0) {
+            jQuery('.show-reminder').on('mouseover', function () {
+                var content = jQuery(this).find('.reminder-detail').html();
+                jQuery.mbqAlert({
+                    title: "Reminder detail",
+                    content: content
+                });
+            });
+        }
+    });
+</script>

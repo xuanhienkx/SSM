@@ -1,0 +1,79 @@
+﻿@model dynamic
+<div style="clear: both"></div>
+<div id="TopPager">
+    <table style="font-size: 1.2em; margin-top: 20px;">
+        <tr>
+            <td id="rowStats">
+                @Model.Pager.RowStats
+            </td>
+            <td id="pagerNav">
+                @if (Model.Pager.IsNavVisible)
+                {
+                    <table>
+                        <tr>
+                            <td>
+                                @if (Model.Pager.IsFirstPage)
+                                {
+                                    <span class="disabled">&lt;&lt;</span>
+                                }
+                                else
+                                {
+                                    <a href="#" onclick="goToPage(@Model.Pager.FirstPage)">&lt;&lt;</a>
+                                }
+                            </td>
+
+                            <td>
+                                @if (Model.Pager.IsFirstPage)
+                                {
+                                    <span class="disabled">&lt;</span>
+                                }
+                                else
+                                {
+                                    <a href="#" onclick="goToPage(@Model.Pager.PreviousPage)">&lt;</a>
+                                }
+                            </td>
+
+                            <td>
+                                Page @Model.Pager.CurrentPage  of @Model.Pager.TotalPages
+                            </td>
+
+                            <td>
+                                @if (Model.Pager.IsLastPage)
+                                {
+                                    <span class="disabled">&gt;</span>
+                                }
+                                else
+                                {
+                                    <a href="#" onclick="goToPage(@Model.Pager.NextPage)">&gt;</a>
+                                }
+                            </td>
+
+                            <td>
+                                @if (Model.Pager.IsLastPage)
+                                {
+                                    <span class="disabled">&gt;&gt;</span>
+                                }
+                                else
+                                {
+                                    <a href="#" onclick="goToPage(@Model.Pager.LastPage)">&gt;&gt;</a>
+                                }
+                            </td>
+
+                        </tr>
+                    </table>
+                }
+            </td>
+        </tr>
+    </table>
+    @Html.Hidden("Pager.CurrentPage")
+    @Html.Hidden("Pager.Sidx")
+    @Html.Hidden("Pager.Sord")
+    @Html.Hidden("GridAction")
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery(this).OrderList();
+        if(jQuery(".resizable").length>0)
+            jQuery(".resizable").TablResizable();
+    })
+</script>

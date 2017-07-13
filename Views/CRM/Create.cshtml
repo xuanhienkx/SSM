@@ -1,0 +1,11 @@
+﻿@using System.Web.Optimization
+@model SSM.Models.CRM.CRMCustomerModel
+
+@{
+    ViewBag.Title = "Tạo thông tin khách hàng";
+}                              
+@Styles.Render("~/Content/CRM")             
+@using (Html.BeginForm("Create", "CRM"))
+{
+    Html.RenderPartial("_EditTemplate", Model);
+}

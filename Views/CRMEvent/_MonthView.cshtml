@@ -1,0 +1,125 @@
+﻿@using SSM.Common
+@using SSM.Models
+@using SSM.Models.CRM
+@model System.Collections.Generic.List<SSM.Models.CRMVisit>
+<style type="text/css">
+    ul.body-day > li {
+    border-radius: 3px !important;
+    padding: 0 !important;
+    margin: 2px 0;
+}
+ .calendar-holiday .month_head {
+        color: red;
+    }
+
+    .month_head {
+        text-align: right;
+        font-weight: bold;
+    }
+
+    .month_body {
+        width: 160px;
+        min-height: 50px;
+        margin: 0;
+        padding: 0;
+    }
+
+    .body-day {
+        margin: 0 0 0 5px;
+        padding: 0;
+    }
+</style>
+@{
+    var curentTime = (EventFilter)ViewBag.filter;
+    string[] dayOfw = Enum.GetNames(typeof(DayOfWeek));
+    DateTime firstDay = new DateTime(curentTime.Year, curentTime.Month, 1);
+    int daysInCurrentMonth = DateTime.DaysInMonth(firstDay.Year, firstDay.Month);
+    DateTime lastDay = firstDay.AddMonths(1).AddDays(-1);
+    // Sunday casted to int gives 0 but that will not work for us, we need 7 to be able to calculate number of empty cells correctly
+    int dayOfWeekFirst = ((int)firstDay.DayOfWeek > 0) ? (int)firstDay.DayOfWeek : 7;
+    int dayOfWeekLast = ((int)lastDay.DayOfWeek > 0) ? (int)lastDay.DayOfWeek : 7;
+    var clsEndWeek = string.Empty;
+    var userList = (IEnumerable<User>)ViewData["UserSalesList"];
+
+}
+<div class="col-md-12">
+    <table id="reservationCalendar" class="table table-bordered">
+        <thead>
+            <tr class="text-white" style="background: #008b8b; font-weight: bold; font-size: 1.1em; text-align: right">
+                @foreach (var d in dayOfw)
+                {
+                    if (d == "Sunday")
+                    {
+                        continue;
+                    }
+                <th class="text-right">@d</th>
+                }
+                <th class="text-right">Sunday</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <!-- filling up space of previous month -->
+                @for (int a = 1; a < dayOfWeekFirst; a++)
+                {
+                <td></td>
+                }
+                <!-- filling up space of current month -->
+                @for (int i = 1; i <= daysInCurrentMonth; i++)
+                {
+                    clsEndWeek = string.Empty;
+                    DateTime renderedDay = new DateTime(firstDay.Year, firstDay.Month, i);
+                    if (renderedDay.DayOfWeek == DayOfWeek.Saturday || renderedDay.DayOfWeek == DayOfWeek.Sunday)
+                    {
+                        clsEndWeek = "calendar-holiday";
+                    }
+                <td class="@clsEndWeek">
+                    <div class="month_head">@i</div>
+                    <div class="month_body">
+                        <ul class="body-day ">
+                            @foreach (var m in Model.Where(x => x.DateEvent == renderedDay))
+                                {
+                                    var status = (CRMEventStatus)m.Status;
+                                    var colorclass = status == CRMEventStatus.Finished ? "text-gray" : status == CRMEventStatus.Follow ? "text-green" : "";
+                                    var bgColor = status == CRMEventStatus.Finished ? "bg-gray" : status == CRMEventStatus.Follow ? "bg-danger" : "";
+                                <li event_id="@m.Id" class="@status @bgColor" style="border-radius: 5px; margin: 2px 1px">
+                                    @Ajax.Link(string.Format("{0}--{1}", m.Subject.Length > 18 ? m.Subject.Substring(0, 15) + "..." : m.Subject, m.User.FullName), "Edit", "CRMEvent", new { id = m.Id }, new MyAjaxOptions()
+                                                {
+                                                    HttpMethod = "get",
+                                                    DataType = "json",
+                                                    ContentType = "application/json; charset=utf-8"
+
+                                                }, new { title = m.Subject, @class =" "+ colorclass })
+                                </li>
+                                }
+                        </ul>
+                    </div>
+                </td>
+                    if (renderedDay.DayOfWeek == DayOfWeek.Sunday)
+                    {
+                @Html.Raw(" </tr> <tr>")
+                    }
+
+                }
+                <!-- filling up space of next month -->
+                @for (int a = 1; a <= 7 - dayOfWeekLast; a++)
+                {
+                <td></td>
+                }
+            </tr>
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="7">
+                    <div class="col-md-12">
+                        <ul class="list list-inline">
+                            <li><span class="bg-gray inlin-item" style="height: 20px; width: 20px;margin-top: 5px"></span>:Đã xong</li>
+                            <li> <span class="bg-danger inlin-item" style="height: 20px; width: 20px;margin-top: 5px"></span>: Chưa xong</li>
+                        </ul>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+

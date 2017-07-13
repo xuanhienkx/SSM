@@ -1,0 +1,49 @@
+﻿@model System.Collections.Generic.List<SSM.ViewModels.Reports.ProfitReportModel>
+
+@using System.Web.Optimization
+@using SSM.Models.CRM
+@using SSM.ViewModels.Reports
+@using SSM.ViewModels.Shared
+@{
+    ViewBag.Title = "title";
+    var filter = (FilterProfit)ViewBag.FilterProfit;
+}
+@Styles.Render("~/Content/CRM")
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("Index", new AjaxOptions()
+{
+    HttpMethod = "post",
+    UpdateTargetId = "ListData",
+    InsertionMode = InsertionMode.Replace
+}))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>
+                            Profit report top
+                        </h2>
+                    </div>
+                    <div class="SectionBlockWrapper" >
+                        @Html.Partial("_ProfitSearch", filter)
+                    </div>
+
+                    <div id="ListData">
+                        @Html.Partial("_DataFiter", Model)
+                    </div>
+                     
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#ReportTab").addClass("Active");
+        jQuery('#ReportTab').activeThisNav();
+    });
+</script>
+
+

@@ -1,0 +1,307 @@
+﻿@using System.Web.Optimization
+@using SSM.Models
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.SummaryInventoryViewModel
+
+@{
+    ViewBag.Title = "StockInOut";
+    IEnumerable<SelectListItem> warehouses = (IEnumerable<SelectListItem>)ViewData["Warehouses"];
+}
+<style>
+    .page {
+        width: auto !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Html.BeginForm("MonthYearReport", "IssueVoucher", FormMethod.Post))
+{
+    @Html.Hidden("IssueVoucher.HashOut", true)
+    <div class="SectionBlock  BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2> Stock Summary Report </h2>
+                    </div>
+                    <div id="SearchBlock" style="float: left; height: auto;"></div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper">
+                        <table id="table-sarch">
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Customer</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.IssueVoucher.Customer.FullName, new { @class = "autocomplete", placeholder = "Customer Name", style = "width: 350px;" })
+                                </td>
+                                <td class="TDClass">
+                                    <label> Year Report  </label>
+                                </td>
+                                <td class="TDClass tdDate">
+
+                                    @Html.DropDownListFor(m => m.IssueVoucher.Year, new SelectList(Enumerable.Range(DateTime.Now.Year - 9, 10)), new { style = "width:80px;" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Suppier</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.IssueVoucher.Supplier.FullName, new { @class = "autocomplete", placeholder = "Supplier Name", style = "width: 350px;" })
+                                </td>
+                                <td class="TDClass">
+                                    <label>Warehouse </label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.DropDownList("IssueVoucher.Warehouse.Id", warehouses, new { style = "width: 150px;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>  Product  </label>
+                                </td>
+                                <td class="TDClass">
+                                    <span class="TDClass">
+                                        @Html.TextBoxFor(m => m.IssueVoucher.Product.Code, new { @class = "autocomplete", style = "width: 95px", maxlength = 12, placeholder = "Product code" })
+                                    </span>
+                                    <span class="TDClass">
+                                        @Html.TextBoxFor(m => m.IssueVoucher.Product.Name, new { @class = "autocomplete", style = "width: 240px", placeholder = "Product Name" })
+                                    </span>
+                                </td>
+                                <td class="TDClass"></td>
+                                <td class="TDClass"></td>
+
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="button" onclick=" return submitForm();" value="Search" id="btn-search" /> 
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    @{
+    var preyearNum = Model.IssueVoucher.Year - 1;
+    var preYear = Model.Summary.FirstOrDefault(x => x.Month == preyearNum);
+    var currentYear = Model.Summary.FirstOrDefault(x => x.Month == Model.IssueVoucher.Year);
+    var my = Model.Summary.Where(x => x.Month <= 12).ToArray();
+    preYear = preYear ?? new MonthYear();
+    currentYear = currentYear ?? new MonthYear();
+    var qtyPre = preYear.Qty - preYear.QtyOut;
+    var amountPre = preYear.AmmountIn - preYear.Ammount0;
+    var qty = currentYear.Qty - currentYear.QtyOut;
+    var amount = currentYear.AmmountIn - currentYear.Ammount0;
+                    }
+                    <table style="width: 100%" class="grid" id="tableReprot">
+                        <tr>
+                            <th rowspan="2" style="width: 170px">Item</th>
+                            <th rowspan="2" style="width: 50px">Year @preyearNum</th>
+                            <th colspan="12 " style="text-align: center">Month</th>
+                            <th rowspan="2" style="width: 80px">Total</th>
+                        </tr>
+                        <tr>
+                            <th>Jan</th>
+                            <th>Feb</th>
+                            <th>Mar</th>
+                            <th>Apr</th>
+                            <th>May</th>
+                            <th>Jun</th>
+                            <th>Jul</th>
+                            <th>Aug</th>
+                            <th>Sep</th>
+                            <th>Oct</th>
+                            <th>Nov</th>
+                            <th>Dec</th>
+                        </tr>
+
+                        <tr style="color: red">
+                            <td>Qty Input in mounth</td>
+                            <td class="">
+                                @*@preYear.Qty*@
+                            </td>
+                            @foreach (var m in Enumerable.Range(1, 12).ToList())
+                            {
+                                var mount = my.FirstOrDefault(x => x.Month == m);
+                                mount = mount ?? new MonthYear();
+                                if (mount.Qty > 0)
+                                {
+                                    <td class="number2">@mount.Qty</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                            <td class="number2"> @currentYear.Qty </td>
+                        </tr>
+                        <tr>
+                            <td>Value Input in mounth</td>
+                            <td class="">
+                                @*@preYear.AmmountIn*@
+                            </td>
+                            @foreach (var m in Enumerable.Range(1, 12).ToList())
+                            {
+                                var mount = my.FirstOrDefault(x => x.Month == m);
+                                mount = mount ?? new MonthYear();
+
+                                if (mount.AmmountIn > 0)
+                                {
+                                    <td class="number2">@mount.AmmountIn </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                            <td class="number2">@currentYear.AmmountIn</td>
+                        </tr>
+                        @*<tr>
+                            <td></td>
+                            <td></td>
+                            <td colspan="12"></td>
+                            <td></td>
+                        </tr>*@
+                        <tr style=" color: red">
+                            <td>Qty Output in mounth</td>
+                            <td class="">
+                                @*@preYear.QtyOut*@
+                            </td>
+                            @foreach (var m in Enumerable.Range(1, 12).ToList())
+                            {
+                                var mount = my.FirstOrDefault(x => x.Month == m);
+                                mount = mount ?? new MonthYear();
+                                if (mount.QtyOut > 0)
+                                {
+                                    <td class="number2">@mount.QtyOut </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                            <td class="number2">@currentYear.QtyOut</td>
+                        </tr>
+                        @*<tr>
+                            <td>Value Out of input in mounth</td>
+                            <td class="number2">
+                                @preYear.Ammount0
+                            </td>
+                            @foreach (var m in Enumerable.Range(1, 12).ToList())
+                            {
+                                var mount = my.FirstOrDefault(x => x.Month == m);
+                                mount = mount ?? new MonthYear();
+                                if (mount.Ammount0 > 0)
+                                {
+                                    <td class="number2">@mount.Ammount0 </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                            <td class="number2">@currentYear.Ammount0</td>
+                        </tr>*@
+                        <tr>
+                            <td>Value Out  in mounth</td>
+                            <td class="">
+                                @*@preYear.AmmountOut*@
+                            </td>
+                            @foreach (var m in Enumerable.Range(1, 12).ToList())
+                            {
+                                var mount = my.FirstOrDefault(x => x.Month == m);
+                                mount = mount ?? new MonthYear();
+                                if (mount.AmmountOut > 0)
+                                {
+                                    <td class="number2">@mount.AmmountOut </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                            <td class="number2">@currentYear.AmmountOut</td>
+                        </tr>
+                        @*<tr>
+                            <td></td>
+                            <td></td>
+                            <td colspan="12"></td>
+                            <td></td>
+                        </tr>*@
+                        <tr style="font-weight: bold; color: red">
+                            <td>Qty inventory</td>
+                            <td class="number2">
+                                @qtyPre
+                            </td>
+                            @foreach (var m in Enumerable.Range(1, 12).ToList())
+                            {
+                                var mount = my.FirstOrDefault(x => x.Month == m);
+                                mount = mount ?? new MonthYear();
+                                var qtym = mount.Qty - mount.QtyOut;
+                                if (qtym > 0)
+                                {
+                                    <td class="number2">@qtym </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                            <td class="number2">@qty</td>
+                        </tr>
+                        <tr style="font-weight: bold">
+                            <td>Value inventory</td>
+                            <td class="number2">
+                                @amountPre
+                            </td>
+                            @foreach (var m in Enumerable.Range(1, 12).ToList())
+                            {
+                              @*  var mount = my.FirstOrDefault(x => x.Month == m);
+                                mount = mount ?? new MonthYear();
+                                var amountm = mount.AmmountIn - mount.Ammount0;
+                                if (amountm > 0)
+                                {
+                                    <td class="number2">@amountm </td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }*@
+                                <td></td>
+                            }
+                            <td class="number2">@amount</td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+     
+
+    jQuery(document).ready(function () {
+        jQuery("#TradingTab").addClass("Active");
+        jQuery('#TradingTab').activeThisNav();  
+        jQuery("#IssueVoucher_Supplier_FullName").GetAutoSugget({
+            url: '@Url.Action("SupplierSuggest", "Supplier")'
+        });
+        jQuery("#IssueVoucher_Customer_FullName").GetAutoSugget({
+            url: '@Url.Action("CustomerSuggest", "StockReceiving")'
+        });
+        jQuery("#IssueVoucher_Product_Code").GetAutoSugget({
+            url: '@Url.Action("ProductCodeSuggest", "StockReceiving")',
+            targerId: "#IssueVoucher_Product_Name"
+        });
+        jQuery("#IssueVoucher_Product_Name").GetAutoSugget({
+            url: '@Url.Action("ProductNameSuggest", "StockReceiving")',
+            targerId: "#IssueVoucher_Product_Code"
+        });
+    });
+</script>

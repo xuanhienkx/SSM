@@ -1,0 +1,10 @@
+﻿@using SSM.Common
+@model SSM.Models.CRM.CRMPlanProgMonthModel
+@using (Html.BeginCollectionItem("CRMPlanProgMountModels"))
+{
+    @Html.HiddenFor(m=>m.Id)
+    @Html.HiddenFor(m=>m.PlanSalesId)
+    @Html.HiddenFor(m=>m.ProgramId)
+    @Html.HiddenFor(m=>m.PlanYear)
+    
+}

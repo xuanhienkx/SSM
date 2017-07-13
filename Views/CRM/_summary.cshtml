@@ -1,0 +1,23 @@
+﻿@using SSM.Common
+@model SSM.Models.CRM.SummaryCustomer
+
+<div class="col-md-7 text-primary">Số lần báo giá</div>  <div class="col-md-5 text-right text-success">@Html.DisplayFor(m => m.TotalSendEmail)</div>
+<div class="col-md-7 text-primary">Số lô thành công</div>  <div class="col-md-5 text-right  text-success">
+    @Html.DisplayFor(m => m.TotalShippments)
+    @if (Model.TotalShippments > 0)
+    {
+        <span class="inlin-item">
+            @Ajax.Link(" ", "ShipmentDetail", "CRM", new { id = Model.Id }, new MyAjaxOptions()
+   {
+       HttpMethod = "get",
+       DataType = "json",
+       ContentType = "application/json; charset=utf-8"
+
+   }, new { @class = "fa fa-eye" })
+        </span>
+    }
+</div>
+<div class="col-md-7 text-primary">Số lần viếng thăm</div>  <div class="col-md-5 text-right  text-success">@Html.DisplayFor(m => m.TotalVisited)</div>
+<div class="col-md-7 text-primary">Total Profit</div>  <div class="col-md-5 text-right  text-success">@Html.DisplayFor(m => m.TotalProfit)</div>
+@*<div class="col-md-7 text-primary">Trạng thái</div>  <div class="col-md-5 text-right  text-success">@Html.DisplayFor(m => m.StatusCode)</div>*@
+<div class="col-md-7 text-primary">Cập nhật cuối</div>  <div class="col-md-5 text-right  text-success">@Html.ToDateDisplay(Model.ModifyDate, true)</div>

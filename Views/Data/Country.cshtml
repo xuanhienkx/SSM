@@ -1,0 +1,110 @@
+﻿@model SSM.ViewModels.Shared.Grid<SSM.Models.Country>
+@using System.Web.Optimization
+@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@{
+    ViewBag.Title = "Country List";
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("Country", "Data", new AjaxOptions()
+{
+    InsertionMode = InsertionMode.Replace,
+    HttpMethod = "post",
+    UpdateTargetId = "ListData"
+}))
+{
+
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>
+                            List Country
+                        </h2>
+                    </div>
+                    <div id="SearchBlock" style="float:left;height:auto;"></div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper" style="display: none;">
+                        <table id="table-sarch">
+                            <tr>
+                                <td class="TDClass"><label>Abb Name</label></td>
+                                <td class="TDClass">
+                                    @Html.HiddenFor(m => m.SearchCriteria.Id)
+                                    @Html.TextBoxFor(m => m.SearchCriteria.CountryName, new { maxlength = "100" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Search" id="btn-search" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div  class="col-md-12">
+                        @if (User1.IsAdmin())
+                        {
+                            @Ajax.Link("Create a Country", "EditCountry", "Data", new {id = 0}, new MyAjaxOptions()
+                            {
+                                HttpMethod = "get",
+                                DataType = "json",
+                                ContentType = "application/json; charset=utf-8"
+
+                            }, new {@class = "btn btn-primary"})
+                        }
+
+                        <input type="hidden" name="ModifyDept" value="@ViewData["ModifyDept"] " />
+                    </div>
+                    <div id="ListData">
+                        @Html.Partial("_CountryList", Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<Country>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="SectionBlock Expanded BoxL1" id="ModifyDeptZone">
+
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#databaseTab").addClass("Active");
+        jQuery('#databaseTab').activeThisNav();
+        jQuery('#CreateDept1,#CreateDept').click(function () {
+            jQuery("#ModifyHeader").html("New Country");
+        });
+    });
+
+    function edit(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("EditCountry", "Data")',
+            data: { id: id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#ModifyDeptZone").html(result);
+                jQuery('#ModifyDeptZone').show();
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#", "") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#CountryName').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+</script>

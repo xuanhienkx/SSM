@@ -1,0 +1,72 @@
+﻿
+@model SSM.Models.CountryModel
+<div class="BoxL2">
+    <div class="BoxL3">
+        <div class="BoxL4">
+            <div style="width: 100%" id="ModifyForm">
+                @using (Ajax.BeginForm("EditCountry", "Data", new AjaxOptions()
+                {
+                    HttpMethod = "post",
+                    OnSuccess = "formOnSuccess"
+
+                }, new { id = "frm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(m => m.Id, new { id = "Id" })
+                    <div class="col-md-12 form-group-sm">
+
+                        <div class="form-group">
+                            @Html.ValidationSummary(true)
+                        </div>
+                        <div class="form-group ">
+                            @Html.LabelFor(m => m.CountryName, new { @class = " control-label col-md-3" })
+                            @Html.TextBoxFor(m => m.CountryName, new { maxlength = "100", @class = " form-control col-md-9", style = "width:70%" })
+
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9">
+                                @Html.ValidationMessageFor(m => m.CountryName)
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9">
+                                <span>Tìm kỹ trước khi nhập mới, tên viết tắt không quá 100 ký tự.</span>
+                            </div>
+                           
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-3"></div>
+                            <div class="col-md-9">
+                                @if (Model.Id != 0)
+                                {
+                                    <input type="submit" class="btn btn-primary" id="btnSave" value="Updade" />
+                                }
+                                else
+                                {
+                                    <input type="submit" class="btn btn-primary" id="btnSave" value="Create" />
+                                }
+
+                                <input type="button" value="Cancel" class="btn btn-danger" onclick="return jQuery('.closeIcon').click();" />
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+  
+    function formOnSuccess(result) {
+        if (result.Success === undefined) {
+            jQuery("#btnSave").parents(".jconfirm-box:first").find(".content").html(result);
+            return false;
+        } else {
+            jQuery("#btn-search-clear").click();
+            jQuery("#btnSave").parents(".jconfirm-box:first").find('.closeIcon').click();
+        }
+    }
+</script>

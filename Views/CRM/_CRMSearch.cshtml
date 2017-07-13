@@ -1,0 +1,149 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model CRMSearchModel
+@{
+    var users = (IEnumerable<User>)ViewData["UserSalesList"];
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+
+<div class="SectionBlockWrapper" style="display: block;">
+    <div class="row">
+        @Html.ValidationSummary(true)
+    </div>
+    <div class="row form-group-sm">
+
+        <div class="col-md-10 form-horizontal">
+            <div class="col-md-6">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.CompanyName, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9 ">
+                        @Html.TextBoxFor(m => m.CompanyName, new { @class = "form-control " })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Email, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(m => m.Email, new { @class = "form-control " })
+                    </div>
+                </div>    
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Phone, new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-6">
+                        @Html.TextBoxFor(m => m.Phone, new { @class = "form-control " })
+                    </div>
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.CRMStatus, "Trạng thái", new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9">
+                        <div class="col-sm-4 row">
+                            @Html.EnumDropDownListFor(m => m.CRMStatus, new { @class = "form-control form-control-sm" })
+                        </div>
+                        <div class="col-md-8 row">
+                            @Html.LabelFor(m => m.SaleType, "Type", new { @class = "col-sm-3 control-label" })
+                            <div class="col-sm-9">
+                                @Html.DropDownListFor(m => m.SaleType.Id, new SelectList((IEnumerable<SaleType>)ViewData["SaleTypes"], "Id", "Name"), "---Chọn sale type---", new { @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="form-group">
+                    @Html.LabelFor(m => m.DataType, "Data Từ", new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-5">
+                        @Html.DropDownListFor(m => m.CRMSource.Id, new SelectList((IEnumerable<CRMSource>)ViewData["Sources"], "Id", "Name"), "---Chọn nguồn---", new { @class = "form-control" })
+                    </div>
+                    <div class="col-sm-4"></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    @if (currentUser.IsDepOrDirecter())
+                    {
+                        @Html.LabelFor(m => m.UserFullName, "Sales", new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-4">
+                            @Html.DropDownListFor(m => m.SalesId, new SelectList(users, "Id", "FullName"), "--Chọn Sales--", new { @class = "form-control inlin-item", style = "width: 140px" })
+                        </div>
+                        @Html.LabelFor(m => m.Id, "ID", new { @class = "col-sm-1 control-label" })
+                        <div class="col-sm-4">
+                            @Html.TextBoxFor(m => m.Id, new { @class = "form-control text-right ", style = "width: 80px;", maxlength = 6 })
+                        </div>
+                    }
+                    else
+                    {
+                        @Html.LabelFor(m => m.Id, "ID", new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-9">
+                            @Html.TextBoxFor(m => m.Id, new { @class = "form-control text-right ", style = "width: 80px;", maxlength = 6 })
+                        </div>
+                    }
+
+                </div>
+                @if (currentUser.IsDirecter())
+                {
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.DeptId, "Phòng", new { @class = "col-sm-3 control-label" })
+                        <div class="col-sm-4 ">
+                            @Html.DropDownListFor(m => m.DeptId, new SelectList((IEnumerable<Department>)ViewData["Departments"], "Id", "DeptName"), "---Chọn phòng---", new { @class = "form-control" })
+
+                        </div>
+                        @Html.LabelFor(m => m.CrmGroup.Id, "Group", new { @class = "col-sm-1 control-label" })
+                        <div class="col-sm-4">
+                            @Html.DropDownListFor(m => m.CrmGroup.Id, new SelectList((IEnumerable<CRMGroup>)ViewData["Groups"], "Id", "Name"), "---Chọn Group---", new { @class = "form-control" })
+
+                        </div>
+
+                    </div>
+                }
+                <div class="form-group">
+                    @Html.LabelFor(m => m.PeriodDate, "Period", new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-9  form-inline ">
+                        <div class="col-sm-4 row">
+                            @Html.RadioButtonFor(x => x.PeriodDate, PeriodDate.CreateDate, new { @class = "radio", id = "CreateDate" })
+                            @Html.LabelFor(x => x.PeriodDate, "Ngày tạo", new { @class = "control-label" })
+                        </div>
+                        <div class="col-sm-7 ">
+                            @Html.RadioButtonFor(x => x.PeriodDate, PeriodDate.ModifyDate, new { @class = "radio", id = "ModifyDate" })
+                            @Html.LabelFor(x => x.PeriodDate, "Ngày cập nhật", new { @class = "control-label" })
+                        </div>
+                        <div class="row"></div>
+                    </div>
+                </div>
+                <div class="form-group form-inline">
+                    @Html.LabelFor(m => m.FromDate, "FromDate", new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3">
+                        @Html.TextBoxFor(m => m.FromDate, "{0:dd/MM/yyyy}", new { @class = "form-control required fromDate datepicker datepicker-check hasDatepicke" })
+                    </div>
+                    @Html.LabelFor(m => m.ToDate, "ToDate", new { @class = "col-sm-3 control-label" })
+                    <div class="col-sm-3 ">
+                        @Html.TextBoxFor(m => m.ToDate, "{0:dd/MM/yyyy}", new { @class = "form-control toDate required datepicker datepicker-check hasDatepicke" })
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+            <div class="pull-right col-md-push-3">
+                <input type="submit" class="btn btn-primary" value="Search" id="btn-search" />
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery(".ui-datepicker-trigger").remove();
+        jQuery('#UserFullName').GetAutoSugget({
+            url: '@Url.Action("UserSuggest", "CRM")',
+            //targerId: "#CrmCountryId"
+        });
+        jQuery("#DepartmentName").GetAutoSugget({
+            url: '@Url.Action("DepartmentSuggest", "CRM")',
+            // targerId: "#CrmCategoryId"
+        });
+    });
+</script>

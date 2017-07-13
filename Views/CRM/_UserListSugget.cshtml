@@ -1,0 +1,62 @@
+﻿<div id="userList">
+    <div class="form-group">
+        <label class="col-sm-3 control-label">Chọn User cùng theo dõi</label>
+        <div class="col-sm-8">
+            @Html.TextBox("UserFullName", "", new { @class = "form-control input-sm" })
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="list-inline col-md-12 list-user-dialog" style=" border: 2px solid white">
+        <table class="list-user table table-bordered">
+            <thead>
+                <tr>
+                    <th>Tên</th>
+                    <th>Phòng ban</th>
+                    <th>Del</th> 
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        var existedList = jQuery(".list-user-Follow").find("table");
+        if (existedList.length > 0)
+            jQuery(".list-user-dialog").html(existedList);
+        jQuery("#UserFullName").GetAutoSugget({
+            url: '@Url.Action("SuggestUser", "CRM")',
+            minLength: 2,
+            select: function (e, ui) {
+                e.preventDefault();
+                var uId = ui.item.id;
+                var crmUserId = jQuery("#CrmSaleId").val(); 
+                if (uId == crmUserId) return false;
+                var fullName = ui.item.value;
+                var deptName = ui.item.all.DeptName;
+                var listUpdate = jQuery("#UserTogheTheFollow").val();
+                var stringId = ";" + uId + ";";
+                if (listUpdate.indexOf(stringId) == -1 && uId !== crmUserId) {
+                    listUpdate += ";" + uId;
+                    listUpdate = listUpdate + ";";
+                    listUpdate = listUpdate.replace(";;", ";");
+                    jQuery("#UserTogheTheFollow").val(listUpdate);
+                    var $tr = '<tr id="user_' + uId + '"><td>' + fullName + '</td><td>' + deptName + '</td><td class="text-right deleteRow userRemove"><i class="fa fa-remove" style="color: red"></i></td></tr>';
+                    var $tbody = jQuery(".jconfirm .jconfirm-box .content").find("#userList").find("tbody");
+                    var existed = $tbody.find('tr[id="user-' + uId + '"]');
+                    if (existed === undefined || existed.length == 0)
+                        $tbody.append($tr);
+                    DelRow();
+                }
+
+            }
+        });
+        jQuery(".jconfirm").on("click", ".closeIcon", function (e) {
+            e.preventDefault();
+            var list = jQuery(".list-user-dialog").html();
+            jQuery(".list-user-Follow").html(list);
+            DelRow();
+        });
+    });
+</script>

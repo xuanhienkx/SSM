@@ -1,0 +1,52 @@
+﻿@using SSM.Common
+@model System.Collections.Generic.List<SSM.ViewModels.Reports.ProfitReportModel>
+<div style="font-size: 1.2em">
+    <div class="crmplan-header-item">
+        <h3>Report by:<span class="text-danger">@ViewBag.ProfitType </span></h3>
+    </div>
+    <table class="table table-bordered table-hover" >
+        <thead>
+            <tr class="success">
+                <th>#</th>
+                <th>Name</th>
+                <th class="text-right">Profit</th>
+                <th class="text-right">Shipments</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                int i = 0;
+                foreach (var reportModel in Model)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@reportModel.Name</td>
+                        <td class="text-right">@reportModel.Profit.ToString("N2")</td>
+                        <td class="text-right">@reportModel.TotalShipment.ToString("N0")</td>
+                        <td class="text-center">
+                         @*   @Ajax.Link(" ", "ShippmetsDetailType", "ProfitReport", new { refObjId = string.Format("{0}", reportModel.Id) }, new MyAjaxOptions()
+                                           {
+                                               HttpMethod = "GET",
+                                               UpdateTargetId = "ShipmentList",
+                                               DataType = "html",                               
+                                           }, new { @class = "fa fa-eye fa-2x" })*@
+                            @Ajax.Link(" ", "ShippmetsDetailType", "ProfitReport", new { refObjId = string.Format("{0}", reportModel.Id) }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8"
+
+                       }, new { @class = "fa fa-eye fa-2x" })
+                        </td>
+                    </tr>
+
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div id="ShipmentList">
+</div>

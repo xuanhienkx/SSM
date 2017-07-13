@@ -1,0 +1,33 @@
+﻿@using SSM.Common
+@model System.Collections.Generic.IList<SSM.Models.ServerFile>
+
+<div id="attachment-show" style="display: block">
+    <table class="table table-bordered">
+        <thead>
+            <tr><th>FileName</th><th>File Size(Kb)</th><th></th></tr>
+        </thead>
+        <tbody id="listfileView">
+            @foreach (var serverFile in Model)
+            {
+                var size = serverFile.FileSize / (1024);
+                <tr>
+                    <td>@Html.ActionLink(serverFile.FileName, "Download", "CRMDocument", new { id = serverFile.Id }, new { target = "_blank" })</td>
+                    <td style="text-align: right">@size</td>
+                    <td id="del_@serverFile.Id" class="tdfile"> 
+                        @Ajax.Link("", "DeleteFile", "CRMDocument", new { id = serverFile.Id }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8",
+                       Confirm = "Are you sure want to delete this file?"
+
+                   }, new { @class = "fa fa-remove delete-file trDel",  style = "color: red;", id = serverFile.Id })
+
+
+                    </td>
+
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

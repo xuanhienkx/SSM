@@ -1,0 +1,633 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@model SSM.Models.SalesModel
+
+<style type="text/css">
+    .page {
+        width: auto !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .SectionBlock {
+        width: 100% !important;
+        position: relative;
+        margin: 0px auto;
+        background-color: #f6f6f3;
+        margin-top: 15px;
+        z-index: 500;
+    }
+</style>
+
+<script type="text/javascript">
+    var look = '@ViewBag.Islook';
+    var isLook = false;
+    jQuery(document).ready(function () {
+        jQuery("#TradingTab").addClass("Active");
+        jQuery('#TradingTab').activeThisNav();
+        jQuery("#tabs").tabs({
+            collapsible: true
+        });
+        jQuery("#Customer_FullName").GetAutoSugget({
+            url: '@Url.Action("CustomerSuggest", "StockReceiving")',
+            targerId: "#Customer_Id"
+        });
+
+        jQuery("#Country_CountryName").GetAutoSugget({
+            url: '@Url.Action("CountrySuggest", "StockReceiving")',
+            targerId: "#Country_Id"
+        });
+        jQuery("#materInput").find("input[type='Text']").addClass("RevenueInput");
+        jQuery("input.input-validation-error").keyup(function () {
+            if (jQuery(this).val() !== "") {
+                jQuery(this).removeClass("input-validation-error");
+            }
+        });
+        jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit,#btnAppval,#btnCreateRef").removeAttr("disabled", "disabled");
+        jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit,#btnAppval,#btnCreateRef").removeClass("btn-disabled");
+        InitButtonAction();
+        InitForDetail();
+        GetCurrentQty();
+    });
+    function InitButtonAction() {
+
+        jQuery("input#btnSave").click(function () {
+            var check = true;
+            check = jQuery("form").CheckRequired();
+            var rate = parseFloat(jQuery("#ExchangeRate").val().replace(/\,/g, ''));
+            if (check == false)
+                return false; 
+            else if (rate == 0) {
+                jQuery("#ExchangeRate").focus();
+                jQuery("#ExchangeRate").addClass("input-validation-error");
+                return false;
+            }
+            else {
+                check = checkSaleQty("form");
+                if (check == false) {
+                    ShowErroDlg();
+                } else {
+                    jQuery("form").submit();
+                }
+            }
+        });
+
+        jQuery("#btnCancle").click(function () {
+            jQuery(this).parents("form:first").trigger("reset");
+        });
+        jQuery("#btnnew").click(function () {
+            window.location.href = '@Url.Action("Create")';
+        });
+        jQuery("#btnPrint").click(function() {
+            var text = jQuery("#NotePrints-html").html();
+            jQuery.confirm({
+                resizable: true,
+                async: false,
+                icon: "fa fa-question-circle fa-inverse",
+                content: text,
+                columnClass: 'col-md-6 col-md-offset-3',
+                title: "Nhập chứng từ gốc kèm theo",
+                dialogClass: "modal-dialog",
+                confirm: function() {
+                    var notePrints = jQuery(".jconfirm-box-container").find("#NotePrints").val();
+                    var id = jQuery("#VoucherId").val();
+                    var data = { id: id,note : notePrints };
+                    
+                    jQuery.mbqAjax({
+                        url: '@Url.Action("UpdateNote", "Sales")',
+                        method: 'POST',
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(result) {
+                            if (result == "ok") {
+                                window.open("@Url.Action("Print", new { id = Model.VoucherId})");
+                                jQuery(".closeIcon").click();
+                                jQuery("#NotePrints-html #NotePrints").val(notePrints);
+                                window.location.href = "@Url.Action("Edit", new { id = Model.VoucherId})";
+                            } else {
+                                jQuery.mbqAlert({
+                                    content: result,
+                                    columnClass: 'col-md-4 col-md-offset-3',
+                                    title: "Lỗi cập nhật chứng từ gốc",
+                                });
+                            }
+                        }
+                    });
+                   
+                },
+                cancel: function () {
+
+                },
+                closeIcon: true,
+                theme: "bootstrap",
+                confirmButton: 'Print',
+                cancelButton: 'Calcel',
+                backgroundDismiss: true,
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-danger',
+            });
+            // window.open("@Url.Action("Print", new {id = Model.VoucherId})");
+        });
+
+        jQuery("#btnExit").click(function () {
+            window.location.href = '@Url.Action("Index")';
+        });
+        jQuery("#btnCreateRef").click(function () {
+            var id = jQuery("#VoucherId").val();
+            var data = { id: id };
+            jQuery.mbqAjax({
+                url: '@Url.Action("CreateShippmet", "Sales")',
+                method: 'POST',
+                data: JSON.stringify(data),
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    look = 'look';
+                    if (result.Error === true) {
+                        jQuery.mbqAlert({
+                            title: "Error",
+                            content: result.Message
+                        });
+                    } else {
+                        var view = result.view;
+                        var link = result.RefId;
+
+                        jQuery("#footer-action").html(view);
+                        jQuery("#refShip").html(link);
+                        if (jQuery("#btnCreateRef").length > 0)
+                            jQuery("#btnCreateRef").remove();
+                    }
+
+                }
+            });
+            InitButtonAction();
+        });
+        jQuery('#addItem').click(function () {
+            var tapindexlast = jQuery("input[id$='_Notes']:last").attr("tabindex");
+            if (tapindexlast === undefined || tapindexlast === NaN) {
+                tapindexlast = jQuery("#Description").attr("tabindex");
+            }
+
+            var nexttab = parseInt(tapindexlast) + 1;
+            jQuery.mbqAjax({
+                url: '@Url.Action("BlankEditorRow", "Sales")',
+                method: 'GET',
+                data: { tabindex: nexttab },
+                dataType: "html",
+                contentType: "application/html; charset=utf-8",
+                success: function (html) {
+                    jQuery('#editorRows').append(html);
+                    InitForDetail();
+                    GetCurrentQty();
+                    jQuery(".editorRow").InitFormat();
+                }
+            });
+            return false;
+        });
+        jQuery("#btnEdit").click(function () {
+            look = "";
+            isLook = false;
+            jQuery("input[type='Text']:not([type=button]),select,textarea").each(function () {
+                if (jQuery(this).hasClass("no-unlook")) {
+                    return;
+                }
+                jQuery(this).removeAttr("disabled");
+            });
+            jQuery("#btnSave,#btnCancle").removeAttr("disabled");
+            jQuery("#btnSave,#btnCancle").removeClass("btn-disabled");
+            jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit,#btnAppval,#btnCreateRef").prop("disabled", "disabled");
+            jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit,#btnAppval,#btnCreateRef").addClass("btn-disabled");
+            jQuery("#btnDelete").hide();
+            jQuery("#addItem,.deleteRow").removeClass("ui-helper-hidden");
+        });
+        if (look == 'look') {
+            isLook = true;
+            jQuery("#VoucherNo,#Status,#UserCreated_FullName").addClass("no-unlook");
+            jQuery("input[type='Text']:not([type=button]),select,textarea").each(function () {
+                jQuery(this).prop("disabled", "disabled");
+            });
+            jQuery("#btnSave,#btnCancle").prop("disabled", "disabled");
+            jQuery("#btnSave,#btnCancle").addClass("btn-disabled");
+            jQuery("#addItem,.deleteRow").addClass("ui-helper-hidden");
+        }
+        if (look == 'new') {
+            jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit").prop("disabled", "disabled");
+            jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit").addClass("btn-disabled");
+        }
+        jQuery("#NotePrints").removeAttr("disabled");
+    }
+
+    function GetCurrentQty() {
+        jQuery('.ProductCode,.WarehouseId').each(function () {
+            jQuery(this).change(function (e) {
+                var $tr = jQuery(this).parents("tr:first");
+                var tab = parseInt(jQuery(this).attr("tabindex"));
+                var proId = parseInt($tr.find(".ProductId:first").val());
+                var weahId = parseInt($tr.find(".WarehouseId:first").val());
+                if (proId > 0 && weahId > 0) {
+                    var voucherId = parseInt(jQuery("#VoucherId").val());
+                    var data = { vid: voucherId, proId: proId, wId: weahId }
+                    jQuery.mbqAjax({
+                        url: '@Url.Action("GetQtyInventory", "Sales")',
+                        method: 'POST',
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function (html) {
+                            jQuery($tr).find(".CurrentQty:first").val(html);
+                        }
+                    });
+
+                }
+            });
+        });
+
+    }
+    function InitForDetail() {
+
+        jQuery('input:text,select').bind('keypress', function (eInner) {
+            if (eInner.keyCode == 13) //if its a enter key
+            {
+                var tabindex = parseInt(jQuery(this).attr('tabindex'));
+                tabindex++; //increment tabindex
+                //after increment of tabindex ,make the next element focus
+                // jQuery(this).next('tabindex', tabindex).focus();
+                if (jQuery(this).hasClass("autocomplete")) {
+                    var vl = jQuery(this).val();
+                    var vlId = parseInt(jQuery(this).prev("input:hidden:first").val());
+
+                    if (vlId == null || vlId == 'NaN') {
+                        vlId = 0;
+                    }
+
+                    var modelName = jQuery(this).attr("modelName");
+                    var tabIndex = parseInt(jQuery(this).attr("tabindex"));
+                    checkAutoSugget(vlId, vl, modelName, tabIndex);
+                }
+
+                if (jQuery('[tabindex=' + tabindex + ']') !== undefined) {
+                    jQuery('[tabindex=' + tabindex + ']').focus();
+                    jQuery('[tabindex=' + tabindex + ']').select();
+                    return false; // to cancel out Onenter page postback in asp.net
+                }
+                return false; // to cancel out Onenter page postback in asp.net
+            }
+        });
+        jQuery("textarea").bind('keyup', function (eInner) {
+            if (eInner.keyCode == 16) //if its a shift key
+            {
+                var tabindex = parseInt(jQuery(this).attr('tabindex'));
+                tabindex++;
+                if (jQuery('[tabindex=' + tabindex + ']') !== undefined) {
+                    jQuery('[tabindex=' + tabindex + ']').focus();
+                    jQuery('[tabindex=' + tabindex + ']').select();
+                    return false; // to cancel out Onenter page postback in asp.net
+                }
+                return false; // to cancel out Onenter page postback in asp.net
+            }
+        });
+        jQuery(".ProductCode").each(function () {
+            jQuery(this).GetProductAutoSugget({
+                url: '@Url.Action("ProductSuggest","StockReceiving")'
+            });
+        });
+        jQuery('span.deleteRow').click(function () {
+            jQuery(this).parents('tr.editorRow:first').remove();
+            return false;
+        });
+        jQuery(".call").blur(function () {
+            var exRate = parseFloat(jQuery("#ExchangeRate").val().replace(/\,/g, '')); 
+            var $tr = jQuery(this).parents("tr:first");
+            var qty = parseFloat($tr.find(".Quantity:first").val().replace(/\,/g, ''));
+            var vnprice = parseFloat($tr.find(".VnPrice:first").val().replace(/\,/g, ''));
+            if (exRate == 0)
+                exRate = 1;
+            var price = vnprice / exRate;
+            var tt = qty * price;
+            var vntt = qty * vnprice;
+            $tr.find(".Price:first").val(price.toFixed(4).toLocaleString());
+            $tr.find(".Amount:first").val(tt.toFixed(2).toLocaleString());
+            $tr.find(".VnAmount:first").val(vntt.toLocaleString());
+            callSumTotal();
+              
+             jQuery(document).InitFormat();
+        });
+        jQuery(".resizable").TablResizable();
+    }
+
+    function checkAutoSugget(vlId, vl, modelName, tabIndex, search) {
+        var data = { id: vlId, name: vl, modelName: modelName, tabIndex: tabIndex };
+        jQuery.mbqAjax({
+            url: '@Url.Action("CheckSuggest", "StockReceiving")',
+            method: 'POST',
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (html) {
+                if (html !== "ok") {
+                    if (search != undefined && search == true) {
+                        jQuery(".jconfirm-box .content").html(html);
+                    } else {
+                        jQuery.mbqDialog({
+                            title: "List " + modelName,
+                            content: html,
+                            columnClass: 'col-md-6 col-md-offset-3'
+                        });
+                        jQuery("#mstrTable tbody tr:first").focus();
+                        jQuery("#mstrTable tbody tr:first").select();
+                    }
+                    return false;
+                } else {
+                    jQuery('[tabindex=' + tabIndex + ']').focus();
+                }
+            }
+        });
+    }
+
+    function callSumTotal() {
+        var tQuantity = 0;
+        var tAmount = 0;
+        var tVnAmount = 0;
+        var tTax = 0;
+        var tTransportFee = 0;
+        var tInlnadFee = 0;
+        var tFee1 = 0;
+        var tFee2 = 0;
+        var sumTotal = 0;
+        jQuery(".editorRow").each(function () {
+            var $tr = jQuery(this);
+            var qty = parseFloat($tr.find(".Quantity:first").val().replace(/\,/g, ''));
+            var amount = parseFloat($tr.find(".Amount:first").val().replace(/\,/g, ''));
+            var vnAmount = parseFloat($tr.find(".VnAmount:first").val().replace(/\,/g, ''));
+            tQuantity += qty; 
+            tAmount += amount;
+            tVnAmount += vnAmount;
+        });
+        sumTotal = tAmount + tTax + tTransportFee + tInlnadFee + tFee1 + tFee2;
+        var $trSum = jQuery(".sumrow");
+        $trSum.find(".TQuantity:first").html(tQuantity.toLocaleString());
+        $trSum.find(".TAmount:first").html(tAmount );
+        $trSum.find(".TVnAmount:first").html(tVnAmount.toLocaleString()); 
+        jQuery("#totalAmoutSale.vAmount").val(sumTotal.toLocaleString());
+
+    }
+
+</script>
+@{
+    SelectList currencies = (SelectList)ViewData["Currency"];
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.HiddenFor(x => x.VoucherId)
+@Html.HiddenFor(x => x.VoucherCode)
+<div class="SectionBlock Expanded BoxL1">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4 input-stock">
+                <h4 class="Subject">@ViewBag.Title</h4>
+                @Html.ValidationSummary(true)
+                <table style="margin-left:50px;" id="materInput" class="datepicker-check">
+                    <tr>
+                        <th><label>No:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.VoucherNo, new { @class = " required uppercase ", maxlength = "12", @readonly = "readonly", disabled = "disabled" })
+                        </td>
+                        <th><label>Status:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.Status, new { @class = " required uppercase ", maxlength = "12", @readonly = "readonly", disabled = "disabled", style = "width: 70px; float: left;padding-left: 3px" })
+                        </td>
+                        <th><label>Sales:</label></th>
+                        <td>
+                            @if (Model.UserCreated != null && Model.UserCreated.FullName != null)
+                            {
+                                @Html.TextBox("UserCreated.FullName", Model.UserCreated.FullName, new { disabled = "disabled", @readonly = "readonly" })
+                            }
+                            else
+                            {
+                                @Html.TextBox("UserCreated.FullName", currentUser.FullName, new { disabled = "disabled", @readonly = "readonly" })
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label>Customer:</label></th>
+                        <td>
+                            @Html.HiddenFor(x => x.Customer.Id, new { @class = " required " })
+                            @Html.TextBoxFor(x => x.Customer.FullName, new { @class = "autocomplete", maxlength = "120", tabindex = "1", modelName = "Customer" })
+                        </td>
+
+                        <th><label>Currency:</label></th>
+                        <td>
+                            @Html.DropDownList("Curency.Id", currencies, "--Select--", new { tabindex = "3", @class = " required " })
+                        </td>
+                        <th><label>Ref:</label></th>
+                        <td>
+                            <span class="shipRef RevenueInput disabled" id="refShip">
+                                @if (Model.Shipment != null)
+                                {
+                                    <a href="@Url.Action("Edit", "Shipment", new {id = Model.Shipment.Id})" target="_bank">@Model.Shipment.Id</a>
+                                }
+                                else
+                                {
+                                    <a href="javascript:void(0)">N/A</a>
+                                }
+                            </span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label>Date:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.VoucherDate, "{0:dd/MM/yyyy}", new { @class = "datepicker required", maxlength = 10, tabindex = "2" })
+                        </td>
+                        <th><label>Exchange Rate:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.ExchangeRate, new { @class = "currency ExchangeRate", maxlength = 12, tabindex = "4" })
+                        </td>
+                        <th><label>Total Exwork Amount:</label></th>
+                        <td>
+
+                            @Html.TextBoxFor(m => m.Amount, new { @class = "currency vAmount vcall disabled RevenueInput", id = "totalAmoutSale", @readonly = "readonly" })
+                        </td>
+
+                    </tr>
+                    <tr>
+                        <th><label>Description:</label></th>
+                        <td colspan="3">
+                            @Html.TextAreaFor(m => m.Description, new { style = "width: 743px; height: 123px;", maxlength = 5000, tabindex = 5 })
+                            <br />
+                            <div class="clearfix">
+                                <span>Ghi chú được nhập tối đa 5000 ký tự.</span>
+                            </div>
+                        </td>
+                        <th style="vertical-align: top"><label>Cost Of Sales:</label></th>
+                        <td style="vertical-align: top">@Html.TextBoxFor(m => m.Amount0, new { @class = "currency vAmount0 vcall disabled RevenueInput", @readonly = "readonly" })</td>
+
+                    </tr>
+                </table>
+                <br />
+                <div id="tabs">
+                    <ul>
+                        <li><a href="#ProductsList">Products</a></li>
+                        @*   <li><a href="#RevenueForm">Revenue</a></li>*@
+                    </ul>
+                    <div id="ProductsList" style="min-height: 50px">
+                        <div class="detailVoucher2">
+                            <table style="background-color:#e6edf9; font-size:1.2em;border:1px solid #BFBFBF; width: 100%" class="orderDetailTabel resizable ">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 20px" rowspan="2"></th>
+                                        <th style="width: 280px">Products </th>
+                                        <th style="width: 35px">Unit </th>
+                                        <th style="width: 130px;">Warehouse </th>
+                                        <th style="width: 80px;color: red">Current Qty </th>
+                                        <th style="width: 80px;">Quantity </th>
+                                        <th style="width: 120px;">VND Unit Rate </th>
+                                        <th style="width: 70px;">$ Unit Rate </th>
+                                        <th style="width: 120px;">$ Amount </th>
+                                        <th style="width: 180px;">VND Amount </th>
+                                        <th>Description</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="editorRows">
+                                    @{
+                                        var starbindex = 6;
+
+                                        /* if (currentUser.RoleName == "Accountant")
+                                             {
+                                                 starbindex = 12;
+                                             }*/
+                                        ViewData["tabindex"] = starbindex;
+                                    }
+                                    @if (Model.DetailModels != null && Model.DetailModels.Any())
+                                    {
+                                        foreach (var item in Model.DetailModels)
+                                        {
+                                            Html.RenderPartial("_SalesDetailView", item);
+                                            starbindex = starbindex + 5;
+                                            ViewData["tabindex"] = starbindex;
+                                        }
+
+                                    }
+                                    else
+                                    {
+                                        Html.RenderPartial("_SalesDetailView", new SalesDetailModel());
+                                    }
+                                </tbody>
+                                <tfoot>
+                                    <tr class="sumrow">
+                                        <td>
+                                            <span id="addItem" style="cursor: pointer">
+                                                <i class="ui-icon ui-icon-plus"></i>
+                                            </span>
+                                        </td>
+                                        <th colspan="4" style="text-align: right"><label>Total:</label></th>
+                                        <th class="number TQuantity textbold ">@Model.Quantity</th>
+                                        <td></td>
+                                        <td></td>
+                                        <th class="currency TAmount  textbold">@Model.Amount</th>
+                                        <th class="currencyVn TVnAmount  textbold">@Model.VnAmount</th>
+                                        <th></th>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    <div id="RevenueForm" style="min-height: 50px">
+                        @* @Html.Partial("_Revenue", Model)*@
+                    </div>
+
+                </div>
+                <br />
+                <div id="footer-action">
+                    @Html.Partial("_StatusView")
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display: none" id="NotePrints-html">
+    @Html.TextAreaFor(m => m.NotePrints, new { style = "width: 663px; height: 230px;", maxlength=1000, cols = "40" })
+    <br />
+    <div class="clearfix">
+        <span>Ghi chú được nhập tối đa 1000 ký tự.</span>
+    </div>
+</div>
+<script type="text/javascript">
+
+    function ShowErroDlg() {
+        jQuery.mbqAlert({
+            title: "Error!!!",
+            content: '<div class="aler-content">Please input the number less than in warehouse.</div>',
+            columnClass: 'col-md-5 col-md-offset-3',
+        });
+        jQuery(".jconfirm .jconfirm-box div.title").addClass("dlg-error");
+        return false;
+    }
+    function stockCradAction(status, id) {
+        var data = { id: id, status: status };
+        if (status === '@VoucherStatus.Submited.ToString()') {
+            var check = checkSaleQty("form");
+            if (check == false) {
+                ShowErroDlg();
+            }
+        }
+        jQuery.mbqAjax({
+            url: '@Url.Action("StockCardAction", "Sales")',
+            method: 'POST',
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                if (result == 0) {
+                    ShowErroDlg();
+                }
+                jQuery("#Status").val(result.status);
+                look = 'look';
+                if (status !== 'Hold') {
+                    jQuery("#btn-BaseAction").find(".Hold").each(function () {
+                        jQuery(this).addClass("hide");
+                    });
+
+                    jQuery("#btnnew, #btnPrint, #btnDelete, #btnEdit").removeAttr("disabled");
+                    jQuery("#btnnew, #btnPrint, #btnDelete, #btnEdit").removeClass("btn-disabled");
+                } else {
+                    jQuery("#btn-BaseAction").find(".Hold").each(function () {
+                        jQuery(this).removeClass("hide");
+                    });
+
+                    jQuery("#btnSave, #btnCancle").prop("disabled", "disabled");
+                    jQuery("#btnSave, #btnCancle").addClass("btn-disabled");
+                }
+                var view = result.view;
+                jQuery("#footer-action").html(view);
+            }
+        });
+        InitButtonAction();
+    }
+
+    function CalculateCost(id) {
+        var data = { id: id };
+        jQuery.mbqAjax({
+            url: '@Url.Action("CalculateCostOnSaleOrder", "IssueVoucher")',
+            method: 'POST',
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                if (result.Error == false) {
+                    jQuery("#Amount0.vAmount0").val(result.Cost.toLocaleString());
+                }
+                jQuery.mbqAlert({
+                    title: "Calculate cost result!!!",
+                    content: result.Message,
+                    columnClass: 'col-md-3 col-md-offset-3',
+                });
+            }
+        });
+    }
+
+    function GoHome() {
+        var url = '@Url.Action("Index", "Shipment", new {id = 0})';
+        window.location.href = url;
+    }
+</script>

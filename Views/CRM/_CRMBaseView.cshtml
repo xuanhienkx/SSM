@@ -1,0 +1,92 @@
+﻿@using SSM.Models
+@using SSM.Models.CRM
+@model SSM.Models.CRM.CRMBaseModel
+  @{
+      bool islist = (bool)ViewBag.IsList;
+  }
+@using (Ajax.BeginForm("AddBaseData", "CRM", new AjaxOptions()
+{
+    HttpMethod = "Post",
+    OnSuccess = "onBaseResepose"
+}, new { id = "frmCrmBasedata", @class = "form-horizontal" }))
+{
+    @Html.HiddenFor(m => m.ModelType)
+    @Html.HiddenFor(m => m.Id)   
+    @Html.AntiForgeryToken()
+    <div class="row" id="errorValidation">
+        @Html.ValidationSummary(true)
+    </div>     
+    @Html.Hidden("isList", islist)
+    if (Model.ModelType == ModelType.CRMGroup)
+    {
+        <div class="form-group">
+            @Html.LabelFor(m => m.ParentId, "Nhóm cha", new { @class = "col-md-3 control-label" })
+            <div class="col-md-9">
+                @Html.DropDownListFor(m => m.ParentId, new SelectList((IEnumerable<CRMGroup>)ViewData["Groups"], "Id", "Name"), "", new { @class = "form-control", placeholder = "Enter Name" })
+            </div>
+        </div>
+    }
+    <div class="form-group">
+        @Html.LabelFor(m => m.Name, new { @class = "col-md-3 control-label" })
+        <div class="col-md-9">
+            @Html.TextBoxFor(m => m.Name, new { @class = "form-control", placeholder = "Enter Name" })
+        </div>
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(m => m.Description, new { @class = "col-md-3 control-label" })
+        <div class="col-md-9">
+            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "5", col = 30, placeholder = "Enter Description" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-md-3 control-label"></label>
+        <div class="col-md-9">
+            <button type="Submit" class="btn btn-primary">Save</button>
+        </div>
+    </div>
+
+}
+<script type="text/javascript">
+    function onBaseResepose(result) {
+        if (result.Success === undefined) {
+            jQuery(".jconfirm-box").find(".content").html(result);
+            return false;
+        } else {
+            jQuery('.jconfirm .jconfirm-box div.closeIcon').click();
+            if (jQuery('.jconfirm .jconfirm-box').find("input[id='isList']").val() == "True") {
+                jQuery("#btnSearch").click();
+
+            } else {
+                jQuery(".jconfirm-box").find(".content").html(result.Message);
+                switch (result.type) {
+                    case 0:
+                        addOption("CRMSource_Id", result.Model.Name, true, result.Model.Id);
+                        break;
+                    case 2:
+                        addOption("CRMGroup_Id", result.Model.Name, true, result.Model.Id);
+                        break;
+                    case 3:
+                        addOption("CRMJobCategory_Id", result.Model.Name, true, result.Model.Id);
+                        break;
+                    case 1:
+                        addOption("CRMStatus_Id", result.Model.Name, true, result.Model.Id);
+                        break;
+                    case 4:
+                        addOption("EventTypeId", result.Model.Name, true, result.Model.Id);
+                        break;
+                }
+            }
+        }
+
+    }
+
+    var addOption = function (el, text, selected, value) {
+        var obj = document.getElementById(el),
+            opt = document.createElement("option");
+        opt.appendChild(document.createTextNode(text));
+        opt.selected = selected;
+        opt.value = value;
+        obj.appendChild(opt);
+    };
+
+</script>   

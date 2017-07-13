@@ -1,0 +1,92 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.CRM.CRMFilterProfit
+@{
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    var users = (IEnumerable<User>)ViewBag.Users;
+    var depts = (IEnumerable<Department>)ViewBag.Depts;
+    var offices = (IEnumerable<Company>)ViewBag.Offices;
+}
+<div class="row">
+    @Html.ValidationSummary()
+</div>
+<div class="form-group-sm clearfix" style="border: 1px solid cornflowerblue; border-radius: 5px"> 
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.Top, new { @class = "col-sm-3 control-label", style = "width:80px" })
+                <ul class="col-sm-9">
+                    <li class="radio-inline">
+                        @Html.RadioButton("Top", 0, new { @class = "" })<label> All</label>
+                    </li>
+                    <li class="radio-inline">
+                        @Html.RadioButton("Top", 10, new { @class = "" }) <label> Top 10</label>
+                    </li>
+                    <li class="radio-inline">
+                        @Html.RadioButton("Top", 20, new { @class = "" }) <label> Top 20</label>
+                    </li>
+                    <li class="radio-inline">
+                        @Html.RadioButton("Top", 30, new { @class = "" }) <label> Top 30</label>
+                    </li>
+                </ul>
+            </div>
+            <div class="clearfix"></div>
+            <div class="form-group col-md-12">
+                @Html.LabelFor(m => m.BeginDate, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3 ">
+                    @Html.TextBoxFor(m => m.BeginDate, "{0:dd-MM-yyyy}", new { @class = "form-control datepicker " })
+                </div>
+                <div class="col-sm-6 ">
+                    @Html.LabelFor(m => m.EndDate, new { @class = "col-sm-5 control-label" })
+                    @Html.TextBoxFor(m => m.EndDate, "{0:dd-MM-yyyy}", new { @class = "form-control datepicker col-sm-7 " })
+                </div>
+            </div>
+            <div class="form-group col-md-12">
+                <div class="col-md-3"></div>
+                <div class="col-md-9">
+                    <input type="submit" class="btn btn-primary left" value="Search" id="btn-search" />
+                </div>
+
+            </div>
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-md-6">
+            @if (currentUser.IsDepOrDirecter())
+            {
+                <div class="form-group col-md-12">
+                    @Html.Label("Sales", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.UserId, new SelectList(users, "Id", "FullName"), "--Select Sale--", new { @class = "form-control " })
+                    </div>
+                </div>
+            }
+            @if (currentUser.IsDirecter())
+            {
+                <div class="form-group col-md-12">
+                    @Html.Label("Department", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.DeptId, new SelectList(depts, "Id", "DeptName"), "--Select Department--", new { @class = "form-control " })
+                    </div>
+                </div>
+                <div class="form-group col-md-12">
+                    @Html.Label("Office", new { @class = "col-md-3 control-label" })
+                    <div class="col-md-9">
+                        @Html.DropDownListFor(m => m.OfficeId, new SelectList(offices, "Id", "CompanyName"), "--Select Office--", new { @class = "form-control " })
+                    </div>
+                </div>
+            }
+
+        </div>
+        <div class="clearfix"></div>
+
+    </div>
+</div>
+<div class="clearfix" style="height: 10px"></div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        if (jQuery("img.ui-datepicker-trigger").length > 0) {
+            jQuery("img.ui-datepicker-trigger").remove();
+        }
+    })
+</script>

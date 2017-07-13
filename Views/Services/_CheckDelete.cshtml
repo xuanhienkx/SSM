@@ -1,0 +1,5 @@
+﻿@model int
+@if (ViewBag.checkDelete == true)
+{
+    <a href="@Url.Action("Delete", "Services", new {id = Model})" onclick=" return confirm('Are you sure you want to delete?') "><img alt="Delete" src="@Url.Content("~/Images/btn-delete.png")" /></a>
+}

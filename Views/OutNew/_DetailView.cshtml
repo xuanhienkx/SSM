@@ -1,0 +1,46 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.NewsModel
+@{
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+<h3 class="title title-sub col-md-12" style="margin-top: 6px" title="Subject title"> @Html.Raw(Model.Header)</h3>
+<div class="col-md-12 smaill-title">
+    <span> Create by: @string.Format("{0} - at :{1}", Model.CreaterBy.FullName, Model.DateCreate.ToString("dd/MM/yyyy"))</span>
+    <span>Type:@Html.DisplayFor(m => m.Catelory.NameTypeViet)</span>
+</div>
+<div class="col-md-12" style="color: black">
+    @Html.Raw(Model.Contents)
+</div>
+<div>
+    @if (Model.FilesList.Count > 0)
+    {
+        <div id="attachment">
+            <label class="title-filed" style="font-size: 10px">Attachment</label>
+            <ul class="list-unstyled">
+                @foreach (var serverFile in Model.FilesList)
+                {
+                    <li>
+                        @Html.ActionLink(serverFile.FileName, "Download", "OutNew", new { id = serverFile.Id }, new { target = "_blank" })
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</div>
+
+<div class="marginDiv">
+   
+    <div class="allow-edit">
+        @if (User1.IsEditNew(Model))
+        {
+            @Ajax.ActionLink("Edit", "Edit", "OutNew", new {id = Model.Id}, new AjaxOptions()
+            {
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "dataInfo",
+                HttpMethod = "GET"
+            }, new {@class = "new-left-link"})
+        }
+    </div>
+</div>

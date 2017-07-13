@@ -1,0 +1,58 @@
+﻿@using Microsoft.Office.Interop.Excel
+@model System.Collections.Generic.IList<SSM.Models.History>
+<table style="width:100%" class="grid">
+    <tr>
+        <th style="width: 40px"></th>
+        <th style="width: 50px">
+            Model
+        </th>
+
+        <th style="width: 60px">
+            ActionName
+        </th>
+        <th>
+            Message
+        </th>
+        <th style="width: 110px">
+            Created
+        </th>
+    </tr>
+    @if (Model.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+       
+        foreach (var it in Model)
+        {
+            no++;
+            var stype = "";
+            bool hightline = no % 2 == 0;
+            if (hightline)
+            {
+                classLight = "GridLight";
+            }
+            
+            if (it.IsLasted==true && it.IsRevisedRequest)
+            {
+                stype = it.HistoryMessage.Contains("Revised") ? "color: red" : "color: blue";
+            }
+
+            <tr class="@classLight" style="@stype">
+                <td>@no</td>
+                <td>
+                    @it.ObjectType.Split('.')[2]
+                </td>
+                <td>
+                    @it.ActionName
+                </td>
+
+                <td>
+                    @Html.Raw(it.HistoryMessage.Replace(";","<br/>"))
+                </td>
+                <td>
+                    @string.Format("{0:dd/MM/yyyy HH:mm}", it.CreateTime)
+                </td>
+            </tr>
+        }
+    }
+</table>

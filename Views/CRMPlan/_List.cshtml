@@ -1,0 +1,160 @@
+﻿@using System.Globalization
+@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model System.Collections.Generic.List<SSM.Models.CRM.CRMPLanSaleModel>
+@{
+    var salesPlanOffices = (List<CRMSalesPlanOffice>)ViewBag.PlanOfDep;
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+@if (salesPlanOffices != null && salesPlanOffices.Any())
+{
+    @Html.Partial("_OfficeDepList", salesPlanOffices)
+}
+<div class="">
+    @foreach (var item in Model.OrderBy(x => x.Sales.UserName))
+    {
+        var isSubmited = item.IsSubmited && !item.IsApproval;
+        var isApproval = item.IsSubmited && item.IsApproval;
+        string status = "Started";
+        if (isSubmited && isApproval)
+        {
+            status = "Approved";
+        }
+        else if (isSubmited)
+        {
+            status = "Submited";
+        }
+        if (currentUser.Id == item.SalesId && !isSubmited && !isApproval)
+        {
+            using (Ajax.BeginForm("UpdatePlanValue", "CRMPlan", null, new AjaxOptions()
+                   {
+                       HttpMethod = "post",
+                       UpdateTargetId = "ListData"
+                   }, new { @class = "", id = "frmUserPlan" }))
+            {
+                <div style="border: 1px solid #f8a552; margin-top: 15px;">
+                    <div class="crmplan-header-item">
+                        <div class="col-md-6"><h3>Sales: @item.Sales.FullName</h3></div>
+                        <div class="col-md-6 text-right">
+                            <div style="padding: 5px; margin-bottom: 10px;    margin-top: 20px;">
+                                <label style="margin-right: 10px">Status:<b>@status</b></label>
+                                <button type="submit" class="btn btn-xs btn-primary" id="planSave">Save</button>
+                                @Ajax.Link("Submit", "SubmitPlan", "CRMPlan", new { id = item.Id, isSubmit = true }, new MyAjaxOptions()
+                                                {
+                                                    HttpMethod = "get",
+                                                    UpdateTargetId = "ListData",
+                                                }, new { @class = "btn btn-xs btn-info" })
+
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    @Html.Partial("_salesPlanEditView", item)
+                </div>
+            }
+        }
+        else
+        {
+            <div style="border: 1px solid #f8a552; margin-top: 15px;">
+                <div class="crmplan-header-item">
+                    <div class="col-md-6"><h3>Sales: @item.Sales.FullName</h3></div>
+                    <div class="col-md-6 text-right">
+                        <div style="padding: 5px; margin-bottom: 10px;    margin-top: 20px;">
+                            <label style="margin-right: 10px">Status:<b>@status</b></label>
+                            @if (currentUser.IsDepManager() && isApproval)
+                            {
+                                @Ajax.Link("Cancel", "ApprovalPlan", "CRMPlan", new { id = item.Id, isApproval = false }, new MyAjaxOptions()
+                                                {
+                                                    HttpMethod = "get",
+                                                    UpdateTargetId = "ListData",
+                                                }, new { @class = "btn btn-xs btn-danger" })
+                            }
+                            else if (currentUser.IsDepManager() && isSubmited)
+                            {
+                                @Ajax.Link("CancelSubmit ", "SubmitPlan", "CRMPlan", new { id = item.Id, isSubmit = false }, new MyAjaxOptions()
+                                                {
+                                                    HttpMethod = "get",
+                                                    UpdateTargetId = "ListData",
+                                                }, new { @class = "btn btn-xs btn-danger" })
+
+                                @Ajax.Link("Approval", "ApprovalPlan", "CRMPlan", new { id = item.Id, isApproval = true }, new MyAjaxOptions()
+                                                {
+                                                    HttpMethod = "get",
+                                                    UpdateTargetId = "ListData",
+                                                }, new { @class = "btn btn-xs btn-info" })
+                            }
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+                <div>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr class="success">
+                                <th class=""></th>
+                                @foreach (var m in DateTimeFormatInfo.CurrentInfo.MonthNames.Where(x => !string.IsNullOrEmpty(x)))
+                                {
+                                    <th class="">@m.Substring(0, 3)</th>
+                                }
+                                <th class="">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var pmItem in item.CRMPlanProgMountModels)
+                            {
+                                <tr>
+                                    <th>@pmItem.CRMPlanProgramModel.Name </th>
+                                    @for (int i = 1; i <= 12; i++)
+                                    {
+                                        var itemMonth = pmItem.CRMPlanMonthModels.FirstOrDefault(x => x.PlanMonth == i);
+                                        <td class="text-right">@itemMonth.PlanValue</td>
+                                    }
+                                    <th class="text-right"><b>@pmItem.CRMPlanMonthModels.Sum(i => i.PlanValue)</b></th>
+                                </tr>
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="14">
+                                    <div class="text-right">
+                                        @if (isSubmited)
+                                        {
+                                            <div>
+                                                <label>SubmittedBy:</label><span>@item.Sales.FullName </span>
+                                                <label> Date: </label><span>@string.Format("{0:dd-MMM-yyyy}", item.SubmitedDate)</span>
+                                            </div>
+                                        }
+                                        @if (isApproval)
+                                        {
+                                            <div>
+                                                <label>SubmittedBy:</label><span>@item.Sales.FullName </span>
+                                                <label> Date: </label><span>@string.Format("{0:dd-MMM-yyyy}", item.SubmitedDate)</span>
+                                            </div>
+                                            <div>
+                                                <label>ApprovalBy:</label><span>@item.Sales.FullName </span>
+                                                <label> Date: </label><span>@string.Format("{0:dd-MMM-yyyy}", item.ApprovedDate)</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+
+                </div>
+            </div>
+        }
+    }
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        //jQuery("#planSave").on('click', function (e) {
+        //    var form = jQuery("#frmUserPlan");
+        //    form.trigger('submit');
+        //});
+
+    })
+</script>

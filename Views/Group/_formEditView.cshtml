@@ -1,0 +1,167 @@
+﻿@model SSM.Models.GroupModel
+
+<div class="BoxL2">
+    <div class="BoxL3">
+        <div class="BoxL4">
+            <div class="DivHeader">
+                <h2 id="ModifyHeader">
+                    Modify Group
+                </h2>
+            </div>
+            <div>
+                @if (ViewBag.ErrorMessage != null)
+                {
+                    <div class="error-bg error">
+                        @ViewBag.ErrorMessage
+                    </div>
+                }
+            </div>
+            <div style="width: 100%" id="ModifyForm">
+                @using (Html.BeginForm("Edit", "Group", FormMethod.Post, new { id = "frmService" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.HiddenFor(x => x.Id)
+                    <table>
+
+                        <tr>
+                            <td class="TDClass"><label> Name</label></td>
+                            <td class="TDClass">
+                                @Html.TextBoxFor(m => m.Name, new { maxlength = "250" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Description
+                                </label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.TextAreaFor(m => m.Discription, new { maxlength = 5000, style = "width: 658px; height: 182px;" })
+                                <br />
+                                <span class="clearfix">Ghi chú được nhập tối đa 5000 ký tự.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Active
+                                </label>
+                            </td>
+                            <td class="">
+                                @Html.CheckBoxFor(m => m.IsActive, new { @class = "checkTrading" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <label class="col-md-12 title-edit-document">Select user assign to group</label>
+                            </td>
+                            <td>
+                                <div class="col-lg-12">
+                                    <table>
+                                        <tr>
+                                            <td><label class="col-md-12 title-edit-document">User List</label></td>
+                                            <td style="width: 120px"></td>
+                                            <td><label class="col-md-12 title-edit-document">Selected User</label></td>
+                                        </tr>
+                                        <tr>
+                                            <td>@Html.ListBox("ListUser", new SelectList(ViewBag.AllUSer, "Id", "FullName"), new { @class = "user-listbox" })</td>
+                                            <td style="text-align: center; display: table-cell">
+                                                <div class="bloock">
+                                                    <input  id="btnAdd" style="width: 100px; height: 40px; color: white" class="btn btn-success"  value="@string.Format("Add >>")" />
+
+                                                </div>
+                                                <div style="height: 5px"></div>
+                                                <div class="bloock">
+                                                    <input   id="btnRemove" style="width: 100px; height: 40px; color: white" class="btn btn-warning" value="@string.Format("<< Remove")"  />
+                                                </div>
+                                             
+                                            </td>
+                                            <td>@Html.ListBox("ListUserAccesses", new SelectList(Model.UserGroups, "UserId", "User.FullName"), new { @class = "user-listbox" })</td>
+                                        </tr>
+                                        <tr>
+                                            <td><input type="button" id="btnAddAll" value="Add All" style="width: 100px;height: 40px;" class="btn btn-info btn-add-remove" /></td>
+                                            <td></td>
+                                            <td><input type="button" id="btnRemoveAll" value="Remove All" style="width: 100px;height: 40px;" class="btn btn-danger btn-add-remove" /></td>
+                                        </tr> 
+                                    </table> 
+                                </div>
+                            </td>
+                        </tr>
+                        <tr style="height: 20px; " >
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td class="TDClass">
+                                @if (Model.Id != 0)
+                                {
+                                    <input type="button" id="btnSave" value="Updade" style="width: 100px;height: 40px; "  />
+                                }
+                                else
+                                {
+                                    <input type="button" id="btnSave" value="Create" style="width: 100px;height: 40px;" />
+                                }
+                                <input type="button" value="Cancel" onclick="javascript:jQuery('#ModifyDeptZone').hide();" style="width: 100px;height: 40px; background-color:#ED1B2E;" />
+                            </td>
+                        </tr>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        jQuery('#btnAdd').click(function (e) {
+            jQuery('#ListUser > option:selected').appendTo('#ListUserAccesses');
+            e.preventDefault();
+        });
+        jQuery('#btnAddAll').click(function (e) {
+            jQuery('#ListUser > option').appendTo('#ListUserAccesses');
+            e.preventDefault();
+            //jQuery("#ListUserAccesses option").prop("selected", true);
+
+        });
+        jQuery('#btnRemove').click(function (e) {
+            jQuery('#ListUserAccesses > option:selected').appendTo('#ListUser');
+            e.preventDefault();
+        });
+        jQuery('#btnRemoveAll').click(function (e) {
+            jQuery('#ListUserAccesses > option').appendTo('#ListUser');
+            e.preventDefault();
+        });
+        jQuery("#btnSave").click(function (e) {
+            e.preventDefault();
+            jQuery("#ListUserAccesses option").prop("selected", true);
+            var form = document.getElementById('frmService');
+            var formData = new FormData(form);
+            var check = Valid.Group();
+            if (check == true) {
+                e.preventDefault();
+                jQuery.mbqAjax({
+                    method: "POST",
+                    dataType: 'html',
+                    contentType: false,
+                    processData: false,
+                    url: '@Url.Action("Edit","Group")',
+                    data: formData,
+                    success: function (data) {
+                        if (data === "1") {
+                            window.location.href = '@Url.Action("Index","Group", new{id=0})';
+                        } else {
+                            jQuery("#ModifyDeptZone").html(data);
+                            jQuery('#ModifyDeptZone').show();
+                        }
+                    }
+                });
+            } else {
+                return false;
+            }
+        });
+    });
+
+
+</script>

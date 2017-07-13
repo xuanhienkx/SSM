@@ -1,0 +1,51 @@
+﻿@using System.Web.Optimization         
+@using SSM.Models.CRM
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CRM.CrmCusDocumentModel>
+
+@{
+    ViewBag.Title = "Doc cument list";
+    var search = (CRMSearchModel) ViewBag.SearchingMode;
+    var filter = search ?? new CRMSearchModel();
+}
+@Styles.Render("~/Content/CRM")
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("Index", new AjaxOptions()
+{
+    HttpMethod = "post",
+    UpdateTargetId = "ListData",
+    InsertionMode = InsertionMode.Replace
+}))
+{
+    <div class="SectionBlock Expanded BoxL1 fullPage">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>
+                            List Tài Liệu
+                        </h2>
+                    </div>
+                    <div id="SearchBlock" style="float:left;height:auto;">
+
+                    </div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper" style="display: none;">
+                        @Html.Partial("_CRMDocSearch", filter)
+                    </div>
+
+                    <div id="ListData">
+                        @Html.Partial("_List", Model)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+    });
+</script>

@@ -1,0 +1,150 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.ViewModels.Shared.Grid<SSM.Models.AreaModel>
+@{
+    var list = Model.Data.ToList();
+    User currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.Partial("_TopPage", Model)
+    <div style="height:auto;overflow: hidden;">
+        <input type="button" onclick="return edit(0)" id="CreateDept" value="Create a Area" />
+    </div>
+<table style="width: 100%" class="grid">
+    <tr>
+        <th style="width: 40px">STT</th>
+        <th style="min-width: 50px">
+
+            <a href="#" onclick="sortAction('AreaAddress');">
+                <div class="SortHeader-label">Province/City </div>
+                <div id="AreaAddress_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+
+        <th style="min-width: 60px">
+            <a href="#" onclick="sortAction('Country.CountryName');">
+                <div class="SortHeader-label">Country</div>
+                <div id="Country_CountryName_Title" class="SortHeader"></div>
+            </a>
+        </th>
+        <th>
+            Note
+        </th>
+        @if (currentUser.IsAdmin())
+        {  
+            <th>
+                SEE
+            </th>
+
+            <th>
+                HideUser
+            </th>
+        }
+        <th style="width: 50px">
+            Edit
+        </th>
+        <th style="width: 50px">  Delete  </th>
+        @if (currentUser.IsAdmin())
+        {
+            <th style="width: 50px">  IsTrading  </th>
+        }
+    </tr>
+    @if (list.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+
+        foreach (var area in list)
+        {
+            if (area != null)
+            {
+                no++;
+                bool hightline = no % 2 == 0;
+                if (hightline)
+                {
+                    classLight = "GridLight";
+                }
+                <tr class="@classLight">
+                    <td>@no </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(area.AreaAddress))
+                        {
+                            <span>@area.AreaAddress</span>
+                        }
+                    </td>
+                    <td>
+                        @if (area.Country != null)
+                        {
+                            <span>@area.Country.CountryName</span>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(area.Description))
+                        {
+                            <span>@area.Description</span>
+                        }
+                    </td>
+                    @if (currentUser.IsAdmin())
+                    {
+                        <td>
+                            @Html.CheckBox("IsSee", area.IsSee, new { @class = "checkIsSee", @id = "IsSee_" + area.Id })
+                        </td>
+                        <td>
+                            @Html.CheckBox("IsHideUser", area.IsHideUser, new { @class = "checkIsHideUser", @id = "IsHideUser_" + area.Id })
+                        </td>
+                    }
+                    <td>
+                        <a href="javascript:void(0)" onclick="edit(@area.Id)"><img alt="Edit" src="/Images/btn-edit.png" /></a>
+                    </td>
+                    <td>
+                        <a href="@Url.Action("DeleteArea","Data",new { id=area.Id})" onclick="return confirm('Are you sure you want to delete?')"><img alt="Delete" src="/Images/btn-delete.png" /></a>
+                    </td>
+                    @if (currentUser.IsAdmin())
+                    {
+                        <td>
+
+                            <input type="checkbox" class="checkTrading" id="checkTrading_@area.Id" checked="@area.IsTrading" />
+
+                        </td>
+                    }
+                </tr>
+            }
+        }
+    }
+</table>
+<script type="text/javascript">
+    jQuery(".checkIsSee").on("click", function () {
+        var id = jQuery(this).attr("id").split("_")[1];
+        var check = jQuery(this).is(":checked");
+        var url = '@Url.Action("SetAreaIsSee", "Data")';
+        var data = JSON.stringify({ "id": parseInt(id), "isChecked": check });
+        jQuery.mbqAjax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: data,
+            success: function (result) {
+
+            }
+        });
+    });
+    jQuery(".checkIsHideUser").on("click", function () {
+        var id = jQuery(this).attr("id").split("_")[1];
+        var check = jQuery(this).is(":checked");
+        var url = '@Url.Action("SetAreaIsHideUser", "Data")';
+        var data = JSON.stringify({ "id": parseInt(id), "isChecked": check });
+        jQuery.mbqAjax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: data,
+            success: function (result) {
+
+            }
+        });
+    });
+</script>

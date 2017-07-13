@@ -1,0 +1,38 @@
+.HeaderBar {
+    clear: both;
+    min-height: 44px;
+}
+.HeaderBar ul {
+    overflow: hidden;
+    min-height: 31px;
+    margin: 0px auto;
+    padding: 0px;
+    width: 990px;
+    position: relative;
+}
+    .HeaderBar ul li.LogoItem {
+        float: left;
+        padding-left: 17px;
+        list-style: none;
+    }
+    .HeaderBar ul li.RedSquare {
+        float: right;
+        padding-right: 1px;
+        list-style: none;
+    }
+    .HeaderBar ul li img {
+        display: block;
+    }
+    
+.LightBoxContents .HeaderBar ul    {
+    width: 710px;
+    padding: 11px 0px;
+    margin-bottom: 1px;
+    border-bottom: 8px #ed1b2e solid;
+}
+.LightBoxContents .HeaderBar ul li.LogoItem {
+    padding-left: 11px;
+}
+.LightBoxContents .HeaderBar ul li.RedSquare {
+    padding-right: 11px;
+}

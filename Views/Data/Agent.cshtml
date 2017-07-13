@@ -1,0 +1,127 @@
+﻿@model SSM.ViewModels.Shared.Grid<SSM.Models.Agent>
+@using System.Web.Optimization 
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@{
+    ViewBag.Title = "Agent List";
+}
+@{
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+
+@Scripts.Render("~/bundles/SCFListPagingJs") 
+@using (Ajax.BeginForm("Agent", "Data", new AjaxOptions()
+{
+    HttpMethod = "post",
+    UpdateTargetId = "ListData",
+    InsertionMode = InsertionMode.Replace
+}))
+{
+
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>
+                            List Agent
+                        </h2>
+                    </div> 
+                    <div id="SearchBlock" style="float:left;height:auto;"></div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                     </div>
+                    <div class="SectionBlockWrapper" style="display: none;">
+                        <table id="table-sarch">
+                            <tr>
+                                <td class="TDClass"><label>Abb Name</label></td>
+                                <td class="TDClass"> 
+                                    @Html.TextBoxFor(m => m.SearchCriteria.AbbName, new { maxlength = "50" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass"><label>Name</label></td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.AgentName, new { maxlength = "200" })
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="TDClass">
+                                    <label>
+                                        Country
+                                    </label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.DropDownList("SearchCriteria.CountryName", (SelectList)ViewData["CountryListAgent"], "--Select--", new { ReadOnly = "true" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass"><label>Address</label></td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.Address, new { maxlength = "200" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Search" id="btn-search" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div id="ListData">
+                        @Html.Partial("_AgentList", Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<Agent>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label>
+                    </div>
+                    <div style="height:auto;overflow: hidden;">
+                        @if (User1.AllowUpdateAgent || User1.IsAdmin())
+                        {
+                            <input type="button" onclick="return edit(0)" id="CreateDept1" value="Create a Agent" />
+                        }
+                        <input type="hidden" name="ModifyDept" value="@ViewData["ModifyDept"]" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="SectionBlock Expanded BoxL1" id="ModifyDeptZone">
+
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#databaseTab").addClass("Active");
+        jQuery('#databaseTab').activeThisNav();
+        jQuery('#CreateDept1,#CreateDept').click(function () {
+            jQuery("#ModifyHeader").html("New Agent");
+        });
+    });
+
+    function edit(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("EditAgent", "Data")',
+            data: { id: id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#ModifyDeptZone").html(result);
+                jQuery('#ModifyDeptZone').show();
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#", "") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#AbbName').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+</script>

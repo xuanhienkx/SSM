@@ -1,0 +1,398 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.ShipmentModel
+<style type="text/css">
+    .field-validation-error {
+        color: #FF0000;
+        float: left;
+        font-size: 1.2em;
+        margin: auto 15px;
+        padding: 0 0 0 135px;
+        text-align: center;
+    }
+</style>
+
+@{
+    ViewBag.Title = "Detail shipment"; 
+     RevenueModel RevenueModel1 = new RevenueModel();
+    RevenueModel1.Id = Model.Id;
+    IEnumerable<Customer> Shippers = (IEnumerable<Customer>)ViewData["ShippersFull"];
+    IEnumerable<Customer> Cnees = (IEnumerable<Customer>)ViewData["Cnees"];
+    IEnumerable<Agent> Agents = (IEnumerable<Agent>)ViewData["Agents"];
+    IEnumerable<CarrierAirLine> carriers = (IEnumerable<CarrierAirLine>)ViewData["Carriers"];
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    string lookDate = string.Empty;
+    if (Model.IsControl && !Model.IsMainControl)
+    {
+        lookDate = "disabled";
+    }   
+}                        
+              @using (Html.BeginForm())
+              {
+                <div class="SectionBlock Expanded BoxL1">
+                    <style type="text/css">
+                        .field-validation-error {
+                            color: #FF0000;
+                            float: left;
+                            font-size: 1.2em;
+                            margin: auto 15px;
+                            padding: 0 0 0 135px;
+                            text-align: center;
+                        }
+                    </style>
+                    @if (Model.IsMainControl)
+                    {
+                        <style type="text/css">
+                            .page {
+                                width: 100%;
+                            }
+                        </style>
+                    }
+                    <div class="BoxL2">
+                        <div class="BoxL3">
+                            <div class="BoxL4">
+                                <table width="100%">
+                                    <tr>
+                                        <td colspan="2">
+                                            <div class="ButtonZone1">
+                                                <input id="DetailShipmentButton" type="button" value=" SHIPMENT " title="Create New Shipment" style="background-color: #ED1B2E;" />
+                                                @Html.ActionLink("REVENUE", "Revenue", "Shipment", new { id = Model.Id }, new { Class = "RevenueLink" })
+                                                <input id="DocumentsButton" type="button" value="DOCUMENTS" title="Close this Shipment" />
+                                            </div>
+                                            @{Html.RenderPartial("_DocumentMenu", RevenueModel1);}
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 400px">
+                                            <div class="ShipmentRow  refid">
+                                                <label>Ref</label>
+                                                @Html.HiddenFor(x => x.IsMainControl)
+                                                @Html.HiddenFor(x => x.ShipmentRef)
+
+                                                @if (Model.IsMainControl)
+                                                {
+                                                    @Html.HiddenFor(m => m.Id)
+                                                    <input type="text" disabled="disabled" name="idControl" id="idControl" value="@string.Format("C{0}", Model.Id)" />
+                                                }
+                                                else if (Model.ShipmentRef != null)
+                                                {
+                                                    @Html.HiddenFor(m => m.Id)
+                                                    <input type="text" disabled="disabled" title="@Model.ShipmentRef" name="idControlsup" id="idControlsup" value="@string.Format("{0}C", Model.Id)" />
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(m => m.Id, new { disabled = "disabled" })
+                                                }
+
+                                            </div>
+                                        </td>
+                                        <td style="width: 400px">
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.ShipperId)
+                                                @if (Model.IsMainControl)
+                                                {
+                                                    @Html.HiddenFor(m => m.ShipperId)
+                                                    @Html.TextBox("ShipperIdTex", "CONSOL", new { @readonly = "readonly", disabled = "disabled" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownListFor(m => m.ShipperId, new SelectList(Shippers, "Id", "CompanyName"))
+                                                }
+
+                                            </div>
+                                        </td>
+                                        @if (Model.IsMainControl)
+                                        {
+                                            <td rowspan="10" style="align-content: center; vertical-align: top; width: 600px">
+                                                <div class="ShipmentRow col-md-12" style="align-content: center; vertical-align: top;">
+                                                    @Html.Label("Select User for shipment control", new { style = "width: 100%; text-align:center; align-content: center" })
+                                                </div>
+                                                <div class="col-md-12" style="align-content: center; vertical-align: top;">
+                                                    <div class="ShipmentRow userlist2 col-md-4" style="margin: 2px auto">
+                                                        @Html.Label("List Users")
+                                                        @Html.ListBox("AllUserCanSelect", new SelectList(ViewBag.UserList, "Id", "FullName"), new { @class = "user-listbox2 un-required" })<br />
+                                                    </div>
+                                                    <div class="col-md-3 text-center btn-add-remove-mid" style="align-content: center; vertical-align: middle;">
+                                                        <input type="button" id="btnAdd" value="Add >>" class="btn btn-success btn-add-remove" /><br />
+                                                        <input type="button" id="btnRemove" value="<< Remove" class="btn btn-warning btn-add-remove" /><br />
+                                                    </div>
+                                                    <div class="ShipmentRow userlist2  col-md-4" style="margin: 2px auto">
+                                                        @Html.LabelFor(m => m.UserListInControl)
+                                                        @Html.ListBoxFor(m => m.UserListInControl, (IEnumerable<SelectListItem>)ViewBag.UserListSelect, new { @class = "user-listbox2" })<br />
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        }
+                                    </tr>
+                                    <tr>
+                                        <td style="width: 400px">
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.Dateshp)
+                                                @if ((Model.RevenueStatus) == "Pending")
+                                                {
+                                                    @Html.TextBoxFor(m => m.Dateshp, new { @class = lookDate })
+                                                }
+                                                else
+                                                {
+                                                    @Html.HiddenFor(m => m.Dateshp)
+                                                    @Html.TextBoxFor(m => m.Dateshp, new { disabled = "disabled" })
+                                                }
+
+                                            </div>
+                                            <div style="height: 25px; width: auto; float: left;">
+                                                <label for="Dateshp" class="DateInput"></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.CneeId)
+                                                @if (Model.IsTrading)
+                                                {
+                                                    @Html.HiddenFor(m => m.CneeId)
+                                                    @Html.TextBoxFor(m => m.CneeFullName, new { disabled = "disabled", title = Model.CneeName + " - " + Model.CneeFullName })
+                                                }
+                                                else if (Model.IsMainControl)
+                                                {
+                                                    @Html.HiddenFor(m => m.CneeId)
+                                                    @Html.TextBox("CneeIdTex", "CONSOL", new { @readonly = "readonly", disabled = "disabled" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownListFor(m => m.CneeId, new SelectList(Cnees, "Id", "CompanyName"))
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.QtyNumber)
+                                                @if (Model.IsTrading)
+                                                {
+                                                    @Html.HiddenFor(m => m.QtyNumber)
+                                                    @Html.TextBoxFor(m => m.QtyNumber, new { disabled = "disabled" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.TextBoxFor(m => m.QtyNumber)
+                                                }
+
+                                                @Html.ValidationMessageFor(m => m.QtyNumber)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.AgentId)
+                                                @Html.DropDownListFor(m => m.AgentId, new SelectList(Agents, "Id", "AbbName"), new { @class = lookDate })
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.QtyUnit)
+                                                @if (Model.IsTrading)
+                                                {
+                                                    @Html.HiddenFor(m => m.QtyUnit)
+                                                    @Html.TextBoxFor(m => m.QtyUnit, new { disabled = "disabled" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownList("QtyUnit", (SelectList)ViewData["Units"])
+                                                }
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.ServiceName)
+                                                @if (Model.IsTrading)
+                                                {
+                                                    @Html.HiddenFor(m => m.ServiceId)
+                                                    @Html.TextBoxFor(m => m.TypeServices.SerivceName, new { disabled = "disabled" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownList("ServiceId", (SelectList)ViewData["Services"], new { @class = lookDate })
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.CarrierAirId)
+                                                @Html.DropDownListFor(x => x.CarrierAirId, new SelectList(carriers, "Id", "AbbName"), new { @class = lookDate })
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.HouseNum)
+                                                @Html.TextBoxFor(m => m.HouseNum, new { @class = "masterNum-input " })
+                                            </div>
+                                            <div style="height: 25px; display: inline-table">
+                                                @if (!Model.IsMainControl)
+                                                {
+                                                    @Html.CheckBoxFor(m => m.HouseNumCheck, new { @class = "shipment-check ", texboxData = "HouseNum" })
+                                                }
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.DepartureId)
+                                                @Html.DropDownList("CountryDeparture", (SelectList)ViewData["CountryList"], new { @class = lookDate })
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.MasterNum)
+                                                @Html.TextBoxFor(m => m.MasterNum, new { @class = "masterNum-input " + lookDate })
+                                            </div>
+                                            <div style="height:25px; display: inline-table">
+                                                @if (string.IsNullOrEmpty(lookDate))
+                                                {
+                                                    @Html.CheckBoxFor(m => m.MasterNumCheck, new { @class = "shipment-check " + lookDate, texboxData = "MasterNum" })
+                                                }
+
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                <label></label>
+                                                @Html.DropDownList("DepartureId", (SelectList)ViewData["AreaListDep"], "--Please select--", new { @class = lookDate })
+                                                @Html.ValidationMessageFor(m => m.DepartureId)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.SaleType)
+                                                @if (Model.RevenueStatus.Equals("Approved"))
+                                                {
+                                                    @Html.DropDownList("SaleType", (SelectList)ViewData["SaleTypes"], new { disabled = "disabled" })
+                                                }
+                                                else
+                                                {
+                                                    @Html.DropDownList("SaleType", (SelectList)ViewData["SaleTypes"])
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.DestinationId)
+                                                @Html.DropDownList("CountryDestination", (SelectList)ViewData["CountryList"], new { @class = lookDate })
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.LabelFor(m => m.SFreights)
+                                                @Html.TextBoxFor(m => m.SFreights, new { @class = "un-required " })
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                <label></label>
+                                                @Html.DropDownList("DestinationId", (SelectList)ViewData["AreaListDes"], "--Please select--", new { @class = lookDate })
+                                                @Html.ValidationMessageFor(m => m.DestinationId)
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                @Html.HiddenFor(m => m.VoucherId)
+                                                @Html.HiddenFor(m => m.IsTrading)
+                                                @if (Model.IsMainControl)
+                                                {
+                                                    var txtTotal = "Total " + Model.UserListInControl.Count + " sale selected in control";
+                                                    <div class="ShipmentRow">
+                                                        <label>User List</label>
+
+                                                        @Html.TextBox("userListSelect", txtTotal, new { disabled = "disabled" })
+
+                                                    </div>
+                                                }
+                                                @if (Model.Order != null)
+                                                {
+                                                    <label for="Order_VoucherNo">Sales Order No</label>
+                                                    @Html.TextBoxFor(m => m.Order.VoucherNo, new { disabled = "disabled" })
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            @*<div class="ShipmentRow" style="padding-top: 10px; width: 145px;">
+                                                    <label></label>
+                                                </div>
+                                                @Html.CheckBoxFor(m => m.LockShipment)
+                                                <span style="font-size: 1.2em;">lock shipment. Your shipment automatic to lock at</span>  <span style="font-size: 1.2em; color: #ED1B2E; font-weight: bold;">@Model.LockDate</span>*@
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="ShipmentRow" style="padding-top: 10px">
+                                                <label></label>
+                                                <span class="Label" style="font-size: 1.4em; float: right">Last Update @Model.UpdateDate by @ViewData["UserName"] </span>
+                                            </div>
+                                        </td>
+
+                                        <td>
+
+
+                                            <div class="ShipmentRow" style="padding-top: 10px">
+                                                <label></label>
+                                                @if (Model.isDelivered)
+                                                {
+                                                    <span class="Label" style="font-size: 1.4em;">shipment delivered on @Model.DeliveredDate </span>
+                                                }
+                                            </div>
+
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <div class="ButtonZone">
+                                                   @Html.ActionLink("Close", "Index", "Shipment", new { id = 0 }, new { Class = "ShipmentLink", style = "background-color:#ED1B2E;" })
+                                               
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ShipmentRow">
+                                                <div class="DOZone">
+                                                    
+                                                </div>
+                                                <input type="hidden" name="submitType" value="submit" id="submibType" />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              } 
+<script type="text/javascript">
+        jQuery(document).ready(function () {
+            jQuery("#FileTab").addClass("Active");
+            jQuery('#FileTab').activeThisNav();
+
+            jQuery('#DocumentMenuContainer').hide();
+
+            jQuery("#DocumentMenuContainer .Close").click(function () {
+                jQuery('#DocumentMenuContainer').hide();
+            });
+            jQuery("#DocumentsButton").click(function () {
+                jQuery('#DocumentMenuContainer').show();
+            });
+            jQuery("input[type='text'],input[type='checkbox'],select,textarea").attr("disabled", "disabled");
+
+        });  
+</script>

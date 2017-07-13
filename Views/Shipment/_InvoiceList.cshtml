@@ -1,0 +1,110 @@
+﻿@using SSM.Models
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.InvoideIssued>
+@{
+    int no = 0;
+}
+
+@if (Model.Data == null || Model.Data.Count() <= 0)
+{
+
+    <label>Data is not Found!</label>
+}
+else
+{        @Html.Partial("_TopPage", Model)
+    <table class="grid" width="850px">
+        <tr>
+            <th>
+                NO.
+            </th>
+            <th>
+                Invoice NO
+            </th>
+            <th>
+                Ref #
+            </th>
+            <th>
+                ETD / ETA
+            </th>
+            <th>
+                Shipper
+            </th>
+            <th>
+                CNEE
+            </th>
+
+            <th>
+                Date Issue
+            </th>
+            <th>See</th>
+        </tr>
+        @foreach (InvoideIssued Invoice1 in Model.Data)
+        {
+            no++;
+            <tr>
+                <td>@no</td>
+                <td>
+                    @Invoice1.InvoiceNo
+                </td>
+                <td>
+                    @Invoice1.ShipmentId
+                </td>
+                <td>
+                    @string.Format("{0:dd/MM/yyyy}", Invoice1.Shipment.DateShp)
+                </td>
+                <td>
+                    @Invoice1.Shipment.Customer.CompanyName
+                </td>
+                <td>
+                    @Invoice1.Shipment.Customer1.CompanyName
+                </td>
+
+                <td>
+                    @string.Format("{0:dd/MM/yyyy}", Invoice1.Date)
+                </td>
+                <td class=" ">
+                    <span title="View Detail" style="cursor: pointer" onclick="GetDetailInvoice(@Invoice1.RevenueId)">
+                        <img alt="View" src="../../Images/btn-view.png" />
+                    </span>
+                </td>
+
+            </tr>
+        }
+        <tfoot>
+            <tr>
+                <td colspan="8" style="width: 100%">
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<InvoideIssued>.PageSizeSelectList(), new { onchange = "onPageSizeChange()", style = "padding-top: 0px;padding-left:8px" })
+                        <label style="width: 130px">Rows per page</label>
+                    </div>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+}
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        new DateTimePicker('DateFrom', 'dd/MM/yyyy');
+        new DateTimePicker('DateTo', 'dd/MM/yyyy');
+    });
+    function GetDetailInvoice(ids) {
+        var url = '@Url.Action("RevenueDetail","Shipment")';
+        jQuery.mbqAjax({
+            url: url,
+            method: "GET",
+            dataType: 'html',
+            data: { id: ids },
+            success: function (result) {
+                if (result != null || result !== undefined) {
+                    jQuery.mbqDialog({
+                        title: "Reveneu " + ids,
+                        content: result,
+                        columnClass: 'col-md-9 col-md-offset-2',
+                        theme: 'bootstrap',
+                    });
+                }
+            }
+        });
+    }
+</script>

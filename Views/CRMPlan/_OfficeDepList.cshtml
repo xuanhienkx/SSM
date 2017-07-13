@@ -1,0 +1,86 @@
+﻿@using System.Globalization
+@using SSM.Models.CRM
+@model System.Collections.Generic.List<SSM.Models.CRM.CRMSalesPlanOffice>
+@{
+
+    var allPrograms = (List<CRMPlanProgramModel>)ViewBag.AllPrograms;
+}
+@if (Model != null && Model.Any())
+{
+    <div>
+        <div class="crmplan-header-item">
+            <div class="col-md-12"><h3>Kế hoạch Office</h3></div>
+            <div class="clearfix"></div>
+        </div>
+        <div>
+            <table class="table table-bordered" style="background: gainsboro">
+                <thead>
+                    <tr class="success">
+                        <th class=""></th>
+                        @foreach (var m in DateTimeFormatInfo.CurrentInfo.MonthNames.Where(x => !string.IsNullOrEmpty(x)))
+                        {
+                            <th class="">@m.Substring(0, 3)</th>
+                        }
+                        <th class="">Total</th>
+                    </tr>
+                </thead>
+                @if (allPrograms != null && allPrograms.Any())
+                {
+                    foreach (var p in allPrograms)
+                    {
+
+                        <tr>
+                            <th>@p.Name</th>
+                            @for (int i = 1; i <= 12; i++)
+                            {
+                                <th class="text-right">@Model.Sum(x => x.PlanProgMonths.Sum(k=>k.CRMPlanMonthModels.Where(s => s.PlanMonth == i).Sum(v => v.PlanValue)))</th>
+                            }
+                            <th class="text-right"><b>@Model.Sum(x => x.PlanProgMonths.Sum(k => k.CRMPlanMonthModels.Sum(v => v.PlanValue)))</b></th>
+                        </tr>
+                    }
+                }
+            </table>
+
+        </div>
+    </div>
+
+    <div class="">
+        @foreach (var d in Model)
+        {
+            <div class="crmplan-header-item">
+                <div class="col-md-12"><h3>Phòng: @d.Department.DeptName</h3></div>
+                <div class="clearfix"></div>
+            </div>
+            <div>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th class=""></th>
+                            @foreach (var m in DateTimeFormatInfo.CurrentInfo.MonthNames.Where(x => !string.IsNullOrEmpty(x)))
+                            {
+                                <th class="">@m.Substring(0, 3)</th>
+                            }
+                            <th class="">Total</th>
+                        </tr>
+                    </thead>
+                    @if (allPrograms != null && allPrograms.Any())
+                    {
+                        foreach (var p in allPrograms)
+                        {
+                            var item = d.PlanProgMonths.Where(x => x.ProgramId == p.Id).ToList();
+                            <tr>
+                                <th>@p.Name</th>
+                                @for (int i = 1; i <= 12; i++)
+                                {
+                                    <th class="text-right">@item.Sum(x => x.CRMPlanMonthModels.Where(s => s.PlanMonth == i).Sum(v => v.PlanValue))</th>
+                                }
+                                <th class="text-right"><b>@item.Sum(x => x.TotalPlan)</b></th>
+                            </tr>
+                        }
+                    }
+                </table>
+
+            </div>
+        }
+    </div>
+}

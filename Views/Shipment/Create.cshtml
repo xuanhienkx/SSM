@@ -1,0 +1,337 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@model SSM.Models.ShipmentModel
+
+@{
+    ViewBag.Title = "Create Shipment";
+}
+<style type="text/css">
+    .field-validation-error {
+        color: #FF0000;
+        float: left;
+        font-size: 1.2em;
+        margin: auto 15px;
+        padding: 0 0 0 135px;
+        text-align: center;
+    }
+</style>
+@{
+    var user1 = (User)Session[AccountController.USER_SESSION_ID];
+    var cnees = ((IEnumerable<Customer>)ViewData["Cnees"]).Where(x => !string.IsNullOrEmpty(x.CompanyName));
+    var shippers = ((IEnumerable<Customer>)ViewData["ShippersFull"]).Where(x => !string.IsNullOrEmpty(x.CompanyName));
+    var agents = (IEnumerable<Agent>)ViewData["Agents"];
+    var carriers = (IEnumerable<CarrierAirLine>)ViewData["Carriers"];
+    carriers = carriers.OrderBy(x => x.AbbName);
+}
+@using (Html.BeginForm("create", "shipment"))
+{
+    Html.EnableClientValidation();
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <h4 class="Subject">Create New Shipment</h4>
+                    <table width="100%">
+                        <tr>
+                            <td style="width:400px">
+                                <div class="ShipmentRow">
+                                    <label>Ref</label>
+                                    @Html.TextBoxFor(m => m.Id, new { disabled = "disabled" })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.ShipperId)
+                                    @Html.DropDownList("ShipperId", new SelectList(shippers.OrderBy(x=>x.CompanyName), "Id", "CompanyName"))
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width:400px">
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.Dateshp)
+                                    @Html.TextBoxFor(m => m.Dateshp)
+                                    @Html.ValidationMessageFor(m => m.Dateshp)
+                                </div>
+                                <div style="height:25px;width:auto;float:left;">
+                                    <label for="Dateshp" class="DateInput"></label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.CneeId)
+                                    @Html.DropDownList("CneeId", new SelectList(cnees.OrderBy(x => x.CompanyName), "Id", "CompanyName"))
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.QtyNumber)
+                                    @Html.TextBoxFor(m => m.QtyNumber)
+                                    @Html.ValidationMessageFor(m => m.QtyNumber)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.AgentId)
+                                    @Html.DropDownList("AgentId", new SelectList(agents, "Id", "AbbName"))
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.QtyUnit)
+                                    @Html.DropDownListFor(m=>m.QtyUnit, (SelectList)ViewData["Units"])
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.ServiceId)
+                                    @Html.DropDownListFor(m=>m.ServiceId, (SelectList)ViewData["Services"])
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.CarrierAirId)
+                                    @Html.DropDownListFor(x=>x.CarrierAirId, new SelectList(carriers, "Id", "AbbName"))
+
+
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.HouseNum)
+                                    @Html.TextBoxFor(m => m.HouseNum)
+                                </div>
+                                <div style="height:25px;width:auto;float:left;">
+                                    @Html.CheckBoxFor(m => m.HouseNumCheck, new { @class = "shipment-check", texboxData = "HouseNum" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.DepartureId)
+                                    @Html.DropDownListFor(m=>m.CountryDeparture, (SelectList)ViewData["CountryList"])
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.MasterNum)
+                                    @Html.TextBoxFor(m => m.MasterNum)
+                                </div>
+                                <div style="height:25px;width:auto;float:left;">
+                                    @Html.CheckBoxFor(m => m.MasterNumCheck, new { @class = "shipment-check", texboxData = "MasterNum" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    <label></label>
+                                    @Html.DropDownList("DepartureId", (SelectList)ViewData["AreaListDep"], "--Please select--")
+                                    @Html.ValidationMessageFor(m => m.DepartureId)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.SaleType)
+                                    @Html.DropDownList("SaleType", (SelectList)ViewData["SaleTypes"])
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.DestinationId)
+                                    @Html.DropDownListFor(m=>m.CountryDestination, (SelectList)ViewData["CountryList"])
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.SFreights)
+                                    @Html.TextBoxFor(m => m.SFreights, new { @class = "un-required" })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    <label></label>
+                                    @Html.DropDownList("DestinationId", (SelectList)ViewData["AreaListDes"], "--Please select--")
+                                    @Html.ValidationMessageFor(m => m.DestinationId)
+                                </div>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div class="ShipmentRow" style="padding-top:30px">
+                                    <label></label>
+                                    <span class="Label" style="font-size:1.4em;">Create on @DateTime.Now.ToString("dd/MMM/yyyy") by @user1.FullName </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ButtonZone">
+                                    <input id="submitButton" class="btn btn-primary" type="button" value="Create" title="Create New Shipment" />
+
+                                    @Html.ActionLink("Close", "Index", "Shipment", new { id = 0 }, new { Class = "ShipmentLink", style = "background-color:#ED1B2E;" })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    <input type="hidden" name="submitType" value="submit" id="submibType" />
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("input[type='text']:not(:disabled),select:not(dir:disabled)").each(function () {
+            var $elm = jQuery(this);
+            if ($elm.hasClass("un-required") == false)
+                $elm.addClass("required"); 
+        });
+
+        jQuery('#HouseNumCheck,#MasterNumCheck').click(function () {
+            var inputName = jQuery(this).attr("texboxData");
+            if (jQuery(this).is(':checked')) {
+                jQuery('#' + inputName).val("CHUA BILL");
+                jQuery('#' + inputName).attr("disabled", "disabled");
+            } else {
+                jQuery('#' + inputName).val("");
+                jQuery('#' + inputName).removeAttr("disabled");
+            }
+        });
+        jQuery("#FileTab").addClass("Active");
+        jQuery('#FileTab').activeThisNav();
+
+        jQuery("input#submitButton").click(function () {
+            var check = true;
+            check = jQuery("form").CheckRequired();
+            if (check == false)
+                return false;
+            jQuery('#submitType').val('submit');
+            //jQuery("#submitButton").find("form:first").submit();
+            var form = jQuery("#submitButton").parents("form:first");
+            form.trigger('submit');
+        });
+
+        jQuery('#deleteButton').bind('click', function (event) {
+            jQuery('#submibType').val('delete');
+            jQuery(this).parents('form').submit();
+        });
+        jQuery('#closeButton').bind('click', function (event) {
+            jQuery('#submibType').val('close');
+            jQuery(this).parents('form').submit();
+        });
+        new DateTimePicker('Dateshp', 'dd/MM/yyyy');
+        jQuery("#CountryDeparture").change(function () {
+            getWeather(jQuery(this).val(), 'DepartureId');
+        });
+        jQuery("#CountryDestination").change(function () {
+            getWeather(jQuery(this).val(), 'DestinationId');
+        });
+        function getWeather(_CountryId, destination) {
+            var URL = "../../Shipment/GetJsonByCountry/0";
+            jQuery.getJSON(URL, { CountryId: _CountryId }, function (data) {
+                var result = '<option value="">--Please select--</option>';
+                jQuery.each(data, function (index, d) {
+                    if (d.Id != '') {
+                        result += '<option value="' + d.Id + '">' + d.AreaAddress + '</option> ';
+                    }
+                });
+                jQuery("#" + destination).html(result);
+            });
+        }
+        //jQuery("#ServiceName").change(function () {
+        //    getCarrier(jQuery(this).val(), 'CarrierAirId');
+        //    getUnit(jQuery(this).val(), 'QtyUnit');
+
+        //});
+        jQuery("#ServiceId").change(function () {
+            getCarrier(jQuery(this).find("option:selected").text(), 'CarrierAirId');
+            getUnit(jQuery(this).find("option:selected").text(), 'QtyUnit');
+
+        });
+        function getUnit(_ServiceName, destination) {
+            var URL = "../../Shipment/GetUnitJsonByService/0";
+            jQuery.getJSON(URL, { ServiceName: _ServiceName }, function (data) {
+                var result = '';
+                jQuery.each(data, function (index, d) {
+                    if (d.Id != '') {
+                        result += '<option value="' + d.Unit1 + '">' + d.Unit1 + '</option> ';
+                    }
+                });
+                jQuery("#" + destination).html(result);
+            });
+        }
+        function getCarrier(_ServiceName, destination) {
+            var URL = "../../Shipment/GetCarrierJsonByService/0";
+            jQuery.getJSON(URL, { ServiceName: _ServiceName }, function (data) {
+                var result = '';
+                jQuery.each(data, function (index, d) {
+                    if (d.Id != '') {
+                        result += '<option value="' + d.Id + '" title="' + d.Description + '">' + d.AbbName + '</option> ';
+                    }
+                });
+                jQuery("#" + destination).html(result);
+            });
+        }
+        /**
+        var $optionsCustomer = jQuery(".CustomizeTooltip");
+        var i = 0;
+        for (i = 0; i < $optionsCustomer.length; i++) {
+            var $eachOption = $optionsCustomer[i];
+            jQuery($eachOption).mouseover(function (e) {
+
+                //Grab the title attribute's value and assign it to a variable
+                var tip = jQuery(this).attr('title');
+
+                //Remove the title attribute's to avoid the native tooltip from the browser
+                jQuery(this).attr('title', '');
+
+                //Append the tooltip template and its value
+                jQuery(this).parent().parent().parent().append('<div id="tooltip"><div class="tipHeader"></div><div class="tipBody">' + tip + '</div><div class="tipFooter"></div></div>');
+
+                //Set the X and Y axis of the tooltip
+                jQuery('#tooltip').css('top',  50);
+                jQuery('#tooltip').css('left', 380);
+
+                //Show the tooltip with faceIn effect
+                jQuery('#tooltip').fadeIn('500');
+                jQuery('#tooltip').fadeTo('10', 0.8);
+
+            }).mousemove(function (e) {
+
+                //Keep changing the X and Y axis for the tooltip, thus, the tooltip move along with the mouse
+                jQuery('#tooltip').css('top',  50);
+                jQuery('#tooltip').css('left', 380);
+
+            }).mouseout(function () {
+
+                //Put back the title attribute's value
+                jQuery(this).attr('title', jQuery('.tipBody').html());
+
+                //Remove the appended tooltip template
+                jQuery(this).parent().parent().parent().children('div#tooltip').remove();
+
+            });
+        }
+        **/
+    });
+</script>

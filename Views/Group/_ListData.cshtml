@@ -1,0 +1,71 @@
+﻿@using SSM.Models
+@model SSM.ViewModels.Shared.GridNew<SSM.Models.Group,SSM.Models.GroupModel>
+
+@Html.Partial("_TopPage", Model)
+<div style="height: auto; overflow: hidden;">
+    <input type="button" onclick="return edit(0);" id="CreateDept" value="Create a Group" />
+    @if (ViewBag.MessageErr != null)
+    {
+        <span class="text-danger"> @ViewBag.MessageErr </span>
+    }
+</div>
+<table width="100%" class="grid">
+    <tr>
+        <th>No</th> 
+        <th>
+            Name
+        </th>
+        <th>IsActived</th>
+        <th style="width: 40px">
+            Edit
+        </th>
+        <th style="width: 40px">
+            Delete
+        </th>
+    </tr>
+    @if (Model.Data != null && Model.Data.Any())
+    {
+        int no = 0;
+        foreach (var it in Model.Data)
+        {
+            no++;
+            var hightline = no % 2 == 0 ? "GridLight" : string.Empty;
+            <tr class="@hightline">
+                <td>
+                    @no
+                </td>   
+                <td>
+                    @it.Name
+                </td>
+                <td>
+                    @Html.CheckBox("IsActive", it.IsActive, new { @class = "serviceActive", @id = "IsActive_" + it.Id })
+                </td>
+                <td>
+                    <a onclick="edit(@it.Id)"><img alt=" edit" src="../../Images/btn-edit.png" /></a>
+                </td>
+                <td>
+                    
+                    @{Html.RenderAction("CheckDelete", new { id = it.Id });}
+                   
+                </td>
+            </tr>
+        }
+    }
+</table>
+<script type="text/javascript">
+    jQuery(".serviceActive").on("click", function () {
+        var id = jQuery(this).attr("id").split("_")[1];
+        var check = jQuery(this).is(":checked");
+        var url = '@Url.Action("SetGroupActive", "Group")';
+        var data = JSON.stringify({ "id": parseInt(id), "isActive": check });
+        jQuery.mbqAjax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: data,
+            success: function (result) {
+            }
+        });
+    });
+</script>

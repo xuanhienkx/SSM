@@ -1,0 +1,45 @@
+﻿@using System.Web.Optimization
+@using SSM.Common
+@using SSM.Models.CRM
+@model System.Collections.Generic.List<SSM.Models.CRM.CrmFilterTopProfitByStore>
+
+@{
+    ViewBag.Title = "Following Customer";
+    CRMFilterFollowProfit filter = (CRMFilterFollowProfit)ViewBag.Filter;
+}
+@Styles.Render("~/Content/CRM")
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<div class="SectionBlock Expanded BoxL1 fullPage">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4"> 
+                <div class="col-md-12 clearfix">
+                    @using (Ajax.BeginForm("CRMFollowProfit", "CRMReport", null, new AjaxOptions()
+                    {
+                        HttpMethod = "post",
+                        UpdateTargetId = "ListData"
+                    }, new { @class = "form-inline" }))
+                    {
+                        @Html.Partial("_SearchCrmFollowProfitView", filter)
+                    }
+                </div>
+                <div id="ListData">
+                    @Html.Partial("_CrmTopProfitList", Model)
+                </div>
+                <div id="gridFooter">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+    });
+
+</script>
+
+

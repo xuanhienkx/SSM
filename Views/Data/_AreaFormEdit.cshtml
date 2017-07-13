@@ -1,0 +1,103 @@
+﻿@using SSM.Models
+@model SSM.Models.AreaModel
+<div class="BoxL2">
+    <div class="BoxL3">
+        <div class="BoxL4">
+            <div class="DivHeader">
+                <h2>
+                    Modify Area
+                </h2>
+            </div>
+            <div style="width: 100%" id="ModifyForm">
+                @using (Html.BeginForm("Area", "Data" , FormMethod.Post, new { id = "frm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <table>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Province/City</label></td>
+                                <td class="TDClass">
+                                    @Html.HiddenFor(m => m.Id)
+                                    @Html.TextBoxFor(m => m.AreaAddress, new{maxlength=20})
+                                </td>
+                            </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label> Country</label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.DropDownList("CountryId", (SelectList)ViewData["CountryList"]) 
+                                     
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    IsTrading
+                                </label>
+                            </td>
+                            <td class="">
+                                @Html.CheckBoxFor(x => x.IsTrading)
+                            </td>
+                        </tr>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>
+                                        Note</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.TextAreaFor(m => m.Description, new { style = "width: 643px; height: 96px;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    @if (Model.Id != 0)
+                                    {
+                                        <input type="button" id="btnSave"   value="Updade" />
+                                    }
+                                    else
+                                    {
+                                        <input type="button" id="btnSave"   value="Create" />
+                                    }
+                                    <input type="button" value="Cancel" onclick="javascript: jQuery('#ModifyDeptZone').hide();" style="width: 75px; background-color: #ED1B2E;" />
+                                </td>
+                            </tr>
+                        </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#btnSave").click(function (e) {
+            var form = document.getElementById('frm');
+            var formData = new FormData(form);
+            var check = Valid.Area();
+            if (check == true) {
+                e.preventDefault();
+                jQuery.mbqAjax({
+                    method: "POST",
+                    dataType: 'html',
+                    contentType: false,
+                    processData: false,
+                    url: '@Url.Action("EditArea","Data")',
+                    data: formData,
+                    success: function (data) {
+                        if (data === "1") {
+                            window.location.href = '@Url.Action("Area","Data")';
+                        } else {
+                            jQuery("#ModifyDeptZone").html(data);
+                            jQuery('#ModifyDeptZone').show();
+                        }
+                    }
+                });
+            } else {
+                return false;
+            }
+        });
+    });
+
+</script>

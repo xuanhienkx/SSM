@@ -1,0 +1,10 @@
+﻿@using SSM.Common
+@model SSM.Models.CRM.CRMPlanMonthModel 
+@using (Html.BeginCollectionItem("CRMPlanMonthModels"))
+{
+    @Html.HiddenFor(m => m.Id)                
+    @Html.HiddenFor(m => m.PlanMonth)
+    @Html.HiddenFor(m => m.PlanYear)
+    @Html.HiddenFor(m => m.ProgramMonthId)
+    @Html.TextBoxFor(m => m.PlanValue, new { @class = "number CurrentQty text-center form-control input-sm crm-planValue" })
+}

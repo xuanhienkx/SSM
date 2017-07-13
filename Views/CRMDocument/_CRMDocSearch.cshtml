@@ -1,0 +1,74 @@
+﻿@using SSM.Models
+@using SSM.Models.CRM
+@model CRMSearchModel
+@{
+    var allSales = (SelectList)ViewBag.AllSales;
+    var allDepts = new SelectList((IEnumerable<Department>)ViewData["Departments"], "Id", "DeptName");
+    ;
+}
+<div class="row">
+    @Html.ValidationSummary(true)
+</div>
+<div class="row form-group-sm">
+
+    <div class="col-md-12 form-horizontal">
+        <div class="col-md-5">
+            <div class="form-group">
+                @Html.LabelFor(m => m.CompanyName, new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9 ">
+                    @Html.TextBoxFor(m => m.CompanyName, new { @class = "form-control " })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Id, "Customer ID", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(m => m.Id, new { @class = "form-control text-right ", style = "width: 80px;", maxlength = 6 })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-7">
+            <div class="form-group">
+                @Html.LabelFor(m => m.SalesId, "Users", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3 ">
+                    @Html.DropDownListFor(m => m.SalesId, allSales, "--Chon Sales--", new { @class = "form-control " })
+                </div>
+                @Html.LabelFor(m => m.DeptId, "Phòng", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3 ">
+                    @Html.DropDownListFor(m => m.DeptId, allDepts, "--Chọn phòng--", new { @class = "form-control " })
+                </div>
+            </div>
+            <div class="form-group form-inline">
+                @Html.LabelFor(m => m.FromDate, "FromDate", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(m => m.FromDate, "{0:dd/MM/yyyy}", new { @class = "form-control required fromDate datepicker datepicker-check hasDatepicke" })
+                </div>
+                @Html.LabelFor(m => m.ToDate, "ToDate", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3 ">
+                    @Html.TextBoxFor(m => m.ToDate, "{0:dd/MM/yyyy}", new { @class = "form-control toDate required datepicker datepicker-check hasDatepicke" })
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="col-md-3">
+            <input type="submit" class="btn btn-primary" value="Search" id="btn-search" />
+        </div>
+        <div class="col-md-9">
+            
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+    <div class="col-md-4"></div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery('#UserFullName').GetAutoSugget({
+            url: '@Url.Action("UserSuggest", "CRM")',
+            //targerId: "#CrmCountryId"
+        });
+        jQuery("#DepartmentName").GetAutoSugget({
+            url: '@Url.Action("DepartmentSuggest", "CRM")',
+            // targerId: "#CrmCategoryId"
+        });
+    });
+</script>

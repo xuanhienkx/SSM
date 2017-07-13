@@ -1,0 +1,50 @@
+﻿@using System.Web.Optimization
+@using SSM.Models.CRM
+@model System.Collections.Generic.List<SSM.Models.CRM.CRMFilterProfitResult>
+
+@{
+    ViewBag.Title = "Top Profit customer";
+    CRMFilterProfit filter = (CRMFilterProfit)ViewBag.Filter;
+}
+@Styles.Render("~/Content/CRM")
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<div class="SectionBlock Expanded BoxL1 ">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4">
+                <div class="DivHeader">
+                    <h2>
+                        @ViewBag.Title
+                    </h2>
+                </div>
+
+                <div class="col-md-12 clearfix">
+                    @using (Ajax.BeginForm("CRMTopProfit", "CRMReport", null, new AjaxOptions()
+                    {
+                        HttpMethod = "post",
+                        UpdateTargetId = "ListData"
+                    }, new { @class = "form-inline" }))
+                    {
+                        @Html.Partial("_SearchCrmProfitView", filter)
+                    } 
+                </div>
+                <div id="ListData" >
+                    @Html.Partial("_CrmTopProfitList", Model)
+                </div>
+                <div id="gridFooter">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+    });
+
+</script>
+
+

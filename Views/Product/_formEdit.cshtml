@@ -1,0 +1,234 @@
+﻿@model SSM.Models.ProductModel
+@{
+    //var disabled = string.Empty;
+    bool detail = ViewBag.IsDatail != null && (bool)ViewBag.IsDatail;
+    var disabled = detail ? "disabled" : string.Empty;
+}
+
+<div class="BoxL2">
+    <div class="BoxL3">
+        <div class="BoxL4">
+            <div class="DivHeader">
+                @if (!detail)
+                {
+                    <h2 id="ModifyHeader">
+                        Modify Product
+                    </h2>
+                }
+            </div>
+            <div style="width: 100%" id="ModifyForm">
+                @using (Html.BeginForm("Edit", "Product", null, FormMethod.Post, new { id = "frmProduct", enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <div>
+                        @if (ViewBag.MessageErr != null)
+                        {
+                            <span style="color: red" class="text-danger">@ViewBag.MessageErr</span>
+                        }
+                    </div>
+                    <table style="width: 100%" class="product-table">
+                        <tr>
+                            <td colspan="3">
+                                @Html.ValidationSummary()
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass plable"><label>Code</label></td>
+                            <td class="TDClass">
+                                @Html.HiddenFor(m => m.Id)
+                                @Html.TextBoxFor(m => m.Code, new { maxlength = "20", onblur = "javaScript:jQuery(this).replaceSpecialCharacter();", @class = disabled })
+                                <br />
+                                <div style="clear: both"></div>
+                                <div class="clearfix">
+                                    <span>Tìm kỹ trước khi nhập mới, tên viết tắt không quá 20 ký tự.</span>
+                                </div>
+                            </td>
+                            <td rowspan="4">
+
+                                <div id="imgArea">
+                                    @if (Model.Image != null && !string.IsNullOrEmpty(Model.ContentType))
+                                    {
+                                        <img src="@Url.Action("GetImange", "Product", new { id = Model.Id })" style="cursor: pointer;" onclick="return ShowImage()" alt="product Thumbnail" id="image_Thumbnail_file" />
+                                    }
+                                    else
+                                    {
+                                        <img src="@Url.Content("~/Images/no-image.jpg")" alt="product Thumbnail" id="image_Thumbnail_file" />
+                                    }
+
+                                    <div class="progressBar" style="display: none;">
+                                        <div class="bar" style="width: 100%;"></div>
+                                        <div class="percent">100%</div>
+                                    </div>
+                                    @if (!detail)
+                                    {
+                                        <div id="imgChange">
+                                            <span>Change Photo</span>
+                                            <input type="file" accept="image/*" name="image_upload_file" id="image_upload_file" tabindex="6" onchange=" readURL(this) ">
+                                        </div>
+                                        <div class="Note image-Note">Max size: 200KB, File: JPG,PNG,GIF</div>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass plable"><label>Product Name</label></td>
+                            <td class="TDClass">
+                                @Html.TextBoxFor(m => m.Name, new { maxlength = "200", @class = disabled })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass plable">
+                                <label>
+                                    English Name
+                                </label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.TextBoxFor(m => m.NameEnglish, new { maxlength = "200", @class = disabled })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass plable">
+                                <label>
+                                    UOM(unit)
+                                </label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.TextBoxFor(m => m.Uom, new { maxlength = "16", style = "width: 100px;", @class = disabled })
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="TDClass plable">
+                                <label>
+                                    Description
+                                </label>
+                            </td>
+                            <td class="TDClass" colspan="2">
+                                @Html.TextAreaFor(m => m.Description, new { style = "width: 95%; height: 275px;", @class = disabled, maxlength = 5000 })
+                                <br />
+                                <div class="clearfix">
+                                    <span>Ghi chú được nhập tối đa 5000 ký tự.</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Supplier
+                                </label>
+                            </td>
+                            <td class="TDClass" colspan="2">
+                                @Html.HiddenFor(m => m.SupplierId)
+                                @Html.TextBoxFor(m => m.SupplierName, new { id = "SupplierNameAuto", maxlength = "200", style = "width: 421px", @class = disabled })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td colspan="2">
+                                @if (!detail)
+                                {
+                                    if (Model.Id != 0)
+                                    {
+                                        <input type="button" id="btnSave" value="Update" />
+                                    }
+                                    else
+                                    {
+                                        <input type="button" id="btnSave" value="Create" />
+                                    }
+
+                                    <input type="button" value="Cancel" onclick="javascript:jQuery('#ModifyDeptZone').hide();" style="width:75px; background-color:#ED1B2E;" />
+
+                                }
+                            </td>
+                        </tr>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    var fileSize = 200;//KB
+    var validFileExtensions = [".jpg", ".jpeg", ".gif", ".png"];
+    jQuery(document).ready(function () {
+        jQuery("#btnSave").click(function (e) {
+            var form = document.getElementById('frmProduct');
+            var formData = new FormData(form);
+            var fileInput = document.getElementById('image_upload_file');
+            if (fileInput.files && fileInput.files[0]) {
+                var file = fileInput.files[0]; 
+                if (checkFileInput(file) == false) {
+                    return false;
+                }
+                formData.append('upload', file);
+            }
+            var check = Product.SubmitForm();
+            if (check == true) {
+                e.preventDefault();
+                jQuery.mbqAjax({
+                    method: "POST",
+                    dataType: 'html',
+                    contentType: false,
+                    processData: false,
+                    url: '@Url.Action("Edit","Product")',
+                    data: formData,
+                    success: function (data) {
+                        if (data === "1") {
+                            window.location.href = '@Url.Action("Index","Product", new{id=0})';
+                        } else {
+                            jQuery("#ModifyDeptZone").html(data);
+                            jQuery('#ModifyDeptZone').show();
+                            Autocomplete();
+                        }
+                    }
+                });
+            } else {
+                return false;
+            }
+        });
+    });
+
+    function checkFileInput(file) {
+        if (file.size > fileSize * 1024 || file.fileSize > fileSize * 1024) {
+            jQuery.mbqAlert({
+                title: "Error:",
+                content: "Sorry, File size to long. (Max size. " + fileSize + "); this size is:" + file.size / 1024 + "KB"
+            });
+            return false;
+        }
+        if (!file.name.match(/\.(jpg|jpeg|png|gif|JPG|JPEG|PNG|GIF)$/)) {
+            var alr = "Sorry, " + file.name + " is invalid, allowed extensions are: " + validFileExtensions.join(", ");
+            jQuery.mbqAlert({
+                title: "Error:",
+                content: alr
+            });
+            return false;
+        }
+        return true;
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            var file = input.files[0];
+            if (checkFileInput(file) == true) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    jQuery('#image_Thumbnail_file')
+                        .attr('src', e.target.result);
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    }
+
+    function ShowImage() {
+        var src = jQuery("#image_Thumbnail_file").attr("src");
+        var content = '<img src="' + src + '" style = " max-width: : 710px; max-height: 500px" />';
+        jQuery.mbqDialog({
+            content: content,
+            columnClass: "col-md-6 col-md-offset-3",
+            title: "Product Image",
+            backgroundDismiss: true
+        });
+    }
+</script>

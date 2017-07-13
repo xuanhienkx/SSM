@@ -1,0 +1,62 @@
+﻿@using SSM.Models
+@model SSM.Models.SalesModel
+<div style="background-color:#e6edf9;width: 100%">
+    <table style="font-size:1.2em;border:1px solid #BFBFBF;width: 100%">
+        <tr>
+            <th><label>NO:</label></th>
+            <td>@Html.TextBoxFor(m => m.VoucherNo, new { @class = " vcall disabled RevenueInput", style = "width:120px", @readonly = "readonly" })</td> 
+            <th><label>Total Exwork Amount:</label></th>
+            <td>@Html.TextBoxFor(m => m.Amount, new { @class = "currency4 vAmount vcall disabled RevenueInput", style = "width:120px", @readonly = "readonly" })</td>
+            <th><label>Cost Of Sales:</label></th>
+            <td>@Html.TextBoxFor(m => m.Amount0, new { @class = "currency4 vAmount0 vcall disabled RevenueInput", style = "width:120px", @readonly = "readonly" })</td>
+
+        </tr> 
+    </table>
+</div>
+<br/>
+<h2>List Product of Sale order</h2>
+<div id="ProductsList" style="">
+    <div class="detailVoucher2">
+        <table style="background-color:#e6edf9; font-size:1.2em;border:1px solid #BFBFBF; width: 100%" class="orderDetailTabel resizable ">
+            <thead>
+                <tr>
+                    <th style="">Products </th>
+                    <th style="width: 35px">Unit </th>
+                    <th style="width: 130px;">Warehouse </th>
+                    <th style="width: 80px;color: red">Current Qty </th>
+                    <th style="width: 80px;">Quantity </th>
+                    <th style="width: 70px;">Unit Rate </th>
+                    <th style="width: 120px;">Amount </th>
+                </tr>
+            </thead>
+            <tbody id="editorRows">
+                @if (Model.DetailModels != null && Model.DetailModels.Any())
+                {
+                    foreach (var item in Model.DetailModels)
+                    { 
+                        <tr class="">
+                            <td><span style="color: darkcyan; font-weight: bold">@item.Product.Code</span> | @item.Product.Name</td>
+                            <td>@item.UOM</td>
+                            <td class="text-right">@item.Warehouse.Name</td>
+                            <td class="text-right">@item.CurrentQty.ToString("N0")</td>
+                            <td class="text-right">@item.Quantity.ToString("N0")</td>
+                            <td class="text-right">@item.Price.ToString("N4")</td>
+                            <td class="text-right">@item.Amount.ToString("N2")</td>
+                        </tr>
+                    }
+
+                } 
+            </tbody>
+            <tfoot>
+                <tr class="sumrow">
+                    
+                    <th colspan="4" style="text-align: right"><label>Total:</label></th>
+                    <th class="number TQuantity textbold ">@Model.Quantity</th>
+                    <td></td>
+                    <th class="currency4 TAmount  textbold">@Model.Amount</th>
+                    <th></th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div> 

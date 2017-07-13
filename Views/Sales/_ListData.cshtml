@@ -1,0 +1,122 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.ViewModels.Shared.Grid<SSM.Models.SalesModel>
+@{
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.Partial("_TopPage", Model)
+@if (ViewBag.message != null)
+{
+    <div>@ViewBag.message</div>
+}
+
+<div style="height: auto; overflow: hidden;">
+    @if (User1.IsEditTrading())
+    {
+        @Html.ActionLink("Create a Sales", "Create", "Sales", new { @class = "btn btn-primary" })
+    }
+</div>
+<table width="100%" class="grid resizable">
+    <thead>
+
+        <tr>
+            <th style="width: 80px">
+                <a href="#" onclick="sortAction('Status');">
+                    <div class="SortHeader-label">STS</div>
+                    <div id="Status_Title" class="SortHeader"></div>
+                </a>
+            </th>
+            <th style="width: 100px">
+                <a href="#" onclick="sortAction('VoucherNo');">
+                    <div class="SortHeader-label">No</div>
+                    <div id="VoucherNo_Title" class="SortHeader"></div>
+                </a>
+            </th>
+            <th style="width: 100px">Ref</th>
+            <th style="width: 100px">
+                <a href="#" onclick="sortAction('VoucherDate');" title="Ngay xuat kho">
+                    <div class="SortHeader-label">Date</div>
+                    <div id="VoucherDate_Title" class="SortHeader">
+                        <img src="../../Images/sort_asc.gif" />
+                    </div>
+                </a>
+            </th>
+            <th>  Products  </th>
+            <th style="width: 250px">  Customer  </th>
+            <th style="width: 100px">  Total  </th>
+            <th style="width: 100px">  Created By  </th>
+            @* <th>  Edit  </th>*@
+            <th style="width: 80px">  Delete  </th>
+        </tr>
+ 
+    </thead><tbody class="tb-grabText">
+                @if (Model.Data != null && Model.Data.Any())
+                {
+                    int no = 0;
+                    foreach (var it in Model.Data)
+                    {
+                        no++;
+                        var lb = (it.Status).GetStringLabel();
+                        var color = lb == "S" ? "red" : lb == "A" ? "Blue" : lb == "C" ? "Green" : string.Empty;
+                        var hightline = no % 2 == 0 ? "GridLight" : string.Empty;
+                        <tr class="@hightline">
+                            <td class="uppercase" style="text-align: center">
+                                <label style="font-weight: bold; color: @color">@lb</label>
+                            </td>
+                            <td class="uppercase">  @Html.ActionLink(it.VoucherNo, "Edit", "Sales", new { id = it.VoucherId }, null)   </td>
+                            <td style="color: blue">
+                                @if (it.Shipment != null)
+                                {
+                                    @Html.ActionLink(it.Shipment.Id.ToString(), "Edit", "Shipment", new { id = it.Shipment.Id }, new { target = "_blank" })
+                                }
+                            </td>
+                            <td class="datepicker">   @string.Format("{0:dd/MM/yyyy}", it.VoucherDate)</td>
+                            <td>   @Html.Raw(it.ProductView)</td>
+                            <td>   @it.Customer.FullName</td>
+                            <td class="number2">  @it.SumTotal</td>
+                            <td class="">
+                                @{
+                                    var userName = it.UserCreated != null ? it.UserCreated.FullName : string.Empty;
+                                    @userName
+                                }
+                            </td>
+
+                            @*  <td>
+                            @if ((it.CreateBy.HasValue && User1.Id == it.CreateBy.Value) || UsersModel.isAdminOrDirctor(User1))
+                            {
+                                <a href="@Url.Action("Edit", "Sales", new {id = it.VoucherID})"><img alt="Edit" src="../../Images/btn-edit.png" /></a>
+                            }
+                        </td>*@
+                            <td>
+                                @if ((User1.Id == it.CreateBy) || User1.IsAdmin())
+                                {
+                                    if (it.Status == (byte)VoucherStatus.Pending)
+                                    {
+                                        <a href="@Url.Action("Delete", "Sales", new {id = it.VoucherId})" onclick=" return confirm('Are you sure you want to delete?') "><img alt="Delete" src="../../Images/btn-delete.png" /></a>
+                                    }
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="9" class="text-center">No Data</td>
+                    </tr>
+                }
+            </tbody>
+</table>
+@*<script type="text/javascript">
+    var time = new Date().getTime();
+    function refresh() {
+        if (new Date().getTime() - time >= 120000) {
+            jQuery("#btn-search").click();
+        }
+        else
+            setTimeout(refresh, 120000);
+    }
+
+    setTimeout(refresh, 120000);
+</script>*@

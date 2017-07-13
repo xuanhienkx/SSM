@@ -1,0 +1,48 @@
+﻿@using SSM.Common
+@using SSM.Models.CRM
+@model System.Collections.Generic.List<SSM.Models.CRMVisit>
+@{     
+    EventFilter filter = (EventFilter)ViewBag.filter;
+}
+@using (Ajax.BeginForm("CalendarView", "CRMEvent", new AjaxOptions()
+                {
+                    UpdateTargetId = "calendarData",
+                    InsertionMode = InsertionMode.Replace,
+                    HttpMethod = "POST",
+
+                }))
+{
+    <div class="DivHeader">
+        <div class="   bg-warning">   
+                <div class="header-textnew col-md-12" style="margin-bottom: 15px; margin-top: 15px;  height: 100%">
+                    <div>
+                        @Ajax.Link("Tạo viếng thăm", "Create", "CRMEvent", new { refId = 0, isEventAction = false }, new MyAjaxOptions()
+                                    {
+                                        HttpMethod = "get",
+                                        DataType = "json",
+                                        ContentType = "application/json; charset=utf-8"
+
+                                    }, new { @class = "btn btn-info btn-sm" })
+                        @Ajax.Link("Tạo sự kiện", "Create", "CRMEvent", new { refId = 0, isEventAction = true }, new MyAjaxOptions()
+                                    {
+                                        HttpMethod = "get",
+                                        DataType = "json",
+                                        ContentType = "application/json; charset=utf-8"
+
+                                    }, new { @class = "btn btn-info btn-sm" }) 
+                        @Html.ActionLink("List View", "Index", "CRMEvent", new { id = 0 }, new { @class = "btn btn-warning btn-sm" })
+                    </div>
+                    <div style="height: 5px"></div>
+                    <div>
+                        @Html.Partial("_SearchMonthView", filter)
+                    </div>
+                    <div style="height: 15px"></div>
+
+                </div>   
+        </div>
+
+    </div>
+    <div id="ListData">
+        @Html.Partial("_MonthView", Model)
+    </div>
+}

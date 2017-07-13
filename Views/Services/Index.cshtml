@@ -1,0 +1,78 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.GridNew<SSM.Models.ServicesType, SSM.ViewModels.ServicesViewModel>
+
+@{
+    ViewBag.Title = "Service Type";
+}
+
+@using (Ajax.BeginForm("Index", new AjaxOptions()
+{
+    UpdateTargetId = "ListData",
+    HttpMethod =  "Post",
+    InsertionMode = InsertionMode.Replace
+}))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+
+                        <h2>Service Type List</h2>
+                    </div>
+                     
+                    <div id="ListData">
+                        @Html.Partial("_ListData", Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<ServicesType>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" })
+                        <label>Rows per page</label>
+                    </div>
+                    <div style="height: auto; overflow: hidden;">
+                        <input type="button" id="CreateDept1" onclick="edit(0)" value="Create a Services" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="SectionBlock Expanded BoxL1" id="ModifyDeptZone">
+</div>
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<script type="text/javascript">
+    
+    function edit(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("Edit", "Services")',
+            data: { id: id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#ModifyDeptZone").html(result);
+                jQuery('#ModifyDeptZone').show(); 
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#", "") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#Code').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+    
+    jQuery(document).ready(function () {
+        jQuery("#SettingTab").addClass("Active");
+        jQuery('#SettingTab').activeThisNav();
+        jQuery('#ModifyDeptZone').hide();
+    });
+
+     
+</script>

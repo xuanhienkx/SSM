@@ -1,0 +1,119 @@
+﻿@using SSM.Models
+@model SSM.Models.CarrierModel
+<div class="BoxL2">
+    <div class="BoxL3">
+        <div class="BoxL4">
+            <div class="DivHeader">
+                <h2 id="ModifyHeader">
+                    Modify Carrier
+                </h2>
+            </div>
+            <div style="width: 100%" id="ModifyForm">
+                @using (Html.BeginForm("EditCarrier", "Data", FormMethod.Post, new { id = "frm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <table>
+                        <tr>
+                            <td class="TDClass"><label>Abb Name</label></td>
+                            <td class="TDClass">
+                                @Html.TextBoxFor(m => m.AbbName, new { maxlength = "20", onblur = "javaScript:jQuery(this).replaceSpecialCharacter();" })<br />
+                                <span>Tìm kỹ trước khi nhập mới, tên viết tắt không quá 20 ký tự.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass"><label>Name</label></td>
+                            <td class="TDClass">
+                                @Html.HiddenFor(m => m.Id)
+                                @Html.TextBoxFor(m => m.CarrierAirLineName, new { maxlength = "200" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass"><label>Type</label></td>
+                            <td class="TDClass">
+                                @Html.DropDownList("Type", (SelectList)ViewData["CarrierTypes"], new { ReadOnly = "true" })
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Address
+                                </label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.TextAreaFor(m => m.Address, new { maxlength = "200" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Description
+                                </label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.TextAreaFor(m => m.Description)
+                            </td>
+                        </tr>
+                        @*<tr>
+                                <td class="TDClass">
+                                    <label>
+                                        Is Active
+                                    </label>
+                                </td>
+                                <td class="">
+                                    @Html.TextBoxFor(m => m.IsActive)
+                                </td>
+                            </tr>*@
+                        @Html.HiddenFor(m => m.IsActive)
+                    <tr>
+                        <td></td>
+                        <td>
+                            @if (Model.Id != 0)
+                            {
+                                <input type="button" id="btnSave" value="Update" />
+                            }
+                            else
+                            {
+                                <input type="button" id="btnSave" value="Create" />
+                            }
+                            <input type="button" value="Cancel" onclick="javascript:jQuery('#ModifyDeptZone').hide(); Carrier.gotoItem('CreateDept');" style="width:75px; background-color:#ED1B2E;" />
+                        </td>
+                    </tr>
+                </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#btnSave").click(function (e) {
+            var form = document.getElementById('frm');
+            var formData = new FormData(form);
+            console.log(form);
+            var check = Valid.Carrier();
+            if (check == true) {
+                e.preventDefault();
+                jQuery.mbqAjax({
+                    method: "POST",
+                    dataType: 'html',
+                    contentType: false,
+                    processData: false,
+                    url: '@Url.Action("EditCarrier","Data")',
+                    data: formData,
+                    success: function (data) {
+                        if (data === "1") {
+                            window.location.href = '@Url.Action("Carrier","Data")';
+                        } else {
+                            jQuery("#ModifyDeptZone").html(data);
+                            jQuery('#ModifyDeptZone').show();
+                        }
+                    }
+                });
+            } else {
+                return false;
+            }
+        });
+    });
+
+</script>

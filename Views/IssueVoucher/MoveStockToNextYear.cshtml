@@ -1,0 +1,65 @@
+﻿@model dynamic
+@{
+    ViewBag.Title = "Caculate cost to year";
+}
+<style type="text/css">
+    .page {
+        width: 500px;
+    }
+</style>
+
+<div class="SectionBlock  BoxL1">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4 costCallFrm">
+                <div class="DivHeader">
+                    <h2> Move stock in warehouse</h2>
+                </div>
+
+                @using (Html.BeginForm("MoveStockToNextYear", "IssueVoucher", FormMethod.Post, new { id = "calculateFrm" }))
+                {
+                    @Html.AntiForgeryToken()
+
+                    <div class="SectionBlockWrapper">
+                        <table class="calculate-Code-table"> 
+                            <tr> 
+                                <td class="TDClass">
+                                    <label>From Year</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.DropDownList("year", new SelectList(Enumerable.Range(DateTime.Now.Year - 9, 9)), new { style = "width:80px;" })
+                                </td> 
+                            </tr>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>To Year</label>
+                                </td>
+                                <td class="TDClass">
+                                    <input type="text" disabled="disabled" value="@DateTime.Now.Year" style="width: 65px" />
+                                </td>
+                               
+                            </tr>
+                            <tr>
+                                <td class="TDClass"></td>
+                                <td class="TDClass">
+                                    <input type="submit" onclick=" return submitForm();" value="Calc" placeholder="" style="width: 80px; color: white" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                }
+                <div>
+                    <h2>
+                        @Html.Raw(ViewBag.Message)
+                    </h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#TradingTab").addClass("Active");
+        jQuery('#TradingTab').activeThisNav();
+    });
+</script>

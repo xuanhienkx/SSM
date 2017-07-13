@@ -1,0 +1,531 @@
+﻿@Html.AntiForgeryToken()
+@using System.Web.Optimization
+@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model SSM.Models.CRM.CRMEventModel
+@{
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    bool allowEdit = false;
+    bool canView = false;
+    bool canAdd = false;
+    bool canEdit = false;
+    var listUserId = new List<long>();
+    if (Model.Id > 0)
+    {
+        listUserId.Add(Model.CreatedBy.Id);
+        if (Model.UsersFollow.Any())
+        {
+            listUserId.AddRange(Model.UsersFollow.Select(x => x.UserId).ToList());
+        }
+    }
+    var strUserId = string.Join("-", listUserId);
+    if (Model.Id > 0 && Model.UsersFollow != null && Model.UsersFollow.Any(x => x.UserId == currentUser.Id))
+    {
+        canView = Model.AllowViewList;
+        canAdd = Model.AllowAdd;
+        if (Model.AllowAdd)
+        {
+            canView = true;
+        }
+        canEdit = allowEdit = Model.AllowEdit;
+    }
+
+    if (Model.Id > 0 && Model.CreatedBy.Id == currentUser.Id || currentUser.IsDepOrDirecter())
+    {
+        canView = canAdd = canEdit = allowEdit = true;
+    }
+    else if (Model.Id == 0)
+    {
+        canView = canAdd = allowEdit = canEdit = true;
+    }
+
+}
+<style type="text/css">
+    label.control-label {
+        text-align: left !important;
+    }
+
+    input.form-control {
+        height: 24px !important;
+    }
+</style>
+@Styles.Render("~/Content/CRM")
+@using (Html.BeginForm("Create", "CRMEvent", FormMethod.Post, new { id = "frm", enctype = "multipart/form-data" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(m => m.Id)
+    @Html.HiddenFor(m => m.IsEventAction)
+    @Html.Hidden("canEdit", canEdit)
+    @Html.Hidden("canAdd", canAdd)
+    @Html.Hidden("canView", canView)
+
+    <div class="">
+        <div class="form-horizontal form-group-sm">
+            <h1 class="Subject">@ViewBag.Title</h1>
+            <div>
+                <span>Những thông tin có đánh dấu <span style="color: red">*</span> là bắt buộc nhập.</span>
+            </div>
+            <div class="row">
+                @Html.ValidationSummary(true)
+            </div>
+            <div class="col-md-9 row">
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Subject, "Title", new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10 col-md-offset-0">
+                        <div class="">
+                            @Html.TextBoxFor(m => m.Subject, new { @class = "form-control" })
+                            <div class="icon-required center-block">*</div>
+                        </div>
+                        @Html.ValidationMessageFor(m => m.Subject)
+                    </div>
+                </div>
+                @if (Model.CrmCusId == 0)
+                {
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.CusName, "Customer", new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10 col-md-offset-0">
+                            <div class="">
+                                @Html.TextBoxFor(m => m.CusName, new { @class = "form-control", placeholder = "Find Abb Name" })
+                                <div class="icon-required center-block">*</div>
+                            </div>
+                            @Html.ValidationMessageFor(m => m.CusName)
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @Html.HiddenFor(m => m.CusName)
+                }
+                @Html.HiddenFor(m => m.CrmCusId)
+                <div class="form-group">
+                    <div class="">
+                        @Html.LabelFor(m => m.DateEvent, "Event Date", new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10 col-md-offset-0">
+                            <div class="col-sm-3 row">
+                                @Html.TextBoxFor(m => m.DateEvent, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker inlin-item" })
+                                <div class="icon-required inlin-item center-block" style="margin-right: -1px;margin-top: 8px">*</div>
+                            </div>
+                            <div class="col-md-9">
+                                @Html.LabelFor(m => m.Status, "Status", new { @class = "col-sm-2 control-label" })
+                                <div class="col-sm-10 col-md-offset-0 form-inline">
+                                    <label class="radio-inline">
+                                        @Html.RadioButton("Status", CRMEventStatus.Follow, new { @class = "" }) Following
+                                    </label>
+                                    <label class="radio-inline">
+                                        @Html.RadioButton("Status", CRMEventStatus.Finished, new { @class = "" }) Finished
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="clearfix">
+                                @Html.ValidationMessageFor(m => m.DateEvent)
+                            </div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                </div>
+                @if (Model.IsEventAction)
+                {
+
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.EventTypeId, "Type Event", new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10 col-md-offset-0">
+                            <div class="pull-left">
+                                @if (allowEdit || canEdit)
+                                {
+                                    @Html.DropDownListFor(m => m.EventTypeId, new SelectList((IEnumerable<CRMEventType>)ViewData["CRMEventType"], "Id", "Name"), "--Select--", new { @class = "form-control input-sm", style = "width: 230px" })
+                                    <div class="icon-required center-block">*</div>
+                                }
+                                else
+                                {
+                                    @Html.DropDownListFor(m => m.EventTypeId, new SelectList((IEnumerable<CRMEventType>)ViewData["CRMEventType"], "Id", "Name"), "--Select--", new { @class = "form-control input-sm", style = "width: 230px", @readonly = "readonly" })
+
+                                }
+                            </div>
+                            <div class="col-sm-3 form-inline pull-left media-middle ">
+                                @if (currentUser.IsAdmin())
+                                {
+                                    <div id="plus-EventTypeId" class="btn btn-info AdminPlus" aria-label="Add">
+                                        <i class="fa fa-plus-square"></i>
+                                    </div>
+                                }
+                            </div>
+                            @Html.ValidationMessageFor(m => m.EventTypeId)
+
+                        </div>
+                    </div>
+
+                }
+                <div class="form-group">
+                    @Html.LabelFor(m => m.Description, "Description", new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10 col-md-offset-0">
+                        <div class="">
+                            @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "5" })
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group" style="border-top: 1px solid deepskyblue;">
+                    @Html.Label("Reminder", new { @class = "col-sm-2 control-label" })
+                    <div class="row col-md-10">
+                        <div class="col-md-12">
+                            <div class="checkbox">
+                                <label>
+                                    @Html.CheckBoxFor(m => m.IsSchedule) <b><i class="fa fa-clock-o"></i> Enable</b>
+                                </label>
+                            </div>
+                        </div>
+                        <div class="row col-md-12" id="remider-info">
+
+                            <div class="col-md-12">
+                                <label class="control-label inlin-item "> Repeat Day </label>
+                                <ul class="list-inline inlin-item" style="margin-right: -30px; margin-left: 8px">
+                                    @for (int i = 0; i < Model.CheckModels.Count; i++)
+                                    {
+                                        <li class="checkbox">
+                                            <label>
+                                                @Html.CheckBoxFor(m => m.CheckModels[i].Checked, new { @class = "checkboxDay" })
+                                                <b>@Model.CheckModels[i].Name.ToString().Substring(0, 2)</b>
+                                                @Html.HiddenFor(m => m.CheckModels[i].Id)
+                                            </label>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="control-label inlin-item" style="margin-right: 15px"> Begin Date </label>
+                                @Html.TextBoxFor(m => m.DateBegin, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker inlin-item", style = "" })
+                                <label class="control-label inlin-item"> Time </label>
+                                @Html.TextBoxFor(m => m.TimeOfRemider, new { @class = "form-control  inlin-item", style = "width: 50px" })
+                                <label class="control-label inlin-item"> End Date </label>
+                                @Html.TextBoxFor(m => m.DateEnd, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker inlin-item", style = "" })
+                            </div>
+                            <div class="col-md-12">
+                                <div class="col-md-12 row">@Html.ValidationMessageFor(m => m.DateBegin)</div>
+                                <div class="col-md-12 row">@Html.ValidationMessageFor(m => m.TimeOfRemider)</div>
+                                <div class="col-md-12 row">@Html.ValidationMessageFor(m => m.DateEnd)</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+
+                <div class="form-group" style="border-top: 1px solid deepskyblue;">
+                    @Html.LabelFor(m => m.Uploads, "Attachment", new { @class = "col-sm-2 control-label" })
+                    <div class="col-sm-10" style="margin-top: 10px">
+                        <div class="col-md-12 row" id="">
+                            @if (Model.FilesList.Count > 0)
+                            {
+                                @Html.Partial("_listFiles", Model.FilesList);
+                            }
+                            else
+                            {
+                                <div id="attachment-show" style="display: none">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr><th>FileName</th><th>File Size(Kb)</th><th></th></tr>
+                                        </thead>
+                                        <tbody id="listfileView"></tbody>
+                                    </table>
+                                </div>
+                            }
+
+                        </div>
+                        <input type="file" id="files" name="files" multiple style="display: none" />
+                        @if (allowEdit || canEdit)
+                        {
+                            <input type="button" class="btn btn-link" id="btn-selectFile" value="select file..." style="margin-top: -3px; float: right" />
+                        }
+                        <br />
+                    </div>
+                </div> 
+            </div>
+
+            <div class="col-md-3 row" style="margin-left: 30px">
+
+                @if (allowEdit)
+                {
+                    <div class="form-group">
+                        <div class="col-md-12" style="border: 2px solid #b22222">
+                            @Html.Label("Khách mời có thể", new { @class = "control-label" })
+                            <div class="has-success">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(m => m.AllowEdit, new { })
+                                        Sữa sự kiện
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="has-warning">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(m => m.AllowAdd, new { })
+                                        Thêm khách mời
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="has-error">
+                                <div class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(m => m.AllowViewList, new { })
+                                        Xem danh sách khách mời
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                }
+                else
+                {
+                    @Html.HiddenFor(m => m.AllowEdit)
+                    @Html.HiddenFor(m => m.AllowAdd)
+                    @Html.HiddenFor(m => m.AllowViewList)
+                }
+                @if (Model.Id > 0 && canAdd)
+                {
+                    <div class="form-group">
+                        @Html.Label("Thêm khách", new { @class = "control-label" })
+                        @Html.TextBox("UserFullName", string.Empty, new { @class = "form-control" })
+                    </div>
+                }
+                <div class="clearfix"></div>
+                @if (canView)
+                {
+                    <div id="userList" class="list-inline row list-user-dialog">
+                        @if (Model.UsersFollow != null && Model.UsersFollow.Any())
+                        {
+                            <table class="list-user table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Tên</th>
+                                        <th>Phòng ban</th>
+                                        @if (currentUser.IsDepOrDirecter())
+                                        {
+                                            <th>Look</th>
+                                        }
+                                        <th>Del</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="userListFollow">
+                                    @foreach (var u in Model.UsersFollow)
+                        {
+                                        <tr id="user_@u.Id">
+                                            @Html.Partial("_UserFollowItem", u)
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                        else
+                        {
+                            <table class="list-user table table-bordered hidden">
+                                <thead>
+                                    <tr>
+                                        <th>Tên</th>
+                                        <th>Phòng ban</th>
+                                        @if (currentUser.IsDepOrDirecter())
+                                        {
+                                            <th>Look</th>
+                                        }
+                                        <th>Del</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody id="userListFollow"></tbody>
+                            </table>
+                        }
+                    </div>
+
+                }
+                else
+                {
+                    <table class="list-user table table-bordered hidden">
+                        <thead>
+                            <tr>
+                                <th>Tên</th>
+                                <th>Phòng ban</th>
+                                @if (currentUser.IsDepOrDirecter())
+                    {
+                                    <th>Look</th>
+                                }
+                                <th>Del</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="userListFollow"></tbody>
+                    </table>
+                }
+            </div>
+
+            <div class="clearfix"></div>
+        </div>
+        <div class="col-md-12" style="border-top: 1px solid deepskyblue;padding-top: 10px" >
+            <div class="pull-right" id="btn-dialog">
+                @if (allowEdit)
+                {
+                    <button type="button" class="btn btn-primary" id="btn-submit"  >Cập nhật</button>
+                    <button type="reset" class="btn btn-default" id="btn-reset">Làm lại</button>
+                }
+                @if (Model.UsersFollow != null && Model.UsersFollow.Any(x => x.UserId == currentUser.Id))
+                {
+                    @Ajax.Link("Leave", "DeleleUserFollow", "CRMEvent", new { id = Model.UsersFollow.FirstOrDefault(x => x.UserId == currentUser.Id).Id }, new MyAjaxOptions()
+               {
+                   HttpMethod = "get",
+                   DataType = "json",
+                   ContentType = "application/json; charset=utf-8",
+                   Confirm = "Bạn muốn xoá khỏi theo dõi?"
+
+               }, new { @class = "btn btn-danger  text-center ", id = Model.Id })
+                }
+
+            </div>
+
+        </div>
+
+    </div>
+    @Html.Hidden("CrmSaleId", Model.CreatedBy != null ? Model.CreatedBy.Id : 0)
+    @Html.HiddenFor(m => m.DayWeekOfRemider, Model.CreatedBy != null ? Model.CreatedBy.Id : 0)
+}
+@Scripts.Render("~/bundles/CRMJS")
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+        jQuery(this).InitFormat();  
+        jQuery('#TimeOfRemider').timepicker({
+            timeFormat: 'G:i',
+            interval: 30,
+            minTime: '8',
+            maxTime: '18:00',
+            defaultTime: '11',
+            startTime: '08:00',
+            dynamic: true,
+            dropdown: true,
+            scrollbar: true,
+            disableTouchKeyboard: true,
+            className: 'timepickerDialog', 
+        });
+        jQuery('img.ui-datepicker-trigger').remove();
+        jQuery("#UserFullName").GetAutoSugget({
+            url: '@Url.Action("UserSuggestFollow", "CRM")',
+            params: ', notyetId: "' + '@strUserId' + '"',
+            select: function (e, ui) {
+                e.preventDefault();
+                var uId = ui.item.id;
+                var crmUserId = jQuery("#CrmSaleId").val();
+                if (uId === crmUserId) return false;
+                var url = '@Url.Action("AddFollow", "CRMEvent")';
+                var data = JSON.stringify({ "visitId": @Model.Id, "userId": uId });
+                jQuery.mbqAjax({
+                    url: url,
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: data,
+                    success: function (result) {
+                        var $tbody = jQuery(".jconfirm .jconfirm-box .content").find("#userListFollow");
+                        var existed = $tbody.find('tr[id="user-' + uId + '"]');
+                        if (existed === undefined || existed.length === 0)
+                            $tbody.append(result);
+                        if(jQuery(".jconfirm .jconfirm-box .content").find("table.list-user").hasClass("hidden"))
+                            jQuery(".jconfirm .jconfirm-box .content").find("table.list-user").removeClass("hidden");
+                    }
+                });
+            }
+        });
+        jQuery("#CusName").GetAutoSugget({
+            url: '@Url.Action("CRMCustomerSuggest", "CRM")',
+            targerId: "#CrmCusId"
+        });
+        showSchedule();
+        jQuery("#IsSchedule").on('click', function() {
+            showSchedule(); 
+        });
+        jQuery("#plus-EventTypeId").on('click', function () {
+            jQuery.mbqAjax({
+                url: '@Url.Action("AddBaseData", "CRM")',
+                data: { modelType: "CRMEventType" },
+                method: "GET",
+                dataType: 'html',
+                success: function (result) {
+                    ShowInputBaseData("loại sự kiện", result);
+                },
+                error: function (XMLHttpRequest, textStatus, errorThrown) {
+                    alert("Error getting prospect list: " + textStatus);
+                }
+            });
+        });
+        DelRowEvent();
+        jQuery("input.checkboxDay").on("click",  function() { 
+            var listDayOfweek =  jQuery("#DayWeekOfRemider").val();
+            var listDays = [];
+            if (listDayOfweek !== "") {
+                listDays = listDayOfweek.split(',');
+            }
+            var idtr = jQuery(this).attr("Id").replace("__Checked", "__Id"); 
+            var day = jQuery("#"+idtr).val(); 
+            var isCheck = jQuery(this).is(":checked"); 
+            if (isCheck != undefined && isCheck === true) { 
+                if(listDays.indexOf(day)<0)
+                    listDays.push(day);
+            } else {
+                var index = listDays.indexOf(day);
+                if (index > -1) {
+                    listDays.splice(index, 1);
+                }
+            }
+            listDayOfweek = listDays.join(','); 
+            jQuery("#DayWeekOfRemider").val(listDayOfweek);
+        });
+        var canEdit=jQuery("#canEdit").val();
+        if (canEdit === "False") {
+            jQuery('input:not("#UserFullName"), select, textarea').each(function() { 
+                jQuery(this).attr('disabled', 'disabled');
+            });
+        }
+
+    });
+
+    function showSchedule() {
+        var isCheck = jQuery("#IsSchedule").is(":checked");
+        if (isCheck != undefined && isCheck === true) {
+            jQuery("#remider-info").show();
+        } else {
+            jQuery("#remider-info").hide();
+        }
+    }
+    function deleteFile(t) {
+        var $td = jQuery(t);
+        var idfile = parseInt($td.attr("id"));
+        var url = '@Url.Action("DeleteFile","CRMDocument")';
+        jQuery.mbqConfirm({
+            content: "Bạn thực sự muốn xoá file không?",
+            title: "Xác nhận",
+            confirm: function (obj) {
+                jQuery.mbqAjax({
+                    url: url,
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ id: idfile }),
+                    success: function (result) {
+                        if (result.isFalse === true) {
+                            jQuery.mbqAlert({
+                                title: "Error",
+                                content: result.Message,
+                                columnClass: 'col-md-6 col-md-offset-2',
+                                theme: 'bootstrap',
+                                type: 'error'
+                            });
+                        } else {
+                            $td.parent("tr").remove();
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>   

@@ -1,0 +1,84 @@
+﻿@using SSM.Common
+@model SSM.ViewModels.Shared.Grid<SSM.Models.Country>
+@Html.Partial("_TopPage", Model)
+@*<div style="height:auto;overflow: hidden;">
+        <input type="button" onclick="return edit(0)" id="CreateDept" value="Create a Country" />
+    </div>*@
+<table width="100%" class="grid">
+    <tr> 
+        <th style="">
+            <a href="#" onclick="sortAction('CountryName');">
+                <div class="SortHeader-label">CountryName</div>
+                <div id="CountryName_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+
+       
+        <th> Edit </th>
+        <th>
+            Delete
+        </th>
+    </tr>
+    @if (Model.Data.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (var it in Model.Data)
+        {
+            no++;
+            bool hightline = no % 2 == 0;
+            if (hightline)
+            {
+                classLight = "GridLight";
+            }
+
+            <tr class="@classLight">
+
+                <td>
+                    @Ajax.Link(it.CountryName, "ProvinceByCountry", "Data", new { countryId = it.Id, name = it.CountryName }, new MyAjaxOptions()
+               {
+                   HttpMethod = "get",
+                   DataType = "json",
+                   ContentType = "application/json; charset=utf-8"
+
+               }, null)
+                </td>
+                <td>
+                    @Ajax.Link(" ", "EditCountry", "Data", new { id = it.Id }, new MyAjaxOptions()
+               {
+                   HttpMethod = "get",
+                   DataType = "json",
+                   ContentType = "application/json; charset=utf-8"
+
+               }, new { @class = "fa fa-pencil" })
+                </td>
+                <td>
+                    <a href="@Url.Action("DeleteCountry","Data",new { id=it.Id})" onclick="return confirm('Are you sure you want to delete?')"><img alt="Delete" src="/Images/btn-delete.png" /></a>
+
+                </td>
+            </tr>
+        }
+    }
+</table>
+
+<div id="provinces">
+
+</div>
+<script type="text/javascript">
+    function getProvince(id, name) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("ProvinceByCountry", "Data")',
+            data: { countryId: id, name: name },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#provinces").html(result);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+</script>

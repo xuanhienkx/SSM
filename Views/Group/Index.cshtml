@@ -1,0 +1,94 @@
+﻿@using System.Web.Optimization
+@using SSM.Models
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.GridNew<SSM.Models.Group,SSM.Models.GroupModel> 
+@{
+    ViewBag.Title = "Group List";  
+} 
+@Scripts.Render("~/bundles/SCFListPagingJs") 
+@using (Ajax.BeginForm("Index", new AjaxOptions()
+{ 
+    HttpMethod = "post",
+    UpdateTargetId = "ListData",
+    InsertionMode = InsertionMode.Replace
+}))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader"> 
+                        <h2>Groups List</h2>
+                    </div>
+                    <div id="SearchBlock" style="float:left;height:auto;"></div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper" style="display: none;">
+                        <table id="table-sarch">
+                            <tr>
+                                <td class="TDClass"><label>Abb Name</label></td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.Name, new { maxlength = "250" })
+                                </td>
+                            </tr> 
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Search" id="btn-search" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="ListData">
+                        @Html.Partial("_ListData", Model)
+                    </div> 
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<Group>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" })
+                        <label>Rows per page</label>
+                    </div>
+                    <div style="height: auto; overflow: hidden;">
+                        <input type="button" id="CreateDept1" onclick="edit(0)" value="Create a Group" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="SectionBlock Expanded BoxL1" id="ModifyDeptZone">
+</div>
+<script type="text/javascript">
+
+    function edit(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("Edit", "Group")',
+            data: { id: id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#ModifyDeptZone").html(result);
+                jQuery('#ModifyDeptZone').show();
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#", "") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#Name').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+
+    jQuery(document).ready(function () {
+        jQuery("#StaffManagementTab").addClass("Active");
+        jQuery('#StaffManagementTab').activeThisNav();
+        jQuery('#ModifyDeptZone').hide();
+    });
+
+
+</script>
+     

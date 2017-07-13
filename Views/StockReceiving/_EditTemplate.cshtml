@@ -1,0 +1,570 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@model SSM.Models.OrderModel
+
+<style type="text/css">
+    .page {
+        width: auto !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .SectionBlock {
+        width: 100% !important;
+        position: relative;
+        margin: 0px auto;
+        background-color: #f6f6f3;
+        margin-top: 15px;
+        z-index: 500;
+    }
+</style>
+
+<script type="text/javascript">
+    var look = '@ViewBag.Islook';
+    var isLook = false;
+    jQuery(document).ready(function () {
+        jQuery("#TradingTab").addClass("Active");
+        jQuery('#TradingTab').activeThisNav();
+        jQuery("#Supplier_FullName").GetAutoSugget({
+            url: '@Url.Action("SupplierSuggest", "Supplier")',
+            targerId: "#Supplier_Id"
+        });
+
+        jQuery("#Country_CountryName").GetAutoSugget({
+            url: '@Url.Action("CountrySuggest", "StockReceiving")',
+            targerId: "#Country_Id"
+        });
+        jQuery("#materInput").find("input[type='Text']").addClass("RevenueInput");
+        jQuery("input.input-validation-error").keyup(function () {
+            if (jQuery(this).val() !== "") {
+                jQuery(this).removeClass("input-validation-error");
+            }
+        });
+        jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit,#btnAppval,#btnCreateRef").removeAttr("disabled", "disabled");
+        jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit,#btnAppval,#btnCreateRef").removeClass("btn-disabled");
+        InitForDetail();
+        InitButtonAction();
+
+    });
+    function InitButtonAction() {
+        jQuery("input#btnSave").click(function () {
+            var check = true;
+            check = jQuery('form').CheckRequired();
+            if (check == false)
+                return false;
+            var rate = parseFloat(jQuery("#ExchangeRate").val().replace(/\,/g, ''));
+            if (rate == 0) {
+                jQuery("#ExchangeRate").focus();
+                jQuery("#ExchangeRate").addClass("input-validation-error");
+                return false;
+            }
+            check = jQuery('form').ValidationDate();
+            if (check == false)
+                return false;
+            jQuery("form").submit();
+        });
+
+        jQuery("#btnCancle").click(function () {
+            jQuery(this).parents("form:first").trigger("reset");
+        });
+        jQuery("#btnnew").click(function () {
+            window.location.href = '@Url.Action("Create")';
+        });
+        jQuery("#btnPrint").click(function() {
+            var text = jQuery("#NotePrints-html").html();
+            jQuery.confirm({
+                resizable: true,
+                async: false,
+                icon: "fa fa-question-circle fa-inverse",
+                content: text,
+                columnClass: 'col-md-6 col-md-offset-3',
+                title: "Nhập chứng từ gốc kèm theo",
+                dialogClass: "modal-dialog",
+                confirm: function() {
+                    var notePrints = jQuery(".jconfirm-box-container").find("#NotePrints").val();
+                    var id = jQuery("#VoucherId").val();
+                    var data = { id: id,note : notePrints };
+                    
+                    jQuery.mbqAjax({
+                        url: '@Url.Action("UpdateNote", "StockReceiving")',
+                        method: 'POST',
+                        data: JSON.stringify(data),
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        success: function(result) {
+                            if (result == "ok") {
+                                jQuery("#NotePrints-html > textarea#NotePrints").val(notePrints);
+                                window.open("@Url.Action("Print", new { id = Model.VoucherId})");
+                                jQuery(".closeIcon").click();
+                                window.location.href = "@Url.Action("Edit", new { id = Model.VoucherId})";
+                            } else {
+                                jQuery.mbqAlert({
+                                    content: result,
+                                    columnClass: 'col-md-4 col-md-offset-3',
+                                    title: "Lỗi cập nhật chứng từ gốc",
+                                });
+                            }
+                        }
+                    });
+                   
+                },
+                cancel: function () {
+
+                },
+                closeIcon: true,
+                theme: "bootstrap",
+                confirmButton: 'Print',
+                cancelButton: 'Calcel',
+                backgroundDismiss: true,
+                confirmButtonClass: 'btn btn-primary',
+                cancelButtonClass: 'btn btn-danger',
+            });
+            // window.open("@Url.Action("Print", new {id = Model.VoucherId})");
+        });
+
+        jQuery("#btnExit").click(function () {
+            window.location.href = '@Url.Action("Index")';
+        });
+        jQuery('#addItem').click(function () {
+            var tapindexlast = jQuery("input[id$='_Note']:last").attr("tabindex");
+            if (tapindexlast === undefined || tapindexlast === NaN) {
+                tapindexlast = jQuery("#Description").attr("tabindex");
+            }
+
+            var nexttab = parseInt(tapindexlast) + 1;
+            jQuery.mbqAjax({
+                url: '@Url.Action("BlankEditorRow", "StockReceiving")',
+                method: 'GET',
+                data: { tabindex: nexttab },
+                dataType: "html",
+                contentType: "application/html; charset=utf-8",
+                success: function (html) {
+                    jQuery('#editorRows').append(html);
+                    InitForDetail();
+                    jQuery(".editorRow").InitFormat();
+                }
+            });
+            return false;
+        });
+        jQuery("#btnEdit").click(function () {
+            look = "";
+            isLook = false;
+            jQuery("input[type='Text']:not([type=button]),select,textarea").each(function () {
+                if (jQuery(this).hasClass("no-unlook")) {
+                    return;
+                }
+                jQuery(this).removeAttr("disabled");
+            });
+            jQuery("#btnSave,#btnCancle").removeAttr("disabled");
+            jQuery("#btnSave,#btnCancle").removeClass("btn-disabled");
+            jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit,#btnAppval").prop("disabled", "disabled");
+            jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit,#btnAppval").addClass("btn-disabled");
+            jQuery("#btnDelete").hide();
+            jQuery("#addItem,.deleteRow").removeClass("ui-helper-hidden");
+        });
+        if (look == 'look') {
+            isLook = true;
+            jQuery("#VoucherNo,#Status,#UserCreated_FullName").addClass("no-unlook");
+            jQuery("input[type='Text']:not([type=button]),select,textarea").each(function () {
+                jQuery(this).prop("disabled", "disabled");
+            });
+            jQuery("#btnSave,#btnCancle").prop("disabled", "disabled");
+            jQuery("#btnSave,#btnCancle").addClass("btn-disabled");
+            jQuery("#addItem,.deleteRow").addClass("ui-helper-hidden");
+        }
+        if (look == 'new') {
+            jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit").prop("disabled", "disabled");
+            jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit").addClass("btn-disabled");
+        }
+        jQuery("#NotePrints").removeAttr("disabled");
+    }
+    function InitForDetail() {
+        jQuery('input:text,select').bind('keypress', function (eInner) {
+            if (eInner.keyCode == 13) //if its a enter key
+            {
+                var tabindex = parseInt(jQuery(this).attr('tabindex'));
+                tabindex++;
+                if (jQuery(this).hasClass("autocomplete")) {
+                    var vl = jQuery(this).val();
+                    var vlId = parseInt(jQuery(this).prev("input:hidden:first").val());
+
+                    if (vlId == null || vlId == 'NaN') {
+                        vlId = 0;
+                    }
+
+                    var modelName = jQuery(this).attr("modelName");
+                    var tabIndex = parseInt(jQuery(this).attr("tabindex"));
+                    checkAutoSugget(vlId, vl, modelName, tabIndex);
+                }
+
+                if (jQuery('[tabindex=' + tabindex + ']') !== undefined) {
+                    jQuery('[tabindex=' + tabindex + ']').focus();
+                    jQuery('[tabindex=' + tabindex + ']').select();
+                    return false; // to cancel out Onenter page postback in asp.net
+                }
+                return false; // to cancel out Onenter page postback in asp.net
+            }
+        });
+        jQuery("textarea").bind('keyup', function (eInner) { 
+            if (eInner.keyCode == 16) //if its a shift key
+            { 
+                var tabindex = parseInt(jQuery(this).attr('tabindex'));
+                tabindex++;
+                if (jQuery('[tabindex=' + tabindex + ']') !== undefined) {
+                    jQuery('[tabindex=' + tabindex + ']').focus();
+                    jQuery('[tabindex=' + tabindex + ']').select();
+                    return false; // to cancel out Onenter page postback in asp.net
+                }
+                return false; // to cancel out Onenter page postback in asp.net
+            }
+        });
+        jQuery(".ProductCode").each(function () {
+            jQuery(this).GetProductAutoSugget({
+                url: '@Url.Action("ProductSuggest")'
+            });
+        });
+        jQuery('span.deleteRow').click(function () {
+            jQuery(this).parents('tr.editorRow:first').remove();
+            return false;
+        });
+        jQuery(".call").blur(function () {
+            var exRate = parseFloat(jQuery("#ExchangeRate").val().replace(/\,/g, ''));
+            if (exRate == 0) exRate = 1;
+            var $tr = jQuery(this).parents("tr:first");
+            var qty = parseFloat($tr.find(".Quantity:first").val().replace(/\,/g, ''));
+            var price = parseFloat($tr.find(".Price:first").val().replace(/\,/g, ''));
+            var taxRate = parseFloat($tr.find(".ImportTaxRate:first").val().replace(/\,/g, ''));
+            var transportFee = parseFloat($tr.find(".TransportFee:first").val().replace(/\,/g, ''));
+            var inlnadFee = parseFloat($tr.find(".InlnadFee:first").val().replace(/\,/g, ''));
+            var fee1 = parseFloat($tr.find(".Fee1:first").val().replace(/\,/g, ''));
+            var fee2 = parseFloat($tr.find(".Fee2:first").val().replace(/\,/g, ''));
+            var tt = qty * price;
+            var tax = tt * taxRate / 100;
+            var total = tt + tax + transportFee + inlnadFee + fee1 + fee2;
+            var vntotal = total*exRate;
+            var priceReceive = total / qty;
+            $tr.find(".Amount:first").val(tt.toLocaleString());
+            $tr.find(".VnTotal:first").val(vntotal.toLocaleString());
+            $tr.find(".ImportTax:first").val(tax.toLocaleString());
+            $tr.find(".Total:first").val(total.toLocaleString());
+            $tr.find(".PriceReceive:first").val(priceReceive.toLocaleString());
+            callSumTotal();
+            $tr.InitFormat();
+        });
+
+/*
+        jQuery(".resizable thead tr th").resizable({
+            handles: "n, e, s, w",
+            animateDuration: "fast",
+        });*/
+        jQuery(".resizable").TablResizable();
+    }
+
+    function checkAutoSugget(vlId, vl, modelName, tabIndex, search) {
+        var data = { id: vlId, name: vl, modelName: modelName, tabIndex: tabIndex }
+        jQuery.mbqAjax({
+            url: '@Url.Action("CheckSuggest", "StockReceiving")',
+            method: 'POST',
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (html) {
+                if (html !== "ok") {
+                    if (search != undefined && search == true) {
+                        jQuery(".jconfirm-box .content").html(html);
+                    } else {
+                        jQuery.mbqDialog({
+                            title: "List " + modelName,
+                            content: html,
+                            columnClass: 'col-md-6 col-md-offset-3'
+                        });
+                        jQuery("#mstrTable tbody tr:first").focus();
+                        jQuery("#mstrTable tbody tr:first").select();
+                    }
+                    return false;
+                } else {
+                    jQuery('[tabindex=' + tabIndex + ']').focus();
+                }
+            }
+        });
+    }
+
+    function callSumTotal() {
+        var tQuantity = 0;
+        var tAmount = 0;
+        var tTax = 0;
+        var tTransportFee = 0;
+        var tInlnadFee = 0;
+        var tFee1 = 0;
+        var tFee2 = 0;
+        var sumTotal = 0;
+        var exRate = parseFloat(jQuery("#ExchangeRate").val().replace(/\,/g, ''));
+        if (exRate == 0) exRate = 1;
+        jQuery(".editorRow").each(function () {
+            var $tr = jQuery(this);
+            var qty = parseFloat($tr.find(".Quantity:first").val().replace(/\,/g, ''));
+            var price = parseFloat($tr.find(".Price:first").val().replace(/\,/g, ''));
+            var taxRate = parseFloat($tr.find(".ImportTaxRate:first").val().replace(/\,/g, ''));
+            var transportFee = parseFloat($tr.find(".TransportFee:first").val().replace(/\,/g, ''));
+            var inlnadFee = parseFloat($tr.find(".InlnadFee:first").val().replace(/\,/g, ''));
+            var fee1 = parseFloat($tr.find(".Fee1:first").val().replace(/\,/g, ''));
+            var fee2 = parseFloat($tr.find(".Fee2:first").val().replace(/\,/g, ''));
+            tQuantity += qty;
+            tTransportFee += transportFee;
+            var amount = qty * price;
+            tAmount += amount;
+            var tax = amount * taxRate / 100;
+            tTax += tax;
+            tInlnadFee += inlnadFee;
+            tFee1 += fee1;
+            tFee2 += fee2;
+        });
+        sumTotal = tAmount + tTax + tTransportFee + tInlnadFee + tFee1 + tFee2;
+        var vnsumTotal = sumTotal * exRate;
+        var $trSum = jQuery(".sumrow");
+        $trSum.find(".TQuantity:first").html(tQuantity.toLocaleString());
+        $trSum.find(".TAmount:first").html(tAmount.toLocaleString());
+        $trSum.find(".TTax:first").html(tTax.toLocaleString());
+        $trSum.find(".TTransportFee:first").html(tTransportFee.toLocaleString());
+        $trSum.find(".TInlnadFee:first").html(tInlnadFee.toLocaleString());
+        $trSum.find(".TFee1:first").html(tFee1.toLocaleString());
+        $trSum.find(".TFee2:first").html(tFee2.toLocaleString());
+        $trSum.find(".TTT:first").html(sumTotal.toLocaleString());
+        $trSum.find(".VnTTT :first").html(vnsumTotal.toLocaleString());
+
+    }
+
+</script>
+@{
+    SelectList currencies = (SelectList)ViewData["Currency"];
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.HiddenFor(x => x.VoucherId)
+@Html.HiddenFor(x => x.VoucherCode)
+<div class="SectionBlock Expanded BoxL1">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4 input-stock">
+                @Html.ValidationSummary(true)
+                <h4 class="Subject">@ViewBag.Title</h4>
+                <table style="margin-left:50px;" id="materInput" class="datepicker-check">
+                    <tr>
+                        <th><label>No:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.VoucherNo, new { @class = " required uppercase ", maxlength = "12", @readonly = "readonly", disabled = "disabled", style = "width: 80px;float: left" })
+                            <label style="padding-left: 5px; float: left;padding-top: 5px;">Status:</label>
+                            @Html.TextBoxFor(x => x.Status, new { @class = " required uppercase ", maxlength = "12", @readonly = "readonly", disabled = "disabled", style = "width: 70px; float: left;padding-left: 3px" })
+ 
+                        </td>
+                        <th><label>Số tờ khai:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.DeclaraNo, new { @class = " required uppercase", maxlength = "12", tabindex = "6" })
+                        </td>
+                        <th><label>Sales:</label></th>
+                        <td>
+                            @if (Model.UserCreated != null && Model.UserCreated.FullName != null)
+                            {
+                                @Html.TextBox("UserCreated.FullName", Model.UserCreated.FullName, new { disabled = "disabled", @readonly = "readonly" })
+                            }
+                            else
+                            {
+                                @Html.TextBox("UserCreated.FullName", currentUser.FullName, new { disabled = "disabled", @readonly = "readonly" }) 
+                            }
+                        </td>
+                    </tr>
+                    <tr>
+                        <th><label>Suplier:</label></th>
+                        <td>
+                            @Html.HiddenFor(x => x.Supplier.Id, new { @class = " required " })
+                            @Html.TextBoxFor(x => x.Supplier.FullName, new { @class = "autocomplete", maxlength = "120", tabindex = "1", modelName = "Supplier" })
+                        </td>
+
+                        <th><label>Ngày mở tờ khai:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.DeclaraDate, "{0:dd/MM/yyyy}", new { @class = "datepicker required fromDate", maxlength = 10, tabindex = "7" })
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th><label>Date ETA:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.ReceiptDate, "{0:dd/MM/yyyy}", new { @class = "datepicker required fromDate", maxlength = 10, tabindex = "2" })
+                        </td>
+                        <th><label>Ngày nhập kho:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.VoucherDate, "{0:dd/MM/yyyy}", new { @class = "datepicker required toDate", maxlength = 10, tabindex = "8" })
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th><label>HBL:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.HBL, new { @class = " required uppercase ", maxlength = "12", tabindex = "3", style = "width: 80px;float: left" })
+                            <label style="padding-left: 5px; float: left;padding-top: 5px;">MBL:</label>
+                            @Html.TextBoxFor(x => x.MBL, new { @class = " required uppercase ", maxlength = "12", tabindex = "4", style = "width: 80px; float: left;padding-left: 3px" })
+                        </td>
+                        <th><label>Currency:</label></th>
+                        <td>
+                            @Html.DropDownList("Curency.Id", currencies, "--Select--", new { tabindex = "9", @class = " required " })
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th><label>Origin:</label></th>
+                        <td>
+                            @Html.HiddenFor(x => x.Country.Id, new { @class = " required " })
+                            @Html.TextBoxFor(x => x.Country.CountryName, new { @class = "autocomplete", tabindex = "5", maxlength = 120, modelName = "Country" })
+                        </td>
+                        <th><label>Exchange Rate:</label></th>
+                        <td>
+                            @Html.TextBoxFor(x => x.ExchangeRate, new { @class = "currency ExchangeRate", maxlength = 12, tabindex = "10" })
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <th><label>Description:</label></th>
+                        <td colspan="3">
+                            @Html.TextAreaFor(m => m.Description, new { style = "width: 743px; height: 123px;", maxlength = 5000, tabindex = 11 })
+                            <br />
+                            <div>
+                                <span>Ghi chú được nhập tối đa 5000 ký tự.</span>
+                            </div>
+                        </td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+
+                </table>
+                <br />
+                <div class="detailVoucher">
+                    <table style="background-color:#e6edf9; font-size:1.2em;border:1px solid #BFBFBF; width: 1800px" class="orderDetailTabel resizable ">
+                        <thead>
+                            <tr>
+                                <th style="width: 20px" rowspan="2"></th>
+                                <th rowspan="2" style="width: 280px">Products </th>
+                                <th rowspan="2" style="width: 32px">Unit </th>
+                                <th rowspan="2" style="width: 130px;">Warehouse </th>
+                                <th rowspan="2" style="width: 80px;">Quantity </th>
+                                <th rowspan="2" style="width: 70px;">Unit Rate </th>
+                                <th rowspan="2" style="width: 120px;">Amount </th>
+                                <th colspan="2" style="background-color: yellowgreen">Tax </th>
+                                <th colspan="4" style="background-color: burlywood">Fee </th>
+                                <th rowspan="2" style="width: 120px; background-color: #0FAAFF;color: #fff">Total </th>
+                                <th rowspan="2" style="width: 170px; background-color: #0FAAFF;color: #fff">VnTotal </th>
+                                <th rowspan="2" style="width: 90px; background-color: #0FAAFF;color: #fff">Price Receive </th>
+                                <th rowspan="2">Description other fee </th>
+                            </tr>
+                            <tr>
+                                <th style="width: 50px;background-color: yellowgreen"> Rate </th>
+                                <th style="width: 50px;background-color: yellowgreen">Amount </th>
+                                <th style="width: 80px;background-color: burlywood">Transport</th>
+                                <th style="width: 80px;background-color: burlywood">Inland</th>
+                                <th style="width: 70px;background-color: burlywood">Other1 </th>
+                                <th style="width: 70px;background-color: burlywood">Other2 </th>
+                            </tr>
+                        </thead>
+                        <tbody id="editorRows">
+                            @{
+                                var starbindex = 12;
+
+                                /* if (currentUser.RoleName == "Accountant")
+                                 {
+                                     starbindex = 12;
+                                 }*/
+                                ViewData["tabindex"] = starbindex;
+                            }
+                            @if (Model.OrderDetails != null && Model.OrderDetails.Any())
+                            {
+                                foreach (var item in Model.OrderDetails)
+                                {
+                                    Html.RenderPartial("_StockDetailView", item);
+                                    starbindex = starbindex + 10;
+                                    ViewData["tabindex"] = starbindex;
+                                }
+
+                            }
+                            else
+                            {
+                                Html.RenderPartial("_StockDetailView", new OrderDetailModel());
+                            }
+                        </tbody>
+                        <tfoot>
+                            <tr class="sumrow">
+                                <td>
+                                    <span id="addItem" style="cursor: pointer">
+                                        <i class="ui-icon ui-icon-plus"></i>
+                                    </span>
+                                </td>
+                                <th colspan="3" style="text-align: right"><label>Total:</label></th>
+                                <th class="currency TQuantity textbold ">@Model.QuantityTotal</th>
+                                <td></td>
+                                <th class="currency TAmount  textbold">@Model.TAmount</th>
+                                <td> </td>
+                                <th class="currency TTax textbold ">@Model.TVATTax</th>
+                                <th class="currency TTransportFee  textbold">@Model.TransportFee</th>
+                                <th class="currency TInlnadFee textbold ">@Model.InlnadFee</th>
+                                <th class="currency TFee1 textbold ">@Model.Fee1</th>
+                                <th class="currency TFee2 textbold">@Model.Fee2</th>
+                                <th class="currency TTT textbold">@Model.TTT</th>
+                                <th class="currencyVn VnTTT textbold">@Model.VnTTT</th>
+                                <th></th>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <br />
+                <div id="footer-action">
+                    @Html.Partial("_StatusView")
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div style="display: none" id="NotePrints-html">
+    @Html.TextAreaFor(m => m.NotePrints, new { style = "width: 663px; height: 230px;", maxlength = 1000, cols = "40" })
+    <br />
+    <div class="clearfix">
+        <span>Ghi chú được nhập tối đa 1000 ký tự.</span>
+    </div>
+</div>
+<script type="text/javascript">
+     
+
+    function stockCradAction(status, id) {
+        var data = { id: id, status: status };
+        jQuery.mbqAjax({
+            url: '@Url.Action("StockCardAction", "StockReceiving")',
+            method: 'POST',
+            data: JSON.stringify(data),
+            dataType: "json",
+            contentType: "application/json; charset=utf-8",
+            success: function (result) {
+                jQuery("#Status").val(result.status);
+                look = 'look';
+                if (status !== 'Hold') {
+                    jQuery("#btn-BaseAction").find(".Hold").each(function () {
+                        jQuery(this).addClass("hide");
+                    });
+                    jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit").removeAttr("disabled");
+                    jQuery("#btnnew,#btnPrint,#btnDelete,#btnEdit").removeClass("btn-disabled");
+                } else {
+                    jQuery("#btn-BaseAction").find(".Hold").each(function () {
+                        jQuery(this).removeClass("hide");
+                    });
+
+                    jQuery("#btnSave,#btnCancle").prop("disabled", "disabled");
+                    jQuery("#btnSave,#btnCancle").addClass("btn-disabled");
+                }   
+                var view = result.view; 
+                jQuery("#footer-action").html(view);
+            }
+        });
+        InitButtonAction();
+    }
+</script>

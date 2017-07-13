@@ -1,0 +1,650 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.ShipmentModel
+
+@{
+    ViewBag.Title = "Edit shipment";
+    RevenueModel RevenueModel1 = new RevenueModel();
+    RevenueModel1.Id = Model.Id;
+    IEnumerable<Customer> Shippers = (IEnumerable<Customer>)ViewData["ShippersFull"];
+    IEnumerable<Customer> Cnees = (IEnumerable<Customer>)ViewData["Cnees"];
+    IEnumerable<Agent> Agents = (IEnumerable<Agent>)ViewData["Agents"];
+    IEnumerable<CarrierAirLine> carriers = (IEnumerable<CarrierAirLine>)ViewData["Carriers"];
+    carriers = carriers.OrderBy(x => x.AbbName);
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    string lookDate = string.Empty;
+    if (Model.IsControl && !Model.IsMainControl)
+    {
+        lookDate = "disabled";
+    }
+}
+@using (Html.BeginForm())
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <style type="text/css">
+            .field-validation-error {
+                color: #FF0000;
+                float: left;
+                font-size: 1.2em;
+                margin: auto 15px;
+                padding: 0 0 0 135px;
+                text-align: center;
+            }
+        </style>
+        @if (Model.IsMainControl)
+        {
+            <style type="text/css">
+                .page {
+                    width: 100%;
+                }
+            </style>
+        }
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <table width="100%">
+                        <tr>
+                            <td colspan="2">
+                                <div class="ButtonZone1">
+                                    <input id="DetailShipmentButton" type="button" value=" SHIPMENT " title="Create New Shipment" style="background-color: #ED1B2E;" />
+                                    @Html.ActionLink("REVENUE", "Revenue", "Shipment", new { id = Model.Id }, new { Class = "RevenueLink" })
+                                    <input id="DocumentsButton" type="button" value="DOCUMENTS" title="Close this Shipment" />
+                                </div>
+                                @{Html.RenderPartial("_DocumentMenu", RevenueModel1);}
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 400px">
+                                <div class="ShipmentRow  refid">
+                                    <label>Ref</label>
+                                    @Html.HiddenFor(x => x.IsMainControl)
+                                    @Html.HiddenFor(x => x.ShipmentRef)
+
+                                    @if (Model.IsMainControl)
+                                    {
+                                        @Html.HiddenFor(m => m.Id)
+                                        <input type="text" disabled="disabled" name="idControl" id="idControl" value="@string.Format("C{0}", Model.Id)" />
+                                    }
+                                    else if (Model.ShipmentRef != null)
+                                    {
+                                        @Html.HiddenFor(m => m.Id)
+                                        <input type="text" disabled="disabled" title="@Model.ShipmentRef" name="idControlsup" id="idControlsup" value="@string.Format("{0}C", Model.Id)" />
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(m => m.Id, new { disabled = "disabled" })
+                                    }
+
+                                </div>
+                            </td>
+                            <td style="width: 400px">
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.ShipperId)
+                                    @if (Model.IsMainControl)
+                                    {
+                                        @Html.HiddenFor(m => m.ShipperId)
+                                        @Html.TextBox("ShipperIdTex", "CONSOL", new { @readonly = "readonly", disabled = "disabled" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownListFor(m => m.ShipperId, new SelectList(Shippers, "Id", "CompanyName"))
+                                        <span class="text-right text-primary" style="font-weight: bold">(@Html.DisplayTextFor(m => m.ShipperId))</span>
+                                    }
+
+                                </div>
+                            </td>
+                            @if (Model.IsMainControl)
+                            {
+                                <td rowspan="10" style="align-content: center; vertical-align: top; width: 600px">
+                                    <div class="ShipmentRow col-md-12" style="align-content: center; vertical-align: top;">
+                                        @Html.Label("Select User for shipment control", new { style = "width: 100%; text-align:center; align-content: center" })
+                                    </div>
+                                    <div class="col-md-12" style="align-content: center; vertical-align: top;">
+                                        <div class="ShipmentRow userlist2 col-md-4" style="margin: 2px auto">
+                                            @Html.Label("List Users")
+                                            @Html.ListBox("AllUserCanSelect", new SelectList(ViewBag.UserList, "Id", "FullName"), new { @class = "user-listbox2 un-required" })<br />
+                                        </div>
+                                        <div class="col-md-3 text-center btn-add-remove-mid" style="align-content: center; vertical-align: middle;">
+                                            <input type="button" id="btnAdd" value="Add >>" class="btn btn-success btn-add-remove" /><br />
+                                            <input type="button" id="btnRemove" value="<< Remove" class="btn btn-warning btn-add-remove" /><br />
+                                        </div>
+                                        <div class="ShipmentRow userlist2  col-md-4" style="margin: 2px auto">
+                                            @Html.LabelFor(m => m.UserListInControl)
+                                            @Html.ListBoxFor(m => m.UserListInControl, (IEnumerable<SelectListItem>)ViewBag.UserListSelect, new { @class = "user-listbox2" })<br />
+                                        </div>
+                                    </div>
+                                </td>
+                            }
+                        </tr>
+                        <tr>
+                            <td style="width: 400px">
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.Dateshp)
+                                    @if ((Model.RevenueStatus) == "Pending")
+                                    {
+                                        @Html.TextBoxFor(m => m.Dateshp, new { @class = lookDate })
+                                    }
+                                    else
+                                    {
+                                        @Html.HiddenFor(m => m.Dateshp)
+                                        @Html.TextBoxFor(m => m.Dateshp, new { disabled = "disabled" })
+                                    }
+
+                                </div>
+                                <div style="height: 25px; width: auto; float: left;">
+                                    <label for="Dateshp" class="DateInput"></label>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.CneeId)
+                                    @if (Model.IsTrading)
+                                    {
+                                        @Html.HiddenFor(m => m.CneeId)
+                                        @Html.TextBoxFor(m => m.CneeFullName, new { disabled = "disabled", title = Model.CneeName + " - " + Model.CneeFullName })
+                                        <span class="text-right text-primary" style="font-weight: bold">(@Html.DisplayTextFor(m => m.CneeId))</span>
+                                    }
+                                    else if (Model.IsMainControl)
+                                    {
+                                        @Html.HiddenFor(m => m.CneeId)
+                                        @Html.TextBox("CneeIdTex", "CONSOL", new { @readonly = "readonly", disabled = "disabled" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownListFor(m => m.CneeId, new SelectList(Cnees, "Id", "CompanyName"))
+                                        <span class="text-right text-primary" style="font-weight: bold">(@Html.DisplayTextFor(m => m.CneeId))</span>
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.QtyNumber)
+                                    @if (Model.IsTrading)
+                                    {
+                                        @Html.HiddenFor(m => m.QtyNumber)
+                                        @Html.TextBoxFor(m => m.QtyNumber, new { disabled = "disabled" })
+                                    }
+                                    else
+                                    {
+                                        @Html.TextBoxFor(m => m.QtyNumber)
+                                    }
+
+                                    @Html.ValidationMessageFor(m => m.QtyNumber)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.AgentId)
+                                    @Html.DropDownListFor(m => m.AgentId, new SelectList(Agents, "Id", "AbbName"), new { @class = lookDate })
+                                    <span class="text-right text-primary" style="font-weight: bold">(@Html.DisplayTextFor(m => m.AgentId))</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.QtyUnit)
+                                    @if (Model.IsTrading)
+                                    {
+                                        @Html.HiddenFor(m => m.QtyUnit)
+                                        @Html.TextBoxFor(m => m.QtyUnit, new { disabled = "disabled" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownList("QtyUnit", (SelectList)ViewData["Units"])
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.ServiceName)
+                                    @if (Model.IsTrading)
+                                    {
+                                        @Html.HiddenFor(m => m.ServiceId)
+                                        @Html.TextBoxFor(m => m.TypeServices.SerivceName, new { disabled = "disabled" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownList("ServiceId", (SelectList)ViewData["Services"], new { @class = lookDate })
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.CarrierAirId)
+                                    @Html.DropDownListFor(x => x.CarrierAirId, new SelectList(carriers, "Id", "AbbName"), new { @class = lookDate })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.HouseNum)
+                                    @Html.TextBoxFor(m => m.HouseNum, new { @class = "masterNum-input " })
+                                </div>
+                                <div style="height: 25px; display: inline-table">
+                                    @if (!Model.IsMainControl)
+                                    {
+                                        @Html.CheckBoxFor(m => m.HouseNumCheck, new { @class = "shipment-check ", texboxData = "HouseNum" })
+                                    }
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.DepartureId)
+                                    @Html.DropDownList("CountryDeparture", (SelectList)ViewData["CountryList"], new { @class = lookDate })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.MasterNum)
+                                    @Html.TextBoxFor(m => m.MasterNum, new { @class = "masterNum-input " + lookDate })
+                                </div>
+                                <div style="height:25px; display: inline-table">
+                                    @if (string.IsNullOrEmpty(lookDate))
+                                    {
+                                        @Html.CheckBoxFor(m => m.MasterNumCheck, new { @class = "shipment-check " + lookDate, texboxData = "MasterNum" })
+                                    }
+
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    <label></label>
+                                    @Html.DropDownList("DepartureId", (SelectList)ViewData["AreaListDep"], "--Please select--", new { @class = lookDate })
+                                    @Html.ValidationMessageFor(m => m.DepartureId)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.SaleType)
+                                    @if (Model.RevenueStatus.Equals("Approved") && !currentUser.IsAdmin())
+                                    {
+                                        @Html.DropDownList("SaleType", (SelectList)ViewData["SaleTypes"], new { disabled = "disabled" })
+                                    }
+                                    else
+                                    {
+                                        @Html.DropDownList("SaleType", (SelectList)ViewData["SaleTypes"])
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.DestinationId)
+                                    @Html.DropDownList("CountryDestination", (SelectList)ViewData["CountryList"], new { @class = lookDate })
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.LabelFor(m => m.SFreights)
+                                    @Html.TextBoxFor(m => m.SFreights, new { @class = "un-required " })
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow">
+                                    <label></label>
+                                    @Html.DropDownList("DestinationId", (SelectList)ViewData["AreaListDes"], "--Please select--", new { @class = lookDate })
+                                    @Html.ValidationMessageFor(m => m.DestinationId)
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    @Html.HiddenFor(m => m.VoucherId)
+                                    @Html.HiddenFor(m => m.IsTrading)
+                                    @if (Model.IsMainControl)
+                                    {
+                                        var txtTotal = "Total " + Model.UserListInControl.Count + " sale selected in control";
+                                        <div class="ShipmentRow">
+                                            <label>User List</label>
+
+                                            @Html.TextBox("userListSelect", txtTotal, new { disabled = "disabled" })
+
+                                        </div>
+                                    }
+                                    @if (Model.Order != null)
+                                    {
+                                        <label for="Order_VoucherNo">Sales Order No</label>
+                                        @Html.TextBoxFor(m => m.Order.VoucherNo, new { disabled = "disabled" })
+                                    }
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                @*<div class="ShipmentRow" style="padding-top: 10px; width: 145px;">
+                                        <label></label>
+                                    </div>
+                                    @Html.CheckBoxFor(m => m.LockShipment)
+                                    <span style="font-size: 1.2em;">lock shipment. Your shipment automatic to lock at</span>  <span style="font-size: 1.2em; color: #ED1B2E; font-weight: bold;">@Model.LockDate</span>*@
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ShipmentRow" style="padding-top: 10px">
+                                    <label></label>
+                                    <span class="Label" style="font-size: 1.4em; float: right">Last Update @Model.UpdateDate by @ViewData["UserName"] </span>
+                                </div>
+                            </td>
+
+                            <td>
+
+
+                                <div class="ShipmentRow" style="padding-top: 10px">
+                                    <label></label>
+                                    @if (Model.isDelivered)
+                                    {
+                                        <span class="Label" style="font-size: 1.4em;">shipment delivered on @Model.DeliveredDate </span>
+                                    }
+                                </div>
+
+
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="ButtonZone">
+                                    @if (currentUser.IsOwnner(Model.SaleId))
+                                    {
+                                        <input id="submitButton" type="button" value="Update" title="update Shipment" />
+                                        if (!Model.RevenueStatus.Equals(ShipmentModel.RevenueStatusCollec.Approved.ToString()))
+                                        {
+                                            @Html.ActionLink("Delete", "Delete", "Shipment", new { id = Model.Id }, new { Class = "ShipmentLink" })
+
+                                        }
+                                        @Html.ActionLink("Close", "Index", "Shipment", new { id = 0 }, new { Class = "ShipmentLink", style = "background-color:#ED1B2E;" })
+                                    }
+                                </div>
+                            </td>
+                            <td>
+                                <div class="ShipmentRow">
+                                    <div class="DOZone">
+                                        @if (Model.isDelivered)
+                                        {
+                                            <a href="#" class="DisabledLink">Document Delivery</a>
+                                            @Html.ActionLink("Cancel", "CancelPOD", "Shipment", new { id = Model.Id }, new { Class = "ShipmentLink", style = "background-color:#ED1B2E;" })
+                                        }
+                                        else
+                                        {
+                                            @Html.ActionLink("Document Delivery", "UpdatePOD", "Shipment", new { id = Model.Id }, new { Class = "ShipmentLink" })
+                                            <a href="#" class="DisabledLink">Cancel</a>
+                                        }
+                                    </div>
+                                    <input type="hidden" name="submitType" value="submit" id="submibType" />
+                                </div>
+                            </td>
+                        </tr>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <div class="col-md-12" style="border-bottom: 2px solid black"></div>
+                                    <div class="col-md-12">
+                                        @if (Model.IsMainControl && ViewBag.ListMember != null)
+                                        {
+                                            <div class="ShipmentRow" style="padding-top: 10px">
+                                                <label class="col-md-12" style="width: 100% ;text-align: left">List Member of consol</label>
+                                                <br />
+                                                <div>
+                                                    <label>Ref</label>
+                                                    @Html.TextBox("MemberId", "", new { placeholder = "Enter shipment member for this consol", @class = "un-required " })
+                                                    <input id="addRef" type="button" value="Add Member" title="Add Member" />
+                                                </div>
+                                                <div class="col-md-12">
+                                                    <ul id="userUpdateList" class="shipmentmemberlist">
+                                                        @foreach (Shipment us in ViewBag.ListMember)
+                                                        {
+                                                            <li class="list-group-item list-group-item-success" id="@us.Id">
+                                                                <span>
+                                                                    @Html.ActionLink(string.Format("{0}C", us.Id), "Edit", "Shipment", new { id = us.Id }, new { target = "_blank", @class = "idRefControl" })
+                                                                </span>
+                                                                <span class="remove-member" style="cursor: pointer"><i class="ui-icon ui-icon-close"></i>  </span>
+                                                            </li>
+                                                        }
+                                                    </ul>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    <br />
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#FileTab").addClass("Active");
+        jQuery('#FileTab').activeThisNav();
+        jQuery('.disabled').each(function () {
+            jQuery(this).attr("disabled", "disabled");
+        });
+        jQuery("input[type='text']:not(:disabled),select:not(dir:disabled)").each(function () {
+            var $elm = jQuery(this);
+            if ($elm.hasClass("un-required") == false)
+                $elm.addClass("required");
+        });
+        if (jQuery("#addRef").length > 0) {
+            jQuery("#addRef").on("click", function (e) {
+                e.preventDefault();
+                var consolid = @Model.Id;
+                var memberId = parseInt(jQuery("#MemberId").val());
+                if (memberId === "" || memberId === undefined) {
+                    return false;
+                }
+                var postData = { id: consolid, idRef: memberId };
+                jQuery.mbqAjax({
+                    method: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    processData: false,
+                    url: '@Url.Action("AddMemberToConsol", "Shipment")',
+                    data: JSON.stringify(postData),
+                    success: function (data) {
+                        /*var obj = JSON.parse(data);
+                        console.log(obj);*/
+                        if (data.IsFinished == true) {
+                            window.location.href = '@Url.Action("Edit", "Shipment", new { id = Model.Id })';
+                        } else {
+                            jQuery.mbqAlert({
+                                title: "Error add member to consol",
+                                content: data.Message,
+                                columnClass: 'col-md-6 col-md-offset-2 ero',
+                                theme: 'bootstrap',
+                                type:'error'
+                            });
+                        }
+                    }
+                });
+            });
+            jQuery(".remove-member").on('click', function (e) {
+                e.preventDefault();
+                var consolid = @Model.Id;
+                var memberId = parseInt(jQuery(this).parents("li:first").attr("id"));
+                var postData = { id: consolid, idRef: memberId };
+                jQuery.mbqAjax({
+                    method: "POST",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    processData: false,
+                    url: '@Url.Action("RemoveMemberFromConsol", "Shipment")',
+                    data: JSON.stringify(postData),
+                    success: function (data) {
+                        /* var obj = JSON.parse(data);
+                         console.log(obj);*/
+                        if (data.IsFinished ==true) {
+                            window.location.href = '@Url.Action("Edit", "Shipment", new { id = Model.Id })';
+                        } else {
+                            jQuery.mbqAlert({
+                                title: "Error remove member from consol",
+                                content: data.Message,
+                                columnClass: 'col-md-6 col-md-offset-2',
+                                theme: 'bootstrap',
+                                type:'error'
+                            });
+                        }
+                    }
+                });
+            });
+        }
+        jQuery('#btnAdd').click(function (e) {
+            var select = jQuery('#AllUserCanSelect > option:selected').clone();
+            jQuery('#UserListInControl').append(select);
+            setHouseNum();
+            e.preventDefault();
+        });
+
+        jQuery('#btnRemove').click(function (e) {
+            jQuery('#UserListInControl > option:selected').remove();
+            setHouseNum();
+            e.preventDefault();
+        });
+
+        jQuery('#DocumentMenuContainer').hide();
+        jQuery('.shipment-check').each(function () {
+            var inputName = jQuery(this).attr("texboxData");
+            var vl = jQuery('#' + inputName).val();
+            if (jQuery(this).is(':checked')) {
+                jQuery('#' + inputName).val("CHUA BILL");
+                jQuery('#' + inputName).attr("disabled", "disabled");
+            } else {
+                jQuery('#' + inputName).val(vl);
+                jQuery('#' + inputName).removeAttr("disabled");
+            }
+        });
+
+        jQuery('#HouseNumCheck,#MasterNumCheck').click(function () {
+            var inputName = jQuery(this).attr("texboxData");
+            var vl = jQuery('#' + inputName).val();
+            if (jQuery(this).is(':checked')) {
+                jQuery('#' + inputName).val("CHUA BILL");
+                jQuery('#' + inputName).attr("disabled", "disabled");
+            } else {
+                jQuery('#' + inputName).val(vl);
+                jQuery('#' + inputName).removeAttr("disabled");
+            }
+        });
+        jQuery("input#submitButton").click(function () {
+            var form = jQuery(this).parents("form:first");
+            if (jQuery("#UserListInControl") !== undefined)
+                jQuery("#UserListInControl option").prop("selected", true);
+            jQuery('.disabled').each(function () {
+                jQuery(this).removeAttr('disabled');
+            });
+            var check = true;
+            check = form.CheckRequired();
+            if (check == false)
+                return false;
+            jQuery('#submitType').val('submit');
+            form.trigger('submit');
+        });
+        jQuery("#DocumentMenuContainer .Close").click(function () {
+            jQuery('#DocumentMenuContainer').hide();
+        });
+        jQuery("#DocumentsButton").click(function () {
+            jQuery('#DocumentMenuContainer').show();
+        });
+
+        jQuery('#deleteButton').bind('click', function (event) {
+            jQuery('#submibType').val('delete');
+            jQuery('.disabled').each(function () {
+                jQuery(this).removeAttr('disabled');
+            });
+            jQuery(this).parents('form').submit();
+        });
+        jQuery('#closeButton').bind('click', function (event) {
+            jQuery('#submibType').val('close');
+            jQuery('.disabled').each(function () {
+                jQuery(this).removeAttr('disabled');
+            });
+            jQuery(this).parents('form').submit();
+        });
+        new DateTimePicker('Dateshp', 'dd/MM/yyyy');
+        jQuery("#CountryDeparture").change(function () {
+            getWeather(jQuery(this).val(), 'DepartureId');
+        });
+        jQuery("#CountryDestination").change(function () {
+            getWeather(jQuery(this).val(), 'DestinationId');
+        });
+        function getWeather(_CountryId, destination) {
+            var URL = "../../Shipment/GetJsonByCountry/0";
+            jQuery.getJSON(URL, { CountryId: _CountryId }, function (data) {
+                var result = '<option value="">--Please select--</option>';
+                jQuery.each(data, function (index, d) {
+                    if (d.Id != '') {
+                        result += '<option value="' + d.Id + '">' + d.AreaAddress + '</option> ';
+                    }
+                });
+                jQuery("#" + destination).html(result);
+            });
+        }
+        jQuery("#ServiceId").change(function () {
+            getCarrier(jQuery(this).find("option:selected").text(), 'CarrierAirId');
+            getUnit(jQuery(this).find("option:selected").text(), 'QtyUnit');
+
+        });
+        function getUnit(_ServiceName, destination) {
+            var URL = "../../Shipment/GetUnitJsonByService/0";
+            jQuery.getJSON(URL, { ServiceName: _ServiceName }, function (data) {
+                var result = '';
+                jQuery.each(data, function (index, d) {
+                    if (d.Id != '') {
+                        result += '<option value="' + d.Id + '">' + d.Unit1 + '</option> ';
+                    }
+                });
+                jQuery("#" + destination).html(result);
+            });
+        }
+        function getCarrier(_ServiceName, destination) {
+            var URL = "../../Shipment/GetCarrierJsonByService/0";
+            jQuery.getJSON(URL, { ServiceName: _ServiceName }, function (data) {
+                var result = '';
+                jQuery.each(data, function (index, d) {
+                    if (d.Id != '') {
+                        result += '<option value="' + d.Id + '" title="' + d.Description + '">' + d.AbbName + '</option> ';
+                    }
+                });
+                jQuery("#" + destination).html(result);
+            });
+        }
+        function sortlist() {
+            var lb = document.getElementById('UserListInControl');
+            var arrTexts = new Array();
+
+            for (var i = 0; i < lb.length; i++) {
+                arrTexts[i] = lb.options[i].text;
+            }
+
+            arrTexts.sort();
+
+            for (i = 0; i < lb.length; i++) {
+                lb.options[i].text = arrTexts[i];
+                lb.options[i].value = arrTexts[i];
+            }
+        }
+    });
+
+    function setHouseNum() {
+        var count = jQuery("#UserListInControl").find('option').length;
+        var txt = "has " + count + " bhl";
+        var txtTotal = "Total " + count + " sale selected in control";
+        jQuery("#HouseNum").val(txt);
+        jQuery("#userListSelect").val(txtTotal);
+    }
+</script>

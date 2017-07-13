@@ -1,0 +1,107 @@
+﻿@using System.Globalization
+@using SSM.ViewModels.Reports.CRM
+@model dynamic
+@{
+    var reports = (List<SalesTypeSummaryReport>)ViewBag.CustomerFollowup;
+    var planYearReports = (List<PersonalReport>)ViewBag.PlanYear;
+}
+
+<div>
+    <div class="crmplan-header-item">
+        <h3>Shipment count</h3>
+    </div>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>CompanyName</th>
+                    @foreach (var m in DateTimeFormatInfo.CurrentInfo.MonthNames.Where(x => !string.IsNullOrEmpty(x)))
+                    {
+                        <th class="">@m.Substring(0, 3)</th>
+                    }
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var it in reports)
+                {
+                    <tr class="bg-info">
+                        <th colspan="15">@string.Format("{0} CUSTOMER ({1})%", it.SaleType.Name.ToUpper(), it.SaleType.Value.Value.ToString("N0"))</th>
+                    </tr>
+                    var no = 0;
+                    foreach (var item in it.SammaryReports.GroupBy(x => x.Customer))
+                    {
+                        no++;
+                        <tr>
+                            <td>@no</td>
+                            <td>@item.Key.CompanyShortName</td>
+                            @for (var i = 1; i <= 12; i++)
+                            {
+                                if (item.Any(x => x.Month == i))
+                                {
+                                    <td>@item.Where(x => x.Month == i).Sum(x => x.ShipmentCount)</td>
+                                }
+                                else
+                                {
+                                    <td></td>
+                                }
+                            }
+                            <td>@item.Sum(x => x.ShipmentCount)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div>
+    <div class="crmplan-header-item">
+        <h3>Plan report</h3>
+    </div>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th class=""></th>
+                    @foreach (var m in DateTimeFormatInfo.CurrentInfo.MonthNames.Where(x => !string.IsNullOrEmpty(x)))
+                    {
+                        <th class="">@m.Substring(0, 3)</th>
+                    }
+                    <th class="">Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pmItem in planYearReports.GroupBy(x => x.PlanName))
+                {
+                    <tr class="bg-info">
+                        <th>@pmItem.Key </th>
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <td class="text-right">@pmItem.Where(x => x.Month == i).Sum(x => x.PlanValue)</td>
+                        }
+                        <th class="text-right"><b>@pmItem.Sum(i => i.PlanValue)</b></th>
+                    </tr>
+                    <tr class="bg-success">
+                        <th>Thực hiện </th>
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <td class="text-right">@pmItem.Where(x => x.Month == i).Sum(x => x.TotalExc)</td>
+                        }
+                        <th class="text-right"><b>@pmItem.Sum(i => i.TotalExc)</b></th>
+                    </tr>
+                    <tr class="bg-danger">
+                        <th>Chênh lệch</th>
+                        @for (int i = 1; i <= 12; i++)
+                        {
+                            <td class="text-right">@pmItem.Where(x => x.Month == i).Sum(x => x.Odds)</td>
+                        }
+                        <th class="text-right"><b>@pmItem.Sum(i => i.Odds)</b></th>
+                    </tr>
+
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>

@@ -1,0 +1,12 @@
+/*!
+ * $ UI Draggable 1.11.4
+ * http://$ui.com
+ *
+ * Copyright $ Foundation and other contributors
+ * Released under the MIT license.
+ * http://$.org/license
+ */
+.ui-draggable-handle {
+	-ms-touch-action: none;
+	touch-action: none;
+}

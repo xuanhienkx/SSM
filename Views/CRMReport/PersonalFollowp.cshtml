@@ -1,0 +1,76 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model dynamic
+
+@{
+    ViewBag.Title = "Followup Customer Report";
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    PlanFilter filter = (PlanFilter)ViewBag.PlanFilter;
+}
+@Styles.Render("~/Content/CRM")
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<div class="SectionBlock Expanded BoxL1 ">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4">
+                <div class="DivHeader inlin-item">
+                    <h2 class="inlin-item">
+                        @ViewBag.Title
+                    </h2>
+                    <div class="inlin-item" style=" top: -5px; margin-left: 10px; position:relative;">
+                        @if (currentUser.IsDepOrDirecter() || currentUser.IsAdminAndAcct())
+                        {
+                            <ul class="list-inline">
+                                <li >
+                                    @Html.ActionLink("Sales", "PersonalFollowp", "CRMReport", new { type = SummaryByType.ByUser }, new { @class = "btn-sm btn btn-primary" })
+                                </li>
+                                <li>
+                                    @Html.ActionLink("Deparment", "PersonalFollowp", "CRMReport", new { type = SummaryByType.ByDeparment }, new { @class = "btn-sm btn btn-info" })
+
+                                </li>
+                                @if (currentUser.IsAdminAndAcct())
+                                {
+                                    <li>
+
+                                        @Html.ActionLink("Office", "PersonalFollowp", "CRMReport", new { type = SummaryByType.ByOffice }, new { @class = "btn-sm btn btn-success" })
+
+                                    </li>
+                                }
+                            </ul>
+                        }
+
+                    </div>
+                </div>
+
+                <div class="">
+                    @using (Ajax.BeginForm("PersonalFollowp", "CRMReport", null, new AjaxOptions()
+                    {
+                        HttpMethod = "post",
+                        UpdateTargetId = "ListData"
+                    }, new { @class = "form-inline" }))
+                    {
+                        @Html.Partial("_SearchFollowupView", filter)
+                    }
+
+                </div>
+                <div id="ListData">
+                    @Html.Partial("_PorsonalFollowupReport")
+                </div>
+                <div id="gridFooter">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    jQuery(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+    });
+
+</script>

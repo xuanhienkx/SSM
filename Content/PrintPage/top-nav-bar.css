@@ -1,0 +1,132 @@
+#topNav {
+    height: 26px;
+    margin: 3px auto;
+}
+#topNav > ul {
+    margin: 0px auto;
+    padding: 0px;
+    min-height: 26px;
+    width: 990px;
+    position: relative;
+    z-index: 1000;
+}
+    #topNav > ul > li {
+        list-style: none;
+        float: left;
+        background: url(../Images/Menu/bg-topnav-sep.gif) no-repeat left top;
+        min-height: 19px;
+        padding: 7px 15px 0px 15px;
+    }
+    #topNav > ul > li.SiteList {
+        padding: 5px 15px 0px 5px;
+        min-height: 21px;
+        background: none;
+       
+    }
+        #topNav > ul > li.SiteList div.SiteList {
+            float: left;
+        }
+        #topNav > ul > li.SiteList input.BtnOk {
+            float: left;
+        }
+    #topNav > ul > select {
+        width: 190px;
+        vertical-align: middle;
+        color: #6e6d65;
+    }
+    #topNav > ul input.BtnOk {
+        vertical-align: middle;
+        width: 32px;
+    }
+    #topNav > ul > li > a {
+        font-size: 1.1em;
+        color: #6e6d65;
+        font-weight: bolder;
+        text-decoration: none;
+        float: left;
+        min-height: 16px;
+        padding-left: 22px;
+        padding-top: 1px;
+        background-position: left top;
+        background-repeat: no-repeat;
+    }
+    #topNav > ul > li > a:hover {
+        text-decoration: underline;
+    }
+    
+
+/* Form  select customize */
+#topNav p.SelectReplace {
+    margin: 0px;
+    background: url(../Images/Menu/bg-select-dropbtn.gif) no-repeat left top;
+    width: 165px;
+    height: 17px;
+    float: left;
+    padding: 3px 20px 0px 5px;
+    cursor: default;
+    color: #6e6d65;
+    font-size: 1.1em;
+    font-weight: bolder;
+    margin-right: 5px;
+}
+#topNav .SelectReplaceHolder {
+    border: 1px #bfbfbf solid;
+    width: 167px;
+    position: absolute;
+    left: 0px;
+    top: 19px;
+    z-index: 1000;
+    background: #fff;
+    overflow: hidden;
+}
+#topNav div.jScrollPaneTrack {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    background: #ececec;
+    z-index: 1000;
+    height: 100%;
+}
+#topNav div.jScrollPaneTrack .jScrollPaneDrag {
+    position: absolute;
+    background: #cccccc;
+}
+#topNav ul.SelectReplaceDropdownList {
+    margin: 0px;
+    padding: 8px 0px 10px;
+    width: 167px;
+}
+    #topNav ul.SelectReplaceDropdownList li {
+        list-style: none;
+        padding: 1px 0px 1px 15px;
+        cursor: default;
+        color: #6e6d65;
+        font-size: 1.1em;
+        white-space: nowrap;
+    }
+    #topNav ul.SelectReplaceDropdownList li.OptionGroup {
+        font-size: 1.2em;
+        padding: 3px 0px 3px 5px;
+        font-weight: bolder;        
+    }
+    #topNav ul.SelectReplaceDropdownList li.NormalOption {
+        font-size: 1.2em;
+        padding: 3px 0px 3px 5px;
+    }  
+
+
+    #topNav ul.SelectReplaceDropdownList li.OnSelect {
+        background: #eeeeee !important;
+    }    
+    
+    
+    /* Edit for top nav*/
+    #topNav ul.SelectReplaceDropdownList li {
+        float: none;    
+        background: none;
+        min-height: 13px;
+    }    
+    
+#topNav .ButtonType1Small {
+    margin: 0px;
+}

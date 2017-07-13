@@ -1,0 +1,118 @@
+﻿@using SSM.Common
+@using SSM.Models.CRM
+@model SSM.Models.CRM.CRMScheduleModel
+<style type="text/css">
+    .scheduleFrom input[type='text'] {
+        height: 25px !important;
+    }
+</style>
+@{
+    bool isEventAction = ViewBag.IsEventAction != null && (bool)ViewBag.IsEventAction;
+}
+
+@using (Ajax.BeginForm("EditSchedule", "CRMEvent", new AjaxOptions()
+{
+    OnSuccess = "onScheduleSuccess",
+    HttpMethod = "Post",
+}))
+{
+    <div class="form-group-sm scheduleFrom">
+        @Html.HiddenFor(m => m.Id)
+        @Html.AntiForgeryToken()
+        <div class="form-group  col-md-12 row">
+            @Html.ValidationSummary(true)
+        </div>
+        <div class="form-group col-md-12 row">
+            <label class="control-label inlin-item">
+                @Html.Hidden("ScheduleType", ScheduleType.DayLoop)
+                Lặp lại vào ngày
+            </label>
+            <ul class="list-inline inlin-item">
+                @for (int i = 0; i < Model.CheckModels.Count; i++)
+                {
+                    <li class="checkbox">
+                        <label>
+                            @Html.CheckBoxFor(m => m.CheckModels[i].Checked, new { @class = "checkboxDay" })
+                            <b>@Model.CheckModels[i].Name.ToString().Substring(0, 2)</b>
+                            @Html.HiddenFor(m => m.CheckModels[i].Id)
+                        </label>
+                    </li>
+                }
+            </ul>
+
+        </div>
+
+        <div class="form-group  col-md-12 row">
+            @Html.LabelFor(m => m.DateBegin, "Ngày bắt đầu", new { @class = "control-label inlin-item" })
+            <div class="inlin-item">
+                @Html.TextBoxFor(m => m.DateBegin, "{0:dd/MM/yyyy}", new { @class = "form-control inlin-item datepicker", style = "width: 100px" })
+            </div>
+        </div>
+        <div class="form-group  col-md-12 row">
+            @Html.LabelFor(m => m.TimeOfSchedule, "Thông báo vào giờ", new { @class = "control-label inlin-item" })
+            <div class="inlin-item">
+                @Html.TextBoxFor(m => m.TimeOfSchedule, new { @class = "form-control inlin-item", style = "width: 120px" })
+            </div>
+        </div>
+        <div class="form-group  col-md-12 row">
+            @Html.LabelFor(m => m.DateBegin, "Ngày kết thức", new { @class = "control-label inlin-item" })
+            <div class="inlin-item">
+                @Html.TextBoxFor(m => m.DateEnd, "{0:dd/MM/yyyy}", new { @class = "form-control inlin-item datepicker", style = "width: 100px" })
+            </div>
+        </div>
+        <div class="form-group  col-md-12 row">
+            <div class="center-block">
+                <input type="submit" class="btn btn-primary" value="Xong" />
+                <input type="button" class="btn btn-info" value="Huỷ" id="frmSchduleColse" />
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+
+        jQuery(".datepicker").datepicker({
+            dateFormat: "dd/mm/yy",
+            changeYear: true,
+            changeMonth: true,
+
+        });
+        // jQuery("#TimeOfSchedule").timepicker({ 'scrollDefault': 'now', className: 'timepickerDialog'});
+        jQuery('#TimeOfSchedule').timepicker({
+           // timeFormat: 'g:ia',
+            interval: 30,
+            // startTime: new Date(0,0,0,08,0,0), // 3:00:00 PM - noon
+            minTime: '8',
+            maxTime: '6:00pm',
+            defaultTime: '11',
+            startTime: '08:00',
+            dynamic: true,
+            dropdown: true,
+            scrollbar: true,
+            disableTouchKeyboard: true,
+            className: 'timepickerDialog',
+
+        });
+        jQuery("#frmSchduleColse").on("click", function () {
+            var idmodel = jQuery('.scheduleFrom').find("#Id").val();
+            if (idmodel == "" || idmodel == 0) {
+                jQuery("#Subject").parents(".jconfirm-box:first").find(".content").find("#IsSchedule").prop("checked", false);;
+                jQuery("#Subject").parents(".jconfirm-box:first").find(".content").find("#IsSchedule").val(false);
+            }
+            jQuery("#TimeOfSchedule").parents(".jconfirm-box:first").find('.closeIcon').click();
+        });
+        jQuery(this).InitFormat();
+
+    });
+
+    function onScheduleSuccess(result) {
+        if (result.Success === undefined) {
+            jQuery("#TimeOfSchedule").parents(".jconfirm-box:first").find(".content").html(result);
+            return false;
+        } else {
+            jQuery("#Subject").parents(".jconfirm-box:first").find(".content").find("#ScheduleId").val(result.Model.Id);
+            jQuery("#TimeOfSchedule").parents(".jconfirm-box:first").find('.closeIcon').click();
+        }
+    }
+
+</script>

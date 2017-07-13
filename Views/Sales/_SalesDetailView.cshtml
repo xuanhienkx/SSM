@@ -1,0 +1,58 @@
+﻿@using SSM.Common
+@model SSM.Models.SalesDetailModel
+@{
+    IEnumerable<SelectListItem> warehouseList = (IEnumerable<SelectListItem>)ViewData["Warehouses"];
+    var index = (int)ViewData["tabindex"];
+    string actionName = ViewContext.RouteData.Values["action"].ToString();
+
+    var attrds = string.Empty;
+    string[] actionEdit = { "Create", "Edit", "BlankEditorRow" };
+    bool isEdit = actionEdit.Contains(actionName);
+    if (actionName == "Revenue")
+    {
+        attrds = "disabled='disabled'";
+    }
+}
+
+<tr class="editorRow">
+    @using (Html.BeginCollectionItem("DetailModels"))
+    {
+        @Html.HiddenFor(x => x.RowId)
+        @Html.HiddenFor(x => x.VATTax)
+        @Html.HiddenFor(x => x.VATTaxRate)
+        if (isEdit)
+        {
+            <td>
+                <span class="deleteRow">
+                    <i class="ui-icon ui-icon-minus" style="color: red"></i>
+                </span>
+            </td>
+        }
+        <td>
+            @Html.HiddenFor(x => x.ProductId, new { @class = "ProductId  required " })
+            @Html.TextBoxFor(x => x.ProductCode, new { @class = "ProductCode autocomplete", attrds, style = "width:98%", maxlength = "200", tabindex = index++, modelName = "Product" })
+        </td>
+        <td>@Html.TextBoxFor(x => x.UOM, new { @class = " UOM required", style = "width:98%", attrds, @readonly = "readonly" })</td>
+        <td>
+            @if (isEdit)
+            {
+                @Html.DropDownList("WarehouseId", warehouseList, new { @class = "WarehouseId  required  ", style = "width:98%", tabindex = index++ })
+            }
+            else
+            {
+                @Html.TextBoxFor(x => x.Warehouse.Name, new { @class = "WarehouseId", style = "width:98%;color:red", attrds, @readonly = "readonly" })
+            }
+
+        </td>
+        <td>@Html.TextBoxFor(x => x.CurrentQty, new { @class = "currency CurrentQty call", style = "width:98%;color:red", attrds, maxlength = 12, @readonly = "readonly" })</td>
+        <td>@Html.TextBoxFor(x => x.Quantity, new { @class = "currency Quantity call", style = "width:98%", maxlength = 12, attrds, tabindex = index++ })</td>
+        <td>@Html.TextBoxFor(x => x.VnPrice, new { @class = "currencyVn VnPrice call", style = "width:98%", maxlength = 12, attrds, tabindex = index++ })</td>
+        <td>@Html.TextBoxFor(x => x.Price, new { @class = "currency4 Price call", style = "width:98%", maxlength = 12, attrds, @readonly = "readonly" })</td>
+        <td> @Html.TextBoxFor(x => x.Amount, new { @class = "currency Amount textbold", style = "width:98%", attrds, @readonly = "readonly" })  </td>
+        <td> @Html.TextBoxFor(x => x.VnAmount, new { @class = "currencyVn VnAmount textbold", style = "width:98%", attrds, @readonly = "readonly" })  </td>
+        if (isEdit)
+        {
+            <td>@Html.TextBoxFor(x => x.Notes, new { tabindex = index++, style = "width:98%", maxlength = 250, attrds })</td>
+        }
+    }
+</tr>

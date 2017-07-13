@@ -1,0 +1,17 @@
+﻿@model SSM.Models.SettingModel
+
+<div class="DivHeader">
+    <h2 style="border-bottom: 1px solid #00bfff">
+        CMR Setting
+    </h2>
+</div>
+<div>
+    @using (Ajax.BeginForm("CrmSetting", "CRM", new AjaxOptions() { HttpMethod = "post", UpdateTargetId = "crmSettingData" }))
+    {
+        @Html.HiddenFor(x => x.Id)
+        <label class="control-label inlin-item">Time for cancel customer</label>
+        @Html.TextBoxFor(m => m.PageNumber, new { @class = "form-control inlin-item number input-sm", style = "width: 60px" })
+        <label class="control-label inlin-item">Days</label>
+        <input type="submit" class="btn btn-primary inlin-item input-sm" value="Save" />
+    }
+</div> 

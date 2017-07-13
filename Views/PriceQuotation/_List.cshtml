@@ -1,0 +1,171 @@
+﻿
+@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CRMPriceQuotation>
+@{
+
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.Partial("_TopPage", Model)
+<table class="grid table table-condensed">
+    <tr>
+        <th>
+            <a href="#" onclick="sortAction('Id');">
+                <div class="SortHeader-label">Job Ref</div>
+                <div id="Id_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('Subject');">
+                <div class="SortHeader-label">Mô tả báo giá</div>
+                <div id="Subject_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('CRMCustomer.CompanyShortName');">
+                <div class="SortHeader-label">Khách hàng</div>
+                <div id="CRMCustomer_CompanyShortName_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+
+        </th>
+
+        <th>
+            <a href="#" onclick="sortAction('CreatedDate');">
+                <div class="SortHeader-label">Ngày tạo</div>
+                <div id="CreatedDate_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('CountSendMail');">
+                <div class="SortHeader-label">Số lần gửi email</div>
+                <div id="CountSendMail_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('LastDateSend');">
+                <div class="SortHeader-label">Ngày gửi cuối</div>
+                <div id="LastDateSend_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('CRMPriceStatus.Name');">
+                <div class="SortHeader-label">Tiến độ</div>
+                <div id="CRMPriceStatus_Name_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('User.FullName');">
+                <div class="SortHeader-label">Sales</div>
+                <div id="User_FullName_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>Delete</th>
+        <th>Email</th>
+    </tr>
+    @if (Model.Data != null && Model.Data.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (CRMPriceQuotation it in Model.Data)
+        {
+            CRMPriceStaus status = CRMPriceStaus.All;
+            if (it.CRMPriceStatus != null)
+            {
+                status = (CRMPriceStaus)it.CRMPriceStatus.Code;
+            }
+            var classColor = string.Empty;
+            if (status.Equals(CRMPriceStaus.Following))
+            {
+                classColor = "text-crm-regular";
+            }
+            else if (status.Equals(CRMPriceStaus.Finished))
+            {
+                classColor = "text-crm-successed";
+            }
+            else if (status.Equals(CRMPriceStaus.Cancel))
+            {
+                classColor = "text-crm-finished";
+            }
+            <tr>
+                <td>
+                    @Ajax.Link(it.Id.ToString("D4"), "Edit", "PriceQuotation", new { id = it.Id }, new MyAjaxOptions()
+               {
+                   HttpMethod = "get",
+                   DataType = "json",
+                   ContentType = "application/json; charset=utf-8",
+               }, new { @class = "" + classColor + "", style = " font-weight: bold;" })
+                </td>
+                <td>@it.Subject</td>
+                <td>@it.CRMCustomer.CompanyShortName</td>
+                <td>@Html.ToDateDisplay(it.CreatedDate)</td>
+                <td>@it.CountSendMail</td>
+                <td>@Html.ToDateDisplay(it.LastDateSend)</td>
+                <td class="@classColor">@string.Format("{0}", it.CRMPriceStatus != null ? it.CRMPriceStatus.Name : "Other")</td>
+                <td>@it.User.FullName</td>
+
+                @if (currentUser.IsDepOrDirecter() || currentUser.Id == it.CreatedById)
+                    {
+                    <td class="text-center deleteRow" id="del_@it.Id">
+                        @Ajax.Link("", "Delete", "PriceQuotation", new { id = it.Id, cusId = it.CrmCusId }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8",
+                       Confirm = "Bạn thực sự muốn xoá báo giá này không?"
+
+                   }, new { @class = "fa fa-trash trDel" })
+                    </td>
+                    <td class="text-center deleteRow">
+                        @Ajax.Link("", "PriceQuotationSendMail", "PriceQuotation", new { id = it.Id }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8"
+
+                   }, new { @class = "fa fa-envelope-o", id = "mail_" + it.Id })
+
+                    </td>
+                }
+                else
+                {
+                    <td></td>
+                    <td></td>
+
+                }
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="10" class="text-center">Không có dữ liệu</td>
+        </tr>
+    }
+</table>
+<div id="gridFooter">
+    @Html.DropDownList("Pager.PageSize", Grid<CRMPriceQuotation>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label>
+    <span class="display-crm-total">
+        @Html.Raw(ViewBag.TotalDisplay)
+    </span>
+</div>

@@ -1,0 +1,149 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@model SSM.ViewModels.Shared.Grid<SSM.Models.InvoideIssued>
+@{
+    ViewBag.Title = "Find Invoice";
+    FindInvoice findInvoice = (FindInvoice)Session[ShipmentController.FINDINVOICE_SEARCH_MODEL];
+    if (findInvoice == null)
+    {
+        findInvoice = new FindInvoice
+        {
+            DateTo = DateTime.Now.ToString("dd/MM/yyyy"),
+            DateFrom = DateTime.Now.AddMonths(-2).ToString("dd/MM/yyyy"),
+            ShipmentPriod = 1
+        };
+    }
+
+}
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<style type="text/css">
+    #SearchBlock {
+        float: none !important;
+        height: auto !important;
+        position: relative;
+        width: auto !important;
+    }
+</style>
+<div class="SectionBlock Expanded BoxL1">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4">
+                <h2>Find Invoice</h2>
+                @using (Ajax.BeginForm("FindInvoice", "Shipment", new AjaxOptions()
+                {
+                    HttpMethod = "POST",
+                    UpdateTargetId = "ListData",
+                    InsertionMode = InsertionMode.Replace
+                    
+                }))
+                {
+                    <div class="NormalZone" style="margin-bottom: 20px" id="SearchBlock">
+                        <table cellpadding="1">
+                            <tr>
+                                <td style="width: 120px;">
+                                    <label class="Label">Find invoice No</label>
+                                </td>
+                                <td>
+                                    @Html.TextBox("InvoiceNo", findInvoice.InvoiceNo, new { Class = "ShipmentInput", MAXLENGTH = "15" })
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td colspan="2">
+                                    @*   <label class="NoteLabel">(type 3 last numer)</label> *@
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="Label">Issue Priod </label>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    @Html.RadioButton("ShipmentPriod", 1, findInvoice.ShipmentPriod == 1, new { Class = "ShipmentCheckBox" })
+                                    <label class="NoteLabel">Shipment Priod</label>
+                                </td>
+                                <td>
+                                    @Html.RadioButton("ShipmentPriod", 0, findInvoice.ShipmentPriod == 0, new { Class = "ShipmentCheckBox invoicePriod" })
+                                    <label class="NoteLabel">Invoice Issue Priod</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    @Html.TextBox("DateFrom", findInvoice.DateFrom, new { Class = "ShipmentInput" })
+                                    <div style="height: 25px; width: auto; float: left; padding-right: 20px;">
+                                        <label for="DateFrom" class="DateInput"></label>
+                                    </div>
+                                </td>
+                                <td>
+                                    @Html.TextBox("DateTo", findInvoice.DateTo, new { Class = "ShipmentInput" })
+                                    <div style="height: 25px; width: auto; float: left;">
+                                        <label for="DateTo" class="DateInput"></label>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="Label">Ref No# </label>
+                                </td>
+                                <td>
+                                    @Html.TextBox("ShipmentId", findInvoice.ShipmentId, new { Class = "ShipmentInput" })
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <label class="Label" style="padding-right: 15px;">Search the shipment submited but not issue invoice yet</label>
+
+                                </td>
+                                <td>
+                                    @Html.CheckBox("UnIssueInvoice", findInvoice.UnIssueInvoice, new { Class = "ShipmentCheckBox" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Find Issue" />
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+    <div class="clearfix"></div>
+    <div class="NormalZone" id="ListData">
+        @Html.Partial("_InvoiceList", Model);
+    </div>
+
+                }
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#AccountingTab").addClass("Active");
+        jQuery('#AccountingTab').activeThisNav();
+        jQuery('#UnIssueInvoice').on('change', function() {
+                      if (jQuery(this).is(':checked')) {
+                          jQuery("#InvoiceNo").attr("readOnly", "readonly");
+                          jQuery(".invoicePriod").attr("readOnly", "readonly");
+                          jQuery("#InvoiceNo").addClass("disabled");
+                          jQuery(".invoicePriod").addClass("disabled");
+                      } else {
+                          jQuery("#InvoiceNo").removeAttr("readOnly");
+                          jQuery(".invoicePriod").removeAttr("readOnly");
+                          jQuery("#InvoiceNo").removeClass("disabled");
+                          jQuery(".invoicePriod").removeClass("disabled");
+                      }
+        });
+    });
+
+</script>
+

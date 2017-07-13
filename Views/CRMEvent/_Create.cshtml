@@ -1,0 +1,35 @@
+﻿@*@using System.Web.Optimization
+@model SSM.Models.CRM.CRMEventModel
+
+
+@Styles.Render("~/Content/CRM")
+@using (Html.BeginForm("Create", "CRMEvent", FormMethod.Post, new { id = "frm", enctype = "multipart/form-data" }))
+{
+    Html.RenderPartial("_EditTemplate", Model);
+}
+     @using (Html.BeginForm("Edit", "CRMDocument", FormMethod.Post, new { id = "frm", enctype = "multipart/form-data" }))
+{
+  
+@Styles.Render("~/Content/CRM")
+@using (Ajax.BeginForm("Create", "PriceQuotation", new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "priceFormOnSuccess"
+}), new { id = "frm", enctype = "multipart/form-data" })
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4 form-horizontal">
+                    <div class="col-md-10 ">
+                        @{Html.RenderPartial("_EditTemplate", Model);}
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}*@
+
+                     
+            

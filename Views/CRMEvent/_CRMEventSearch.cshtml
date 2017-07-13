@@ -1,0 +1,32 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model SSM.Models.CRM.ListEventFilter
+@{
+    var users = (IEnumerable<User>)ViewData["UserSalesList"];
+
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+    <div class="inlin-item">
+        @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control inlin-item", placeholder = "Nhập tên khách hàng", style = "width: 220px" })
+        @Html.TextBoxFor(m => m.BeginDate, "{0:dd/MM-yyyy}", new { @class = "form-control inlin-item datepicker", placeholder = "Từ ngày" })
+        @Html.TextBoxFor(m => m.EndDate, "{0:dd/MM-yyyy}", new { @class = "form-control inlin-item datepicker", placeholder = "Đến ngày" })
+        @Html.DropDownListFor(m => m.Sales, new SelectList(users, "Id", "FullName"), "--Chọn Sales--", new { @class = "form-control inlin-item", style = "width: 150px" })
+         @if (currentUser.IsDepOrDirecter())
+         {
+             @Html.EnumDropDownListFor(m => m.Status, new { @class = "form-control inlin-item", style = "width: 90px" })
+         }
+        @Html.DropDownListFor(m => m.OfEvent, new SelectList(ModelExtensions.GetListOfDescription<TypeOfEvent>()), "--All--", new { @class = "form-control inlin-item", style = "width: 80px" })
+
+
+        <input type="submit" class="btn btn-primary btn-sm" value="Search" id="btn-pageSearch" />
+    </div>
+ <script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#CustomerName").GetAutoSugget({
+            url: '@Url.Action("CRMCustomerSuggest", "CRM")',
+        });
+    });
+</script>

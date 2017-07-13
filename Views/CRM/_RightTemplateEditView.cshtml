@@ -1,0 +1,214 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model SSM.Models.CRM.CRMCustomerModel
+@{
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+<div class="col-md-3 form-group-sm dashboard row"> 
+    @if (ViewContext.RouteData.GetRequiredString("action") == "Edit")
+    {
+        <div class="panel panel-warning">
+            <div class="panel-heading" style="padding: 10px">
+                <ul class="nav nav-tabs" role="tablist">
+                    <li class="active" role="presentation"><a data-target="#tab1primary" data-toggle="tab">Báo giá</a></li>
+                    <li role="presentation"><a data-target="#tab2primary" data-toggle="tab">Viếng thăm</a></li>
+                    <li role="presentation"><a data-target="#tab3primary" data-toggle="tab">Sự kiện</a></li>
+                    <li role="presentation"><a data-target="#tab4primary" data-toggle="tab">Tài liệu</a></li>
+                </ul>
+            </div>
+            <div class="panel-body">
+                <div class="tab-content">
+                    @if (Model.StatusCode != CRMStatusCode.Client)
+                    {
+                        <div class="tab-pane fade in active" id="tab1primary">
+                            <ul class="list-inline">
+                                <li>
+                                    @Ajax.Link("List", "ListByCus", "PriceQuotation", new { refId = Model.Id }, new MyAjaxOptions()
+                               {
+                                   HttpMethod = "get",
+                                   DataType = "json",
+                                   ContentType = "application/json; charset=utf-8"
+
+                               }, new { @class = "btn btn-info" })
+                                </li>
+                                @if (currentUser.IsDepOrDirecter() || (Model.CreatedBy != null && currentUser.Id == Model.CreatedBy.Id) || Model.Id == 0)
+                                {
+                                    <li>
+                                        @Ajax.Link("Tạo báo giá", "Create", "PriceQuotation", new { refId = Model.Id }, new MyAjaxOptions()
+                                   {
+                                       HttpMethod = "get",
+                                       DataType = "json",
+                                       ContentType = "application/json; charset=utf-8"
+                                   }, new { @class = "btn btn-primary" })
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade" id="tab2primary">
+                            <ul class="list-inline">
+                                <li>
+                                    @Ajax.Link("List", "ListByCus", "CRMEvent", new { refId = Model.Id, isEventAction = false }, new MyAjaxOptions()
+                               {
+                                   HttpMethod = "get",
+                                   DataType = "json",
+                                   ContentType = "application/json; charset=utf-8"
+
+                               }, new { @class = "btn btn-info" })
+
+                                </li>
+                                @if (currentUser.IsDepOrDirecter() || (Model.CreatedBy != null && currentUser.Id == Model.CreatedBy.Id) || Model.Id == 0)
+                                {
+                                    <li>
+                                        @Ajax.Link("Tạo viếng thăm", "Create", "CRMEvent", new { refId = Model.Id, isEventAction = false }, new MyAjaxOptions()
+                                   {
+                                       HttpMethod = "get",
+                                       DataType = "json",
+                                       ContentType = "application/json; charset=utf-8"
+
+                                   }, new { @class = "btn btn-primary" })
+                                    </li>
+                                }
+
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade" id="tab3primary">
+                            <ul class="list-inline">
+                                <li>
+                                    @Ajax.Link("List", "ListByCus", "CRMEvent", new { refId = Model.Id, isEventAction = true }, new MyAjaxOptions()
+                               {
+                                   HttpMethod = "get",
+                                   DataType = "json",
+                                   ContentType = "application/json; charset=utf-8"
+
+                               }, new { @class = "btn btn-info" })
+                                </li>
+                                @if (currentUser.IsDepOrDirecter() || (Model.CreatedBy != null && currentUser.Id == Model.CreatedBy.Id) || Model.Id == 0)
+                                {
+                                    <li>
+                                        @Ajax.Link("Tạo sự kiện", "Create", "CRMEvent", new { refId = Model.Id, isEventAction = true }, new MyAjaxOptions()
+                                   {
+                                       HttpMethod = "get",
+                                       DataType = "json",
+                                       ContentType = "application/json; charset=utf-8"
+
+                                   }, new { @class = "btn btn-primary" })
+                                    </li>
+                                }
+
+                            </ul>
+                        </div>
+                        <div class="tab-pane fade" id="tab4primary">
+                            <ul class="list-inline">
+                                <li>
+                                    @Ajax.Link("List", "ListForCus", "CRMDocument", new { refId = Model.Id }, new MyAjaxOptions()
+                               {
+                                   HttpMethod = "get",
+                                   DataType = "json",
+                                   ContentType = "application/json; charset=utf-8"
+
+                               }, new { @class = "btn btn-info" })
+                                </li>
+                                @if (currentUser.IsDepOrDirecter() || (Model.CreatedBy != null && currentUser.Id == Model.CreatedBy.Id) || Model.Id == 0)
+                                {
+                                    <li>
+                                        @Ajax.Link("Tạo tài liệu", "Edit", "CRMDocument", new { cusId = Model.Id, id = 0 }, new MyAjaxOptions()
+                                   {
+                                       HttpMethod = "get",
+                                       DataType = "json",
+                                       ContentType = "application/json; charset=utf-8"
+
+                                   }, new { @class = "btn btn-primary" })
+                                    </li>
+                                }
+
+                            </ul>
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+        <div class="panel panel-info">
+            <div class="panel-heading" style="height: 40px">
+                <div class="col-md-10">
+                    Thông tin thông kê
+                </div>
+                <div class="col-md-2" style="margin-top: -3px; cursor: pointer">
+                    @Ajax.Link(" ", "GetSummary", "CRM", new { id = Model.Id }, new MyAjaxOptions()
+               {
+                   HttpMethod = "get",
+                   DataType = "html",
+                   UpdateTargetId = "summaryOfcus",
+
+
+               }, new { @class = "fa fa-refresh fa-2x text-white" })
+                </div>
+            </div>
+            <div class="panel-body" id="summaryOfcus">
+                @Html.Partial("_summary", Model.Summary)
+            </div>
+        </div>
+        <div class="panel panel-danger">
+            <div class="panel-heading">
+                User Control
+            </div>
+            <div class="panel-body">
+                @if (currentUser.IsDepOrDirecter())
+                {
+                    <div class="col-md-6 text-primary">Chuyển theo dõi</div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            @Html.DropDownListFor(m => m.MoveToId, new SelectList((IEnumerable<User>)ViewData["UserSalesList"], "Id", "FullName"), "--Select--", new { @class = "form-control" })
+                        </div>
+                    </div>
+                }
+                @if ((currentUser.IsDepOrDirecter() || (Model.CreatedBy != null && currentUser.Id == Model.CreatedBy.Id) || Model.Id == 0) && Model.StatusCode != CRMStatusCode.Client)
+                {    <div class="col-md-12 text-primary text-left">
+                        Cùng theo dõi
+                        @Ajax.Link("", "GetUserFollowDialog", "CRM", new { id = Model.Id, name = Model.CompanyName }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8",
+
+                   }, new { @class = "fa fa-plus btn btn-link", Style = "color: blue" })
+                    </div>
+                }
+                <div class="col-md-12">
+                    @Html.HiddenFor(m => m.UserTogheTheFollow, new { @class = "listIdUser" })
+                    @Html.Hidden("CrmSaleId", Model.CreatedBy.Id)
+                    <div class="list-user-Follow">
+                        @if (Model.FollowCusUsers != null && Model.FollowCusUsers.Any())
+                        {
+                            <table class="list-user table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Tên</th>
+                                        <th>Phòng ban</th>
+                                        @if (currentUser.IsDepOrDirecter())
+                                        {
+                                            <th>Look</th>
+                                        }
+                                        <th>Del</th>
+                                    </tr>
+                                </thead>
+
+                                <tbody>
+                                    @foreach (var u in Model.FollowCusUsers)
+                                    {
+                                        <tr id="user_@u.Id">
+                                            @Html.Partial("_UserFollowItem", u)
+                                        </tr>
+                                    }
+                                </tbody>
+                            </table>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

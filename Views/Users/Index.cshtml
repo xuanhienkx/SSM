@@ -1,0 +1,95 @@
+﻿@using System.Web.Optimization
+@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.UsersModel>
+  
+ @{
+    ViewBag.Title = "Supplier";
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+    SelectList countryList = (SelectList)ViewData["CountryList"];
+}
+
+@using (Ajax.BeginForm("Index", "Users", new AjaxOptions()
+{
+    HttpMethod = "post",
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "ListData"
+}))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>List Users</h2>
+                    </div>
+                    <div id="SearchBlock" style="float: left; height: auto;"></div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper" style="display: none;">
+                        <table id="table-sarch">
+                            <tr>
+                                <td class="TDClass">
+                                    <label>UserName</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.HiddenFor(m => m.SearchCriteria.Id)
+                                    @Html.TextBoxFor(m => m.SearchCriteria.UserName, new { maxlength = "15" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Full Name</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.FullName, new { maxlength = "100" })
+                                </td>
+                            </tr> 
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Position</label>
+                                </td>
+                                <td class="TDClass">
+                                   
+                                    @Html.DropDownList("SearchCriteria.RoleName", (SelectList)ViewData["PositionsAll"], "--Select Position--", new { maxlength = "100" })
+                                </td>
+                            </tr> 
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Search" id="btn-search" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="ListData">
+                        @Html.Partial("_ListData", Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<UsersModel>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" })
+                        <label>Rows per page</label>
+                    </div> 
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="SectionBlock Expanded BoxL1" id="ModifyDeptZone">
+
+</div>
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#StaffManagementTab").addClass("Active");
+        jQuery('#StaffManagementTab').activeThisNav();
+        jQuery('#ModifyDeptZone').hide();
+
+    }); 
+</script>
+

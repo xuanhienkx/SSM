@@ -1,0 +1,72 @@
+﻿.RateLabel
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:15px;
+    padding-top:5px;
+    text-align:right;
+    width:135px;
+}
+.RateText 
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:151px;   
+}
+.RateTextArea {
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    height:100px;
+    padding:4px 7px;
+    width:500px;
+}
+.RateSelect {
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:167px;
+}
+.RateListLabel
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:15px;
+    padding-top:5px;
+    text-align:right;
+    width:235px;
+}
+.RateListText 
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:135px;   
+}
+.RateListSelect {
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:147px;
+}

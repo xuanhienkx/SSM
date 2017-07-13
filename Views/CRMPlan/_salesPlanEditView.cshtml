@@ -1,0 +1,36 @@
+﻿@using System.Globalization
+@model SSM.Models.CRM.CRMPLanSaleModel
+@Html.HiddenFor(x => x.Id)
+@Html.HiddenFor(x => x.SalesId)
+
+<div>
+    <table class="table table-bordered">
+        <thead>
+            <tr class="success">
+                <th class=""></th>
+                @foreach (var m in DateTimeFormatInfo.CurrentInfo.MonthNames.Where(x => !string.IsNullOrEmpty(x)))
+                {
+                    <th class="">@m.Substring(0, 3)</th>
+                }
+                <th class="">Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var pmItem in Model.CRMPlanProgMountModels)
+            {
+                <tr>
+                    <th>@pmItem.CRMPlanProgramModel.Name </th>
+                    @for (int i = 1; i <= 12; i++)
+                    {
+                        var itemMonth = pmItem.CRMPlanMonthModels.FirstOrDefault(x => x.PlanMonth == i);
+                        <td class="text-right">@Html.Partial("_CrmPlanSalesEdit", itemMonth)</td>
+                    }
+                    <th class="text-right"><b>@pmItem.CRMPlanMonthModels.Sum(i => i.PlanValue)</b></th>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+
+</div>
+

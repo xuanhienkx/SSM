@@ -1,0 +1,140 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.AgentModel
+@{
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+
+
+<div class="BoxL2">
+    <div class="BoxL3">
+        <div class="BoxL4">
+            <div class="DivHeader">
+                <h2 id="ModifyHeader">
+                    Modify Agent
+                </h2>
+            </div>
+            <div style="width: 100%" id="ModifyForm">
+                @using (Html.BeginForm("EditAgent", "Data" , FormMethod.Post, new { id = "frm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <table>
+                        <tr>
+                            <td class="TDClass"><label>Abb Name</label></td>
+                            <td class="TDClass">
+                                @Html.HiddenFor(m => m.Id )
+                                @Html.HiddenFor(m => m.User.Id)
+                                @Html.TextBoxFor(m => m.AbbName, new { id = "AbbName", maxlength = "20", onblur = "javaScript:jQuery(this).replaceSpecialCharacter();" })<br />
+                                <span>Tìm kỹ trước khi nhập mới, tên viết tắt không quá 20 ký tự.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass"><label>Agent Name</label></td>
+                            <td class="TDClass">
+                                @Html.TextBoxFor(m => m.AgentName, new { id = "FullName", maxlength = "200" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Address
+                                </label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.TextAreaFor(m => m.Address, new { id = "Address", maxlength = "200" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Country
+                                </label>
+                            </td>
+                            <td class="TDClass"> 
+                                @Html.DropDownList("CountryName", (SelectList)ViewData["CountryListAgent"])
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Description
+                                </label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.TextAreaFor(m => m.Description, new { id = "Description", style = "width: 643px; height: 96px;" })
+                                <br />
+                                <div>
+                                    <span>Ghi chú được nhập tối đa 500 ký tự.</span>
+                                </div>
+                            </td>
+                        </tr>
+                        @if (User1.IsAdmin())
+                        {
+                            <tr>
+                                <td class="TDClass">
+                                    <label>
+                                        Is Active
+                                    </label>
+                                </td>
+                                <td class="">
+                                    @Html.CheckBoxFor(m => m.IsActive)
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(m => m.IsActive)
+                        }
+                        <tr>
+                            <td></td>
+                            <td>
+                                @if (Model.Id != 0)
+                                {
+                                    <input type="button" id="btnSave"   value="Updade" />
+                                }
+                                else
+                                {
+                                    <input type="button" id="btnSave"   value="Create" />
+                                }
+                                  
+                                <input type="button" value="Cancel" onclick="javascript:jQuery('#ModifyDeptZone').hide();" style="width:75px; background-color:#ED1B2E;" />
+                            </td>
+                        </tr>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#btnSave").click(function (e) {
+            var form = document.getElementById('frm');
+            var formData = new FormData(form);
+            var check = Valid.Agent();
+            if (check == true) {
+                e.preventDefault();
+                jQuery.mbqAjax({
+                    method: "POST",
+                    dataType: 'html',
+                    contentType: false,
+                    processData: false,
+                    url: '@Url.Action("EditAgent","Data")',
+                    data: formData,
+                    success: function (data) {
+                        if (data === "1") {
+                            window.location.href = '@Url.Action("Agent","Data")';
+                        } else {
+                            jQuery("#ModifyDeptZone").html(data);
+                            jQuery('#ModifyDeptZone').show();
+                        }
+                    }
+                });
+            } else {
+                return false;
+            }
+        });
+    });
+
+</script>

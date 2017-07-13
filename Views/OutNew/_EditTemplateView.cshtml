@@ -1,0 +1,252 @@
+﻿@using System.Web.Optimization
+@using SSM.Common
+@using SSM.Models
+@model SSM.Models.NewsModel  
+@Styles.Render("~/Content/info")
+ 
+@Scripts.Render("~/bundles/SCFJsInfo")
+@Html.AntiForgeryToken()
+@Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.Type)
+@{
+    List<Group> listUser = ViewBag.AllUSer;
+}
+<div class="marginDiv">
+    <div class="right-body">
+        <h3 class="title title-sub" title="Subject title"> @ViewBag.Title</h3>
+    </div>
+    <div class="col-md-12 hidden">
+        <div class="alert" id="show-erro">
+            @Html.ValidationSummary()
+        </div>
+    </div>
+    <label class="col-md-12 title-edit-document">Title</label>
+    <div class="col-md-12">
+        @Html.TextBoxFor(m => m.Header, new { @class = "form-control" })
+    </div>
+    <label class="col-md-12 title-edit-document">Content</label>
+
+    <div id="edit-document" class="col-md-12">
+        @Html.TextAreaFor(x => x.Contents, new { rows = "10", cols = "80", @class = "form-control" })
+    </div>
+   
+    <div class="">
+        <div id="type-document" class="col-md-6 col-md-offset-0">
+            <label class="col-md-12 title-edit-document">Type</label>
+            <div class="marginDiv">
+                @Html.DropDownListFor(m => m.CateloryId, new SelectList(ViewBag.Categories, "Id", "NameTypeViet"), new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="col-md-6">
+            @if (ViewContext.RouteData.GetRequiredString("action").Contains("Infomation"))
+            {
+                <label class="col-md-12 title-edit-document">Ref Dos</label>
+                <div class="col-md-12">
+                    @Html.TextBoxFor(m => m.RefDoc, new { @class = "col-md-12 form-control" })
+                </div>
+            }
+        </div>
+    </div>
+    <div class="">
+        <label class="col-md-12 title-edit-document text-left">Select Group can read this docment</label>
+        <div class="col-md-5 col-md-offset-0">
+            <div class="marginDiv">
+                <label class="title-edit-document">Group List</label>
+                @Html.ListBox("ListUser", new SelectList(ViewBag.AllUSer, "Id", "Name"), new { @class = "user-listbox  form-control" })
+                <br />
+                <input type="button" id="btnAddAll" value="Add All" class="btn btn-info btn-add-remove" />
+            </div>
+        </div>
+        <div class="col-md-2 text-center btn-add-remove-mid">
+            <input type="button" id="btnAdd" value="Add >>" class="btn btn-success btn-add-remove" /><br />
+            <input type="button" id="btnRemove" value="<< Remove" class="btn btn-warning btn-add-remove" /><br />
+        </div>
+        <div class="col-md-5">
+            <div class="marginDiv">
+                <label class=" title-filed title-edit-document">Selected Group</label>
+                @Html.ListBox("ListUserAccesses", new SelectList(Model.NewAccessPermissions, "GroupId", "Group.Name"), new { @class = "user-listbox  form-control" })
+                <br />
+                <input type="button" id="btnRemoveAll" value="Remove All" class="btn btn-danger btn-add-remove" />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div id="confirm-other-people-update">
+            <div class="checkbox">
+                @Html.LabelFor(m => m.IsAllowAnotherUpdate, new { @class = "allow-another title-edit-document" })
+                @Html.CheckBoxFor(m => m.IsAllowAnotherUpdate, new { @class = "resize-checkbox" })
+            </div>  
+
+        @if (Model.IsAllowAnotherUpdate)
+        {
+            <div class="listUserUpdate show">
+                <a href="javascript:void(0)" id="addUserUpdate">Add or remove UserCanUpdate</a>
+            </div>
+            <div id="listUsercanupdate">
+                @if (Model.ListUserUpdate != null && Model.ListUserUpdate.Count() > 0)
+                { 
+                    <ul id="userUpdateList">
+                        @foreach (var us in ViewBag.UserCanupdate)
+                        {
+                            <li class="list-group-item list-group-item-success" id="@us.Id">@us.FullName</li>
+                        }
+                    </ul>
+                }
+            </div>
+        }
+        else
+        {
+            <div class="listUserUpdate hidden">
+                <a href="javascript:void(0)" id="addUserUpdate">Add or remove UserCanUpdate</a>
+            </div>
+            <div id="listUsercanupdate">
+                <ul id="userUpdateList"></ul>
+            </div>
+        }
+    </div>
+     </div>
+    <div class="col-md-12">
+        <label class="title-filed title-edit-document">Upload Files</label>
+        <input type="file" id="files" name="files" multiple style="display: none">
+        <input type="button" class="btn btn-primary" id="btn-selectFile" value="select file..." /><br />
+    </div>
+    <div class="col-md-12" id="attachment-show">
+        <label class="title-filed title-edit-document">Attachment</label>
+        @if (Model.FilesList.Count > 0)
+        {
+            <div id="attachment">
+                <table>
+                    <thead>
+                        <tr><th>FileName</th><th>File Size(Kb)</th><th></th></tr>
+                    </thead>
+                    <tbody id="listfileView">
+                        @foreach (var serverFile in Model.FilesList)
+                        {
+                            var size = serverFile.FileSize / (1024);
+                            <tr>
+                                <td>@Html.ActionLink(serverFile.FileName, "Download", "OutNew", new { id = serverFile.Id }, new { target = "_blank" })</td>
+                                <td style="text-align: right">@size</td>
+                                <td id="@serverFile.Id" class="tdfile"><i class="ui-icon ui-icon-close delete-file"></i></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div id="attachment">
+                <table>
+                    <thead>
+                        <tr><th>FileName</th><th>File Size(Kb)</th><th></th></tr>
+                    </thead>
+                    <tbody id="listfileView"></tbody>
+                </table>
+            </div>
+
+        }
+    </div>
+
+    <br />
+    <div class="col-md-12">
+        <div id="btn-area">
+            <input type="button" id="btn-update" class="btn btn-primary" value="SAVE" />
+            @if (ViewContext.RouteData.GetRequiredString("action") == "Edit")
+            {
+                <input id="btn-delete" class="btn btn-primary" type="button" value="DELETE" />
+            }
+        </div>
+    </div>
+</div>
+<div id="AllUserList" style="display: none">
+    <div id="listUserFee" class="col-md-6 left" style="border: 1px solid sandybrown;">
+        <h3 class="title title-sub col-md-12">List Users</h3>
+        <table class="grid resizable col-md-12">
+            <thead>
+                <tr>
+                    <th>FullName</th>
+                    <th>Department</th>
+                    <th style="width: 10px"></th>
+                </tr>
+            </thead>
+            <tbody style="overflow: auto" id="tbody_UserFees">
+                @foreach (var u in ViewBag.AllUSerFee)
+                {
+                    <tr id="row_@u.Id">
+                        <td>@u.FullName</td>
+                        <td>@u.Department.DeptName</td>
+                        <td>
+                            <span class="addRow">
+                                <i class="ui-icon ui-icon-circle-triangle-e" style="color: blue"></i>
+                            </span>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div> 
+    <div class="col-md-1"></div>                       
+    <div id="userHaschose" class="col-md-5 right" style="border: 1px solid blue;">
+        <h3 class="title title-sub col-md-12">List Users Can update</h3>
+        <table class="grid resizable col-md-12">
+            <thead>
+                <tr>
+                    <th>FullName</th>
+                    <th>Department</th>
+                    <th style="width: 10px"> </th>
+                </tr>
+            </thead>
+            <tbody id="tbody_Usercanupdates">
+                @if (Model.ListUserUpdate != null && Model.ListUserUpdate.Any())
+                {
+                    foreach (var u in ViewBag.UserCanupdate)
+                    {
+                        <tr id="row_@u.Id">
+                            <td>@u.FullName</td>
+                            <td>@u.Department.DeptName</td>
+                            <td>
+                                <span class="deleteRow">
+                                    <i class="ui-icon ui-icon-circle-triangle-w" style="color: red"></i>
+                                </span>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr id="emptyrow"><td colspan="3">No user select</td></tr>
+                }
+
+            </tbody>
+        </table>  
+    </div>
+    
+</div>
+@Html.HiddenFor(x => x.UsersCanUpdate)
+@if (Model.FilesList.Count > 0)
+{
+    <script type="text/javascript">
+        jQuery("#attachment-show").show();
+    </script>
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#btn-delete").on('click', function (e) {
+            e.preventDefault();
+            var url = '@Url.Action("Delete","OutNew", new {id= Model.Id})';
+            jQuery.mbqAjax({
+                method: "POST",
+                dataType: 'html',
+                //data: { id: idNew },
+                url: url,
+                success: function (result) {
+                    jQuery("#dataInfo").html(result);
+                }
+            });
+        });
+        
+    });
+
+</script>

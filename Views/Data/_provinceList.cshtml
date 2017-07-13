@@ -1,0 +1,76 @@
+﻿@using SSM.Common
+@model System.Collections.Generic.IList<SSM.Models.Province>
+
+
+<div class="col-md-12">
+    <div style="border-top: 1px solid blue;" id="contryNameTittel">
+        <label style="font-weight: bold; font-size: 1.5em; color: blue;">
+            State/Province of country: @ViewBag.CountryName
+        </label>
+    </div>
+</div>
+<div class="col-md-12">
+    <table width="100%" class="grid">
+
+        @if (Model.Any())
+            {
+            <tr>
+                <th style="">  Name    </th>
+                <th> TimeZone </th>
+                <th> Del </th>
+                <th style="">  Name    </th>
+                <th> TimeZone </th>
+                <th> Del </th>
+                <th style="">  Name    </th>
+                <th> TimeZone </th>
+                <th> Del </th>
+                <th style="">  Name    </th>
+                <th> TimeZone </th>
+                <th> Del </th>
+            </tr>
+            int no = 0;
+            var classLight = string.Empty;
+            <tr class="@classLight">
+                @foreach (var it in Model)
+                {
+                    no++;
+
+                    bool hightline = no % 2 == 0;
+                    if (hightline)
+                    {
+                        classLight = "GridLight";
+                    }
+                    <td style="color: rgb(0, 222, 255)">
+                        @Ajax.Link(it.Name, "ProvinceEdit", "Data", new { id = it.Id }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8"
+
+                   }, null)
+                    </td>
+                    <td> @it.TimeZone </td>
+                    <td>
+                        @Ajax.Link("", "DeleteProvince", "Data", new { id = it.Id, countryId = it.CountryId }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "post",
+                       UpdateTargetId = "ListDataProvince",
+                       InsertionMode = InsertionMode.Replace,
+                       DataType = "html",
+                       Confirm = "Are you sure you want to delete?"
+
+                   }, new { @class = "fa fa-trash" })
+                    </td>
+                    if (no % 4 == 0)
+                    {
+                        @Html.Raw("</tr>  <tr class=\"@classLight\">")
+                    }
+                }
+            </tr>
+        }
+        else
+        {
+            <tr><td>Không có dữ liệu</td></tr>
+        }
+    </table>
+</div>

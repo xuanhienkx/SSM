@@ -1,0 +1,8 @@
+version: '2.1'
+
+services:
+  ssm:
+    image: ssm
+    build:
+      context: 
+      dockerfile: Dockerfile

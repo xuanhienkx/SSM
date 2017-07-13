@@ -1,0 +1,294 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.ViewModels.Shared.Grid<SSM.Models.Customer>
+@{
+
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+    IEnumerable<Customer> CustomerList1 = (IEnumerable<Customer>)Model.Data;
+}
+@Html.Partial("_TopPage", Model)
+<div style="height:auto;overflow: hidden;">
+    @if (User1.IsAdmin() || User1.AllowCustomer)
+    {
+        <input type="button" onclick=" return edit(0) " id="CreateDept" value="Create a Customer" />
+    }
+</div>
+<table width="100%" class="grid">
+    <tr>
+
+        <th style="min-width: 50px">
+
+            <a href="#" onclick="sortAction('CompanyName');">
+                <div class="SortHeader-label">Abb Name</div>
+                <div id="CompanyName_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+
+        <th style="min-width: 60px">
+            <a href="#" onclick="sortAction('FullName');">
+                <div class="SortHeader-label">Name</div>
+                <div id="FullName_Title" class="SortHeader"></div>
+            </a>
+        </th>
+        <th>
+            Address
+        </th>
+        <th style="width: 130px">
+            <a href="#" onclick="sortAction('CustomerType');">
+                <div class="SortHeader-label"> Customer Type</div>
+                <div id="CustomerType_Title" class="SortHeader"></div>
+            </a>
+
+        </th>
+        <th>
+            Description
+        </th>
+        @if (User1.IsDepOrDirecter())
+        {
+            <th>
+                SEE
+            </th>
+        }
+        @if (User1.IsAdmin())
+        {
+
+
+            <th>
+                HideUser
+            </th>
+        }
+        <th>
+            Move
+        </th>
+        <th>
+            MoveBy
+        </th>
+        @if (User1.IsAdmin())
+        {
+            <th>
+                <a href="#" onclick="sortAction('CrmCusId');">
+                    <div class="SortHeader-label">  CRM Ref</div>
+                    <div id="CrmCusId_Title" class="SortHeader"></div>
+                </a>
+
+            </th>
+            <th>Created by</th>
+        }
+        <th>
+            Edit
+        </th>
+        <th>
+            Delete
+        </th>
+@if (User1.IsAdmin())
+{
+    <th>
+        Id
+    </th>
+}
+    </tr>
+    @if (CustomerList1 != null && CustomerList1.Count() > 0)
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (Customer Customer1 in CustomerList1)
+        {
+            no++;
+            bool hightline = no % 2 == 0;
+            if (hightline)
+            {
+                classLight = "GridLight";
+            }
+
+            <tr class="@classLight">
+
+                <td>
+                    @Customer1.CompanyName
+                </td>
+                <td>
+                    @Customer1.FullName
+                </td>
+                <td>
+                    @Customer1.Address
+                </td>
+                <td>
+                    @Customer1.CustomerType
+                </td>
+                <td>
+                    @Customer1.Description
+                </td>
+                @if (User1.IsDepOrDirecter())
+                {
+                    <td>
+                        @Html.CheckBox("IsSee", Customer1.IsSee, new { @class = "checkIsSee", @id = "IsSee_" + Customer1.Id })
+                    </td>
+                }
+                @if (User1.IsAdmin())
+                {
+
+                    <td>
+                        @Html.CheckBox("IsHideUser", Customer1.IsHideUser, new { @class = "checkIsHideUser", @id = "IsHideUser_" + Customer1.Id })
+                    </td>
+                }
+                <td class="move-cus-to-crm">
+                    @if (Customer1.IsMove)
+                    {
+                        @Html.CheckBox("IsMove", Customer1.IsMove, new { @id = "IsMove_" + Customer1.Id, disabled = Customer1.IsMove ? "disabled" : "" })
+                    }
+                    else
+                    {
+                        @Html.CheckBox("IsMove", Customer1.IsMove, new { @class = "checkIsMove", @id = "IsMove_" + Customer1.Id })
+                    }
+                </td>
+                <td>
+                    @string.Format("{0}", Customer1.User1 != null ? Customer1.User1.FullName : string.Empty)
+                </td>
+                @if (User1.IsAdmin())
+                {
+                    <td>
+                        @string.Format("{0}", Customer1.CrmCusId)
+                    </td>
+                    <td>
+                        @string.Format("{0}", Customer1.User != null ? Customer1.User.FullName : string.Empty)
+                    </td>
+                }
+
+                <td>
+                    @if (Customer1.UserId == null || User1.Id == Customer1.UserId.Value || User1.IsDepOrDirecter())
+                    {
+                        if (!string.IsNullOrEmpty(Customer1.FullName) && Customer1.FullName.ToUpper() == "CONSOL")
+                        {
+                        }
+                        else
+                        {
+                            if (User1.IsDepOrDirecter() || User1.AllowCustomer)
+                            {
+                                <a href="javascript:void(0)" onclick="edit(@Customer1.Id) "><img alt=" edit" src="/Images/btn-edit.png" /></a>
+                            }
+                        }
+
+                    }
+                </td>
+
+                <td class="text-center deleteRow" id="del_@Customer1.Id">
+                    @if (Customer1.UserId == null || User1.Id == Customer1.UserId.Value || UsersModel.isAdminOrDirctor(User1))
+                    {
+                        if (!string.IsNullOrEmpty(Customer1.FullName) && Customer1.FullName.ToUpper() == "CONSOL")
+                        {
+                        }
+                        else
+                        {
+                            if (User1.IsAdmin() || User1.AllowCustomer)
+                            {
+                                @*    <a href="@Url.Action("CustomerDelete", "Data", new {id = Customer1.Id})" onclick=" return confirm('Are you sure you want to delete?') "><img alt="Delete" src="/Images/btn-delete.png" /></a>*@
+                                @Ajax.Link("", "CustomerDelete", "Data", new { id = Customer1.Id }, new MyAjaxOptions()
+                                {
+                                    HttpMethod = "get",
+                                    DataType = "json",
+                                    ContentType = "application/json; charset=utf-8",
+                                    Confirm = "Are you sure you want to delete?"
+
+                                }, new { @class = "fa fa-trash trDel ", id = Customer1.Id }) 
+                            }
+                        }
+                    }
+
+                </td>
+                @if (User1.IsAdmin())
+                {
+
+                    <td>
+                       @Customer1.Id
+                    </td>
+                }
+            </tr>
+        }
+    }
+</table>
+<script type="text/javascript">
+    jQuery(".checkIsSee").on("click", function () {
+        var id = jQuery(this).attr("id").split("_")[1];
+        var check = jQuery(this).is(":checked");
+        var url = '@Url.Action("SetSeeCustomer", "Data")';
+        var data = JSON.stringify({ "id": parseInt(id), "isChecked": check });
+        jQuery.mbqAjax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: data,
+            success: function (result) {
+
+            }
+        });
+    });
+    jQuery(".checkIsHideUser").on("click", function () {
+        var id = jQuery(this).attr("id").split("_")[1];
+        var check = jQuery(this).is(":checked");
+        var url = '@Url.Action("SetIsHideUser", "Data")';
+        var data = JSON.stringify({ "id": parseInt(id), "isChecked": check });
+        jQuery.mbqAjax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: data,
+            success: function (result) {
+
+            }
+        });
+    });
+    jQuery(".checkIsMove").on("click", function () {
+        var $checkMove = jQuery(this);
+        var idAttr = jQuery(this).attr("id");
+        var id = idAttr.split("_")[1];
+        var check = jQuery(this).is(":checked");
+        var disabled = jQuery(this).is(":disabled");
+        if (check == true && disabled == false) {
+            jQuery.mbqConfirm({
+                title: "@Resources.Resource.CRM_MOVE_CUS_TITLE",
+                theme: 'bootstrap',
+                content: "@Resources.Resource.CRM_MOVE_FROM_CUS_CONTENT",
+                confirm: function () {
+                    var url = '@Url.Action("MoveCustomerToCRM", "CRM")';
+                    var data = JSON.stringify({ "id": parseInt(id) });
+                    jQuery.mbqAjax({
+                        url: url,
+                        type: 'post',
+                        dataType: 'json',
+                        contentType: "application/json; charset=utf-8",
+                        data: data,
+                        success: function (result) {
+                            if (result.Success === true) {
+                                $checkMove.prop("disabled", "disabled");
+                                $checkMove.prop("checked", true);
+                                $checkMove.parent("td").next().text(result.MoveBy);//("checked", true);
+                            } else {
+                                $checkMove.removeAttr("disabled");
+                                $checkMove.prop("checked", false);
+                            }
+                            jQuery.mbqAlert({
+                                content: result.Message,
+                                type: result.Success == true ? 'info' : 'error',
+                                columnClass: 'col-md-7 col-md-offset-5',
+                                theme: 'bootstrap',
+                            });
+                        }
+                    });
+
+                },
+                cancel: function () {
+                    // jQuery(this).attr("checked", "false");
+                    $checkMove.prop("checked", false);
+                    // jQuery(this).prop("checked", false);
+                    $checkMove.removeAttr("disabled");
+
+                }
+            });
+        }
+    });
+</script>

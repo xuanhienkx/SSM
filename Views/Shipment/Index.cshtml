@@ -1,0 +1,76 @@
+﻿@using System.Web.Optimization 
+@using SSM.Models 
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.Shipment>
+
+@{
+    ViewBag.Title = "List Shipment"; 
+    
+}
+<style type="text/css">
+    .page {
+        width: auto !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+@using (Ajax.BeginForm("Index", "Shipment",new AjaxOptions()
+{
+    HttpMethod = "post",
+    UpdateTargetId = "ListData",
+    InsertionMode = InsertionMode.Replace
+}, new{ id="shipmentForm"}))
+{
+
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>List Shipment</h2>
+                    </div>
+                    
+                    @Html.Partial("_SearchView") 
+                   
+                    <div id="ListData">
+                        @Html.Partial("_ListData", Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<Shipment>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" })
+                        <label>Rows per page</label>
+                        @Html.Partial("_StatusNote")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Hidden("SearchQuickView", 0)
+}
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<script type="text/javascript">
+
+    function goToQuickView(viewType) {
+        jQuery("#SearchQuickView").val(viewType);
+        jQuery("#GridAction").val("Search");
+        submitForm();
+    }
+    function preSubmit(op) {
+        
+        jQuery("#ColorStatus").val(op);
+        jQuery("#GridAction").val("Search");
+        jQuery("#SearchQuickView").val(0);
+        submitForm();
+    }
+
+    jQuery(document).ready(function () {
+        jQuery("#FileTab").addClass("Active");
+        jQuery('#FileTab').activeThisNav(); 
+    });
+    jQuery('#SearchCriteria_Id').blur(function () {
+        if (!validateNumber(jQuery('#SearchCriteria_Id').val())) {
+            jQuery('#SearchCriteria_Id').val('0');
+        }
+    });
+
+   
+</script>

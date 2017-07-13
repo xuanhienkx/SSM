@@ -1,0 +1,48 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.NewsModel>
+
+@{
+    ViewBag.Title = "List Company regulation";
+
+    User user = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Styles.Render("~/Content/info")
+  
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("Index", "Infomation", new AjaxOptions()
+ {
+     InsertionMode = InsertionMode.Replace,
+     HttpMethod = "post",
+     UpdateTargetId = "ListData"
+ }))
+{
+    @Html.Partial("_SearchView", (NewSearchModel)ViewBag.SearchingMode)
+    <div class="marginDiv">
+        <div class="right-body">
+            <h3 class="title title-sub col-md-12" title="Subject title"> @ViewBag.Title</h3>
+        </div>
+        <div id="ListData">
+            @Html.Partial("_ListData", Model)
+        </div>
+        <div id="gridFooter">
+            @Html.DropDownList("Pager.PageSize", Grid<ScfNew>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label>
+        </div>
+        <div style="height: auto; overflow: hidden;">
+            @if (user.IsEditReula(null))
+            {
+                @Html.ActionLink("Create regulation", "Create", "Infomation", null, new { @class = "btn btn-primary" })
+            }
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#AbountUsTab").addClass("Active");
+        jQuery('#AbountUsTab').activeThisNav();
+    });
+</script>

@@ -1,0 +1,40 @@
+﻿@using System.Web.Optimization
+@using SSM.Common
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Helpers.SiteTitle SSM System - @ViewBag.Title </title>
+    <link href="@Url.Content(Helpers.Logo)" rel="shortcut icon" type="image/x-icon" /> 
+    @Styles.Render("~/Content/SCFCss") 
+    <style type="text/css">
+        .print tr {
+            height: 35px;
+        }
+    </style> 
+    @Scripts.Render("~/bundles/jquery") 
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/SCFJs")
+    <style type="text/css">
+        .print tr {
+            height: 35px;
+        }
+    </style>
+</head>
+<body>
+
+    @Html.Partial("_TopNarBarUC")
+    @Html.Partial("_MainNarBarUC")
+    <div class="ajaxProcessBar" id="waitting">
+    </div>
+    <div class="page">
+        <div id="main">
+            @RenderBody()
+        </div>
+    </div>
+    @Html.Partial("_FooterUC")
+</body>
+</html>

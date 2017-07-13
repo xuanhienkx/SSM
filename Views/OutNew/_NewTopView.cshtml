@@ -1,0 +1,36 @@
+﻿@model System.Collections.Generic.List<SSM.Models.ScfNew>
+@{
+    var viewType = ViewBag.ViewType;
+}
+@if (Model != null && Model.Any())
+{ 
+        <ul class="list-unstyled list-style-ul">
+            @foreach (var it in Model)
+            {
+                <li>
+                    <span class="ui-icon ui-icon-carat-1-e"></span>  
+                    @Ajax.ActionLink(it.Header, "ViewDetail", "OutNew", new { id = it.Id }, new AjaxOptions()
+                    {
+                        InsertionMode = InsertionMode.Replace,
+                        UpdateTargetId = "dataInfo",
+                        HttpMethod = "GET"
+                    }, new { @class = "new-left-link", title = it.Header })
+                </li>
+            }
+            <li> 
+                @Ajax.ActionLink("see more...", "List", "OutNew", new { newType = viewType }, new AjaxOptions()
+            {
+                InsertionMode = InsertionMode.Replace,
+                UpdateTargetId = "dataInfo",
+                HttpMethod = "GET"
+            }, new { @class = "seemore", title = "See more" })</li>
+        </ul> 
+}
+else
+{
+    <div class="list-left-new-link">
+        <div class="no-data">
+            <i style="text-align: center">No data</i>
+        </div>
+    </div>
+}

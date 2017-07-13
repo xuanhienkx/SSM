@@ -1,0 +1,181 @@
+﻿@model SSM.Models.CRM.CRMEventModel     
+@using System.Web.Optimization
+@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services   
+     
+<style type="text/css">
+    label.control-label {
+        text-align: left !important;
+    }
+
+    input.form-control {
+        height: 24px !important;
+    }
+</style>
+@Styles.Render("~/Content/CRM")                    
+    <h1 class="Subject">@ViewBag.Title</h1>
+     
+    <div class="row">
+        @Html.ValidationSummary(true)
+    </div>
+    <div class="col-md-9 row">
+        <div class="form-group">
+            @Html.LabelFor(m => m.Subject, "Title", new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-10 col-md-offset-0">
+                <div class="">
+                    @Html.TextBoxFor(m => m.Subject, new { @class = "form-control" })
+                    <div class="icon-required center-block">*</div>
+                </div>
+                @Html.ValidationMessageFor(m => m.Subject)
+            </div>
+        </div>
+        @if (Model.CrmCusId == 0)
+        {
+            <div class="form-group">
+                @Html.LabelFor(m => m.CusName, "Customer", new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-10 col-md-offset-0">
+                    <div class="">
+                        @Html.TextBoxFor(m => m.CusName, new { @class = "form-control", placeholder = "Find Abb Name" })
+                        <div class="icon-required center-block">*</div>
+                    </div>
+                    @Html.ValidationMessageFor(m => m.CusName)
+                </div>
+            </div>
+        }
+        else
+        {
+            @Html.HiddenFor(m => m.CusName)
+        }
+        @Html.HiddenFor(m => m.CrmCusId)
+        <div class="form-group">
+            <div class="">
+                @Html.LabelFor(m => m.DateEvent, "Event Date", new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-10 col-md-offset-0">
+                    <div class="col-sm-3 row">
+                        @Html.TextBoxFor(m => m.DateEvent, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker inlin-item" })
+                        <div class="icon-required inlin-item center-block" style="margin-right: -1px;margin-top: 8px">*</div>
+                    </div>
+                    <div class="col-md-9">
+                        @Html.LabelFor(m => m.Status, "Status", new { @class = "col-sm-2 control-label" })
+                        <div class="col-sm-10 col-md-offset-0 form-inline">
+                            <label class="radio-inline">
+                                @Html.RadioButton("Status", CRMEventStatus.Follow, new { @class = "" }) Following
+                            </label>
+                            <label class="radio-inline">
+                                @Html.RadioButton("Status", CRMEventStatus.Finished, new { @class = "" }) Finished
+                            </label>
+                        </div>
+                    </div>
+                    <div class="clearfix">
+                        @Html.ValidationMessageFor(m => m.DateEvent)
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+        @if (Model.IsEventAction)
+        {
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.EventTypeId, "Type Event", new { @class = "col-sm-2 control-label" })
+                <div class="col-sm-10 col-md-offset-0">
+                    <div class="pull-left">   
+                        @Html.DropDownListFor(m => m.EventTypeId, new SelectList((IEnumerable<CRMEventType>)ViewData["CRMEventType"], "Id", "Name"), "--Select--", new { @class = "form-control input-sm", style = "width: 230px", @readonly = "readonly" })
+                    </div>
+                    
+                    @Html.ValidationMessageFor(m => m.EventTypeId)
+
+                </div>
+            </div>
+
+        }
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description, "Description", new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-10 col-md-offset-0">
+                <div class="">
+                    @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = "5" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group"  >
+            @Html.Label("Reminder", new { @class = "col-sm-2 control-label" })
+            <div class="row col-md-10">
+                <div class="col-md-12">
+                    <div class="checkbox">
+                        <label>
+                            @Html.CheckBoxFor(m => m.IsSchedule) <b><i class="fa fa-clock-o"></i> Enable</b>
+                        </label>
+                    </div>
+                </div>
+                <div class="row col-md-12" id="remider-info">
+
+                    <div class="col-md-12">
+                        <label class="control-label inlin-item "> Repeat Day </label>
+                        <ul class="list-inline inlin-item" style="margin-right: -30px; margin-left: 8px">
+                            @for (int i = 0; i < Model.CheckModels.Count; i++)
+                            {
+                                <li class="checkbox">
+                                    <label>
+                                        @Html.CheckBoxFor(m => m.CheckModels[i].Checked, new { @class = "checkboxDay" })
+                                        <b>@Model.CheckModels[i].Name.ToString().Substring(0, 2)</b>
+                                        @Html.HiddenFor(m => m.CheckModels[i].Id)
+                                    </label>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                    <div class="col-md-12">
+                        <label class="control-label inlin-item" style="margin-right: 15px"> Begin Date </label>
+                        @Html.TextBoxFor(m => m.DateBegin, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker inlin-item", style = "" })
+                        <label class="control-label inlin-item" style="margin-left: 40px"> Time </label>
+                        @Html.TextBoxFor(m => m.TimeOfRemider, new { @class = "form-control  inlin-item", style = "width: 50px" })
+                        <label class="control-label inlin-item"> End Date </label>
+                        @Html.TextBoxFor(m => m.DateEnd, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker inlin-item", style = "" })
+                    </div>
+                    <div class="col-md-12">
+                        <div class="col-md-12 row">@Html.ValidationMessageFor(m => m.DateBegin)</div>
+                        <div class="col-md-12 row">@Html.ValidationMessageFor(m => m.TimeOfRemider)</div>
+                        <div class="col-md-12 row">@Html.ValidationMessageFor(m => m.DateEnd)</div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        <div class="form-group"  >
+            @Html.LabelFor(m => m.Uploads, "Attachment", new { @class = "col-sm-2 control-label" })
+            <div class="col-sm-10" style="margin-top: 10px">
+                <div class="col-md-12 row" id="">
+                    @if (Model.FilesList.Count > 0)
+                    {
+                        @Html.Partial("_listFiles", Model.FilesList);
+                    }
+                    else
+                    {
+                        <div id="attachment-show" style="display: none">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr><th>FileName</th><th>File Size(Kb)</th><th></th></tr>
+                                </thead>
+                                <tbody id="listfileView"></tbody>
+                            </table>
+                        </div>
+                    }
+
+                </div>
+                <input type="file" id="files" name="files" multiple style="display: none" />  
+                <br />
+            </div>
+        </div> 
+    </div>                                                        
+
+<script type="text/javascript">
+    jQuery(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav(); 
+    });
+    
+</script>   

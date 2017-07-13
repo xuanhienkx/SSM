@@ -1,0 +1,52 @@
+﻿@using System.Web.Optimization
+@using SSM.Models.CRM          
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CRMPriceQuotation>
+
+@{
+    ViewBag.Title = "Index";
+    var searchingModel = (PriceSearchModel)ViewBag.SearchingModel;
+}
+
+@Styles.Render("~/Content/CRM")
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("Index", new AjaxOptions()
+{
+    HttpMethod = "post",
+    UpdateTargetId = "ListData",
+    InsertionMode = InsertionMode.Replace
+}))
+{
+    <div class="SectionBlock Expanded BoxL1 fullPage">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>
+                            List Báo giá
+                        </h2>
+                    </div>
+                    <div id="SearchBlock" style="float:left;height:auto;">
+
+                    </div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper" style="display: none;">
+                        @Html.Partial("_SearchView", searchingModel)
+                    </div>
+
+                    <div id="ListData">
+                        @Html.Partial("_List", Model)
+                    </div>   
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+    });
+</script>
+

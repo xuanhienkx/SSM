@@ -1,0 +1,18 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SSM.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="SiteName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">SANCO SMS</Value>
+    </Setting>
+    <Setting Name="SiteTitle" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">SCF HCM</Value>
+    </Setting>
+    <Setting Name="Logo" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">~/Content/ssmlogo.png</Value>
+    </Setting>
+    <Setting Name="Site" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">http://localhost:8080</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>

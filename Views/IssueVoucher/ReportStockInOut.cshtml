@@ -1,0 +1,154 @@
+﻿@using System.Web.Optimization
+@using SSM.Common
+@using SSM.Models
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.IssueVoucherModel>
+
+@{
+    ViewBag.Title = "StockInOut";
+    IEnumerable<SelectListItem> warehouses = (IEnumerable<SelectListItem>)ViewData["Warehouses"];
+}
+<style>
+    .page {
+        width: auto !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("ReportStockInOut", "IssueVoucher", new AjaxOptions()
+{
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "ListData",
+    HttpMethod = "Post"
+}))
+{
+    @Html.Hidden("SearchCriteria.HashOut", true)
+    <div class="SectionBlock Expanded  BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>Inventory List </h2>
+                    </div>
+                    <div id="SearchBlock" style="float: left; height: auto;"></div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper">
+                        <table id="table-sarch">
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Warehouse</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.DropDownList("SearchCriteria.Warehouse.Id", warehouses, new { style = "width: 150px;" })
+                                </td>
+                                <td class="TDClass">
+                                    <label> Voucher Date  </label>
+                                </td>
+                                <td class="TDClass tdDate">
+                                    <div class="">
+                                        @Html.TextBoxFor(m => m.SearchCriteria.FromDate, new { @class = "datepicker fromDate  datepicker-check", style = "width: 80px", placeholder = "From" })
+                                    </div>
+                                    <div style="margin: 0 10px; width: 30px"></div>
+                                    <div class="">
+                                        @Html.TextBoxFor(m => m.SearchCriteria.ToDate, new { @class = "datepicker toDate datepicker-check", style = "width: 80px", placeholder = "To" })
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Suppier</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.Supplier.FullName, new { @class = "autocomplete", placeholder = "Supplier Name", style = "width: 350px;" })
+                                </td>
+                                <td class="TDClass">
+                                    <label>Received Voucher</label>
+                                </td>
+                                <td class="TDClass" style="text-align: left">
+                                    @Html.CheckBoxFor(m => m.SearchCriteria.StockIn, new { style = "width: 30px" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Customer</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.Customer.FullName, new { @class = "autocomplete", placeholder = "Customer Name", style = "width: 350px;" })
+                                </td>
+                                <td class="TDClass">
+                                    <label>Isued Voucher</label>
+                                </td>
+                                <td class="TDClass" style="text-align: left">
+                                    @Html.CheckBoxFor(m => m.SearchCriteria.StockOut, new { style = "width: 30px" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>  Product  </label>
+                                </td>
+                                <td class="TDClass">
+                                    <span class="TDClass">
+                                        @Html.TextBoxFor(m => m.SearchCriteria.Product.Code, new { @class = "autocomplete", style = "width: 95px", maxlength = 12, placeholder = "Product code" })
+                                    </span>
+                                    <span class="TDClass">
+                                        @Html.TextBoxFor(m => m.SearchCriteria.Product.Name, new { @class = "autocomplete", style = "width: 240px", placeholder = "Product Name" })
+                                    </span>
+                                </td>
+                                <td class="TDClass">
+                                    <label>  Row Detail  </label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.DropDownList("SearchCriteria.TopRowDetail", (IEnumerable<SelectListItem>)ModelExtensions.PagList, new { style = "width: 100px;" })
+                                </td>
+
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="button" onclick=" return submitForm();" value="Search" id="btn-search" /> 
+                                </td>
+                            </tr>
+                        </table>
+                    </div> 
+                    <div style="width: 100%">
+                        <div><span class="ligen"></span></div>
+                        <div></div>
+                    </div>
+                    <div id="ListData">
+                        @Html.Partial("_ListWarehouseSaving", Model)
+                    </div>
+                  
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<IssueVoucherModel>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" })
+                        <label>Rows per page</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+      jQuery(document).ready(function () {
+        jQuery("#TradingTab").addClass("Active");
+        jQuery('#TradingTab').activeThisNav(); 
+        jQuery("#SearchCriteria_Supplier_FullName").GetAutoSugget({
+            url: '@Url.Action("SupplierSuggest", "Supplier")'
+        });
+        jQuery("#SearchCriteria_Customer_FullName").GetAutoSugget({
+            url: '@Url.Action("CustomerSuggest", "StockReceiving")'
+        });
+        jQuery("#SearchCriteria_Product_Code").GetAutoSugget({
+            url: '@Url.Action("ProductCodeSuggest", "StockReceiving")',
+            targerId: "#SearchCriteria_Product_Name"
+        });
+        jQuery("#SearchCriteria_Product_Name").GetAutoSugget({
+            url: '@Url.Action("ProductNameSuggest", "StockReceiving")',
+            targerId: "#SearchCriteria_Product_Code"
+        });
+    });
+</script>

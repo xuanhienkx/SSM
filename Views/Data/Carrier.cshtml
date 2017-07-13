@@ -1,0 +1,120 @@
+﻿@using System.Web.Optimization 
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CarrierAirLine>
+@{
+    ViewBag.Title = "Carrier List";
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("Carrier", "Data", new AjaxOptions()
+{
+    HttpMethod = "post",
+    UpdateTargetId = "ListData",
+    InsertionMode = InsertionMode.Replace
+}))
+{
+
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>
+                            List Carrier
+                        </h2>
+                    </div> 
+                    <div id="SearchBlock" style="float:left;height:auto;"></div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper" style="display: none;">
+                        <table id="table-sarch">
+                            <tr>
+                                <td class="TDClass"><label>Abb Name</label></td>
+                                <td class="TDClass">
+                                    @Html.HiddenFor(m => m.SearchCriteria.Id)
+                                    @Html.TextBoxFor(m => m.SearchCriteria.AbbName, new { maxlength = "50" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass"><label>Name</label></td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.CarrierAirLineName, new { maxlength = "200" })
+                                </td>
+                            </tr>
+                             
+                            <tr>
+                                <td class="TDClass">
+                                    <label>
+                                        Carrier Type
+                                    </label>
+                                </td>
+                                <td class="TDClass"> 
+                                    @Html.DropDownList("SearchCriteria.Type", (SelectList)ViewData["CarrierTypes"], "--Select--", new { ReadOnly = "true" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Search" id="btn-search" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div id="ListData">
+                        @Html.Partial("_CarrierList", Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<CarrierAirLine>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label>
+                    </div>
+                    <div style="height:auto;overflow: hidden;">
+                      @if (User1.IsAdmin()|| User1.AllowUpdatePartner)
+                      {
+                        <input type="button" onclick="return edit(0)" id="CreateDept1" value="Create a Carrier" />
+                      }
+                        <input type="hidden" name="ModifyDept" value="@ViewData["ModifyDept"] " />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<div class="SectionBlock Expanded BoxL1" id="ModifyDeptZone">
+
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#databaseTab").addClass("Active");
+        jQuery('#databaseTab').activeThisNav();
+        jQuery('#CreateDept1,#CreateDept').click(function () {
+            jQuery("#ModifyHeader").html("New Carrier");  
+        });
+    });
+
+    function edit(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("EditCarrier", "Data")',
+            data: { id: id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#ModifyDeptZone").html(result);
+                jQuery('#ModifyDeptZone').show();
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#", "") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#AbbName').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+</script>
+

@@ -1,0 +1,185 @@
+﻿@using SSM.Models
+@model SSM.Models.RevenueModel
+<div id="DocumentMenuContainer" style="width: 840px; height: 36px; font-size: 12px;vertical-align:middle">
+    <div class="LightboxBlock">
+        @if (ShipmentModel.Services.SeaOutbound.ToString().Equals(ViewData["ServiceName"]))
+        {
+            <div class="LinkButton" id="BookingNote">
+                @Html.ActionLink("Booking Note", "BookingNote", "Shipment", new { id = 0, Shipmentid = Model.Id, BillDetailId = 0 }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BillLangding">
+                @Html.ActionLink("Bill Of Landing", "BillLanding", "Shipment", new { id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BLDetail">
+                @Html.ActionLink("SI (Shipment Intruction)", "BLDetail", "Shipment", new { id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+
+            <div class="LinkButton" id="DebitNote">
+                @Html.ActionLink("Credit / Debit Note", "DebitNote", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="Manifest">
+                @Html.ActionLink("Consol Manifest", "Manifest", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="PaymentVoucher">
+                @Html.ActionLink("Commission Voucher", "PaymentVoucher", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="RequestPayment">
+                @Html.ActionLink("Payment Request", "RequestPayment", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BookingRequest">
+                @Html.ActionLink("Booking Request", "BookingRequest", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+        }
+        else if (ShipmentModel.Services.SeaInbound.ToString().Equals(ViewData["ServiceName"]))
+        {
+            <div class="LinkButton" id="ArriveNoticeSG">
+                @Html.ActionLink("Arrival Notice SGN", "ArriveNotice", "Shipment", new { id = 0, Shipmentid = Model.Id, BillDetailId = 0 }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="DeliveryOrderSG">
+                @Html.ActionLink("Delivery Order SGN", "DeliveryOrder", "Shipment", new { id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="DebitNote">
+                @Html.ActionLink("Credit / Debit Note", "DebitNote", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="PaymentVoucher">
+                @Html.ActionLink("Commission Voucher", "PaymentVoucher", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="RequestPayment">
+                @Html.ActionLink("Payment Request", "RequestPayment", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="ArriveNoticeHN">
+                @Html.ActionLink("Arrival Notice HAN", "ArriveNotice", "Shipment", new { id = 0, Shipmentid = Model.Id, BillDetailId = 0,typedoc="HAN" }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="DeliveryOrderHN">
+                @Html.ActionLink("Delivery Order HAN", "DeliveryOrder", "Shipment", new { id = 0, Shipmentid = Model.Id, typedoc = "HAN" }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BookingRequest">
+                @Html.ActionLink("Inland Booking", "BookingRequest", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+        }
+        else if (ShipmentModel.Services.AirInbound.ToString().Equals(ViewData["ServiceName"]))
+        {
+            <div class="LinkButton" id="ArriveNoticeSG">
+                @Html.ActionLink("Arrival Notice SGN", "ArriveNotice", "Shipment", new { Id = 0, Shipmentid = Model.Id, BillDetailId = 0 }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="AuthorLetter">
+                @Html.ActionLink("Author Letter", "AuthorLetter", "Shipment", new { Id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="DebitNote">
+                @Html.ActionLink("Credit / Debit Note", "DebitNote", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="Div3">
+                @Html.ActionLink("Commission Voucher", "PaymentVoucher", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="RequestPayment">
+                @Html.ActionLink("Payment Request", "RequestPayment", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="ArriveNoticeHN">
+                @Html.ActionLink("Arrival Notice HAN", "ArriveNotice", "Shipment", new { Id = 0, Shipmentid = Model.Id, BillDetailId = 0, typedoc = "HAN" }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BookingRequest">
+                @Html.ActionLink("Inland Booking", "BookingRequest", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+        }
+        else if (ShipmentModel.Services.AirOutbound.ToString().Equals(ViewData["ServiceName"]))
+        {
+            <div class="LinkButton" id="BookingConfirm">
+                @Html.ActionLink("Booking Confirmation", "BookingConfirm", "Shipment", new { Id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="HAirWayBill">
+                @Html.ActionLink("House AWB", "HAirWayBill", "Shipment", new { Id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="Div1">
+                @Html.ActionLink("Author Letter", "AuthorLetter", "Shipment", new { Id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="DebitNote">
+                @Html.ActionLink("Credit / Debit Note", "DebitNote", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="Div5">
+                @Html.ActionLink("Commission Voucher", "PaymentVoucher", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="RequestPayment">
+                @Html.ActionLink("Payment Request", "RequestPayment", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BookingRequest">
+                @Html.ActionLink("Inland Booking", "BookingRequest", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+        }
+        else if (ShipmentModel.Services.InlandService.ToString().Equals(ViewData["ServiceName"]))
+        {
+            <div class="LinkButton" id="Div6">
+                @Html.ActionLink("Commission Voucher", "PaymentVoucher", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="Div7">
+                @Html.ActionLink("Payment Request", "RequestPayment", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BookingRequest">
+                @Html.ActionLink("Inland Booking", "BookingRequest", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="TransitmentAdvised">
+                @Html.ActionLink("Transitment Advised", "TransitmentAdvised", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="DebitNote">
+                @Html.ActionLink("Credit / Debit Note", "DebitNote", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+        }
+        else
+        {
+            <div class="LinkButton" id="BookingNote">
+                @Html.ActionLink("Booking Note", "BookingNote", "Shipment", new { id = 0, Shipmentid = Model.Id, BillDetailId = 0 }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BillLangding">
+                @Html.ActionLink("Bill Of Landing", "BillLanding", "Shipment", new { id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BLDetail">
+                @Html.ActionLink("SI (Shipment Intruction)", "BLDetail", "Shipment", new { id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="DebitNote">
+                @Html.ActionLink("Credit / Debit Note", "DebitNote", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="Manifest">
+                @Html.ActionLink("Consol Manifest", "Manifest", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="ArriveNoticeSG">
+                @Html.ActionLink("Arrival Notice SGN", "ArriveNotice", "Shipment", new { id = 0, Shipmentid = Model.Id, BillDetailId = 0 }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="DeliveryOrderSG">
+                @Html.ActionLink("Delivery Order SGN", "DeliveryOrder", "Shipment", new { id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="PaymentVoucher">
+                @Html.ActionLink("Commission Voucher", "PaymentVoucher", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="RequestPayment">
+                @Html.ActionLink("Payment Request", "RequestPayment", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BookingRequest">
+                @Html.ActionLink("Booking Request", "BookingRequest", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="ArriveNoticeHN">
+                @Html.ActionLink("Arrival Notice HAN", "ArriveNotice", "Shipment", new { id = 0, Shipmentid = Model.Id, BillDetailId = 0, typedoc = "HAN" }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="DeliveryOrderHN">
+                @Html.ActionLink("Delivery Order HAN", "DeliveryOrder", "Shipment", new { id = 0, Shipmentid = Model.Id, typedoc = "HAN" }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BookingRequest">
+                @Html.ActionLink("Inland Booking", "BookingRequest", "Shipment", new { Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="TransitmentAdvised">
+                @Html.ActionLink("Transitment Advised", "TransitmentAdvised", "Shipment", new { Id = 0, ShipmentId = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="BookingConfirm">
+                @Html.ActionLink("Booking Confirmation", "BookingConfirm", "Shipment", new { Id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="HAirWayBill">
+                @Html.ActionLink("House AWB", "HAirWayBill", "Shipment", new { Id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+            <div class="LinkButton" id="Div1">
+                @Html.ActionLink("Author Letter", "AuthorLetter", "Shipment", new { Id = 0, Shipmentid = Model.Id }, new { Class = "TemplateForm" })
+            </div>
+        }
+        <div class="LinkClose">
+            <a href="#" title="Close" class="Close">X</a>
+        </div>
+    </div>
+</div>
+<div class="clearfix"> </div>

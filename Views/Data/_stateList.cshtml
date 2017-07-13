@@ -1,0 +1,44 @@
+﻿@using System.Activities.Expressions
+@using SSM.Common
+@model System.Collections.Generic.IList<SSM.Models.Province>
+    @{
+        var countryId = (long) ViewBag.CountryId;
+    }
+<div class="col-lg-12" style="border-bottom: 1px solid blue">
+    @using (Ajax.BeginForm("ProvinceByCountry", "Data", new AjaxOptions()
+    {
+        UpdateTargetId = "ListDataProvince",
+        HttpMethod = "POST",
+        InsertionMode = InsertionMode.Replace
+    }))
+    {
+        @Html.Hidden("countryId", countryId)
+        <div style="margin: 10px auto; width: 60%">
+            <div class="form-group-sm form-horizontal">
+                <div class="form-group">
+                    @Html.Label("ProvinceName", new { @class = "control-label col-md-3" })
+                    <div class="col-md-6">
+                        @Html.TextBox("ProvinceName", "", new { @class = "form-control" })
+                    </div>
+                    <div class="col-md-3">
+                        <input type="submit" value="search" class="btn btn-primary" />
+                    </div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    }
+</div>
+<div class="">
+    @Ajax.Link("Create a province", "ProvinceEdit", "Data", new { id = 0, countryId= countryId }, new MyAjaxOptions()
+{
+    HttpMethod = "get",
+    DataType = "json",
+    ContentType = "application/json; charset=utf-8"
+
+}, new { @class = "btn btn-info text-green" })
+
+</div>
+<div class="row" id="ListDataProvince">
+    @Html.Partial("_provinceList", Model)
+</div>

@@ -1,0 +1,80 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model GridNew<Warehouse, WareHouseModel>
+
+@{ 
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+
+}
+
+<div style="height: auto; overflow: hidden;">
+
+    @if (User1.IsDataTrading())
+    {
+        <input type="button" id="CreateDept" onclick="edit(0)" value="Create a Warehouse" />
+    }
+</div>
+<table width="100%" class="grid">
+    <tr>
+        <th>
+            Code
+        </th>
+
+        <th>
+            Name
+        </th>
+        <th>
+            Address
+        </th>
+        <th>
+            Location
+        </th>
+
+        <th>
+            Edit
+        </th>
+        <th>
+            Delete
+        </th>
+    </tr>
+    @if (Model.Data != null && Model.Data.Any())
+    {
+        int no = 0;
+        foreach (var it in Model.Data)
+        {
+            no++;
+            var hightline = no % 2 == 0 ? "GridLight" : string.Empty;
+            <tr class="@hightline">
+                <td>
+                    @it.Code
+                </td>
+                <td>
+                    @it.Name
+                </td>
+                <td>
+                    @it.Address
+                </td>
+                <td>
+                    @if (it.Area != null && it.AreaId > 0)
+                    {
+                        @it.Area.AreaAddress
+                    }
+                </td>
+                <td>
+                    @if (User1.IsDataTrading())
+                    {
+                        <a onclick="edit(@it.Id)"><img alt="Edit" src="../../Images/btn-edit.png" /></a>
+                    }
+                </td>
+                <td>
+                    @if (User1.IsDataTrading())
+                    {
+                        <a href="@Url.Action("Delete", "Warehouse", new {id = it.Id})" onclick=" return confirm('Are you sure you want to delete?') "><img alt="Delete" src="../../Images/btn-delete.png" /></a>
+                    }
+                </td>
+            </tr>
+        }
+    }
+</table>

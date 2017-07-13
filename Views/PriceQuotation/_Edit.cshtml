@@ -1,0 +1,31 @@
+﻿@using System.Web.Optimization
+@model SSM.Models.CRM.CRMPriceQuotationModel
+
+@{
+    ViewBag.Title = "Sửa báo giá";
+}
+@Styles.Render("~/Content/CRM")
+@using (Ajax.BeginForm("Edit", "PriceQuotation", new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "priceFormOnSuccess"
+}))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4 form-horizontal">
+                    <div class="col-md-6">
+                        @{Html.RenderPartial("_EditTemplate", Model);}
+                    </div>
+                    <div class="col-md-6">
+                        <div class="" id="emailListInfo">
+                            @Html.Partial("_EmailHistoryListOfPrice", Model)
+                        </div>
+                    </div>
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

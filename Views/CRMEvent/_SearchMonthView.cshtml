@@ -1,0 +1,65 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model SSM.Models.CRM.EventFilter
+@{
+    var users = (IEnumerable<User>)ViewData["UserSalesList"];
+
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+<div class="row col-md-3">
+    <div class="inlin-item">
+        @Ajax.Link("<<", "CalendarView", "CRMEvent", new { type = "prev" }, new MyAjaxOptions()
+                                            {
+                                                UpdateTargetId = "calendarData",
+                                                HttpMethod = "POST",
+                                                DataType = "html",
+                                            }, new { @class = "btn btn-info btn-sm" })
+
+    </div>
+    <div class="inlin-item">
+        @Ajax.Link("Tháng Hiện tại", "CalendarView", "CRMEvent", new { type = "current" }, new MyAjaxOptions()
+                                            {
+                                                UpdateTargetId = "calendarData",
+                                                HttpMethod = "POST",
+                                                DataType = "html"
+                                            }, new { @class = "btn btn-success btn-sm" })
+
+    </div>
+    <div class="inlin-item">
+        @Ajax.Link(">>", "CalendarView", "CRMEvent", new { type = "next" }, new MyAjaxOptions()
+                                            {
+                                                UpdateTargetId = "calendarData",
+                                                HttpMethod = "POST",
+                                                DataType = "html",
+                                            }, new { @class = "btn btn-info btn-sm" })
+
+    </div>
+</div>
+<div class="col-md-9" style="margin-top: -25px; margin-bottom: 0">
+    <div class="inlin-item form-group-sm">
+        <h2 class="inlin-item">Tháng</h2>
+        @Html.DropDownListFor(m => m.Month, new SelectList(Enumerable.Range(1, 12)), new { @class = "form-control inlin-item", style = "width: 65px" })
+        @Html.DropDownListFor(m => m.Year, new SelectList(Enumerable.Range(2016, DateTime.Now.Year - 2016 + 5)), new { @class = "form-control inlin-item", style = "width: 80px" })
+        @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control inlin-item", placeholder = "Nhập tên khách hàng", style = "width: 220px" })              
+        @if (currentUser.IsDepOrDirecter())
+        {
+            @Html.DropDownListFor(m => m.Sales, new SelectList(users, "Id", "FullName"), "--Chọn Sales--", new { @class = "form-control inlin-item", style = "width: 130px" })     
+        }
+
+        @Html.EnumDropDownListFor(m => m.Status, new { @class = "form-control inlin-item", style = "width: 90px" })
+        @Html.DropDownListFor(m => m.OfEvent,new SelectList(ModelExtensions.GetListOfDescription<TypeOfEvent>()), "--All--",   new { @class = "form-control inlin-item", style = "width: 80px" }) 
+        <input type="submit" class="btn btn-primary btn-sm" value="Search" id="btn-pageSearch" />
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#CustomerName").GetAutoSugget({
+            url: '@Url.Action("CRMCustomerSuggest", "CRM")',
+        });
+    });
+</script>

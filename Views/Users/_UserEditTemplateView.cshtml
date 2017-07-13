@@ -1,0 +1,93 @@
+﻿@using Microsoft.Office.Interop.Excel
+@using SSM.Models
+@model SSM.Models.UsersModel
+@{
+    ViewBag.Title = "title";
+    User User1 = (User)Session[SSM.Controllers.AccountController.USER_SESSION_ID];
+}
+<div class="SectionBlock Expanded BoxL1">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4 form-group-sm ">
+                <fieldset>
+                    <legend class="AddUserLegend">Update User</legend>
+                    @Html.ValidationSummary(true, "Add User was unsuccessful. Please correct the errors and try again.")
+                    <div class="col-md-6 ">
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.FullName)
+                            @Html.TextBoxFor(m => m.FullName, new { maxlength = "100", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.FullName)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.UserName)
+                            @Html.TextBoxFor(m => m.UserName, new { maxlength = "50", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.UserName)
+                        </div>
+                        <div class="form-group">
+                            @if (UsersModel.isSetPassword(User1))
+                            {
+                                @Html.LabelFor(m => m.Password)
+                                @Html.TextBoxFor(m => m.Password, new { maxlength = "50", @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Password)
+                            }
+                            else
+                            {
+                                @Html.LabelFor(m => m.Password)
+                                @Html.PasswordFor(m => m.Password, new { maxlength = "50", @class = "form-control", value = Model.Password, ReadOnly = "true" })
+                            }
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Email)
+                            @Html.TextBoxFor(m => m.Email, new { maxlength = "250", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Email)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.EmailPassword)
+                            @Html.TextBoxFor(m => m.EmailPassword, new { maxlength = "200", @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.EmailPassword)
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.EmailNameDisplay)
+                            @Html.TextBoxFor(m => m.EmailNameDisplay, new { @class = "form-control " })
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.RoleName)
+                            @Html.DropDownList("RoleName", (SelectList)ViewData["Positions"], new { @class = "form-control  input-sm" })
+                        </div>
+
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.DeptId)
+                            @Html.DropDownList("DeptId", (SelectList)ViewData["Departments"], new { @class = "form-control  input-sm" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.ComId)
+                            @Html.DropDownList("ComId", (SelectList)ViewData["Companies"], new { @class = "form-control  input-sm" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.Note)
+                            @Html.TextAreaFor(m => m.Note, new { @class = "form-control", Style= "width: 496px; height: 94px;" })
+                        </div>
+                        <div class="form-group">
+                            @Html.LabelFor(m => m.IsActive)
+                            @Html.CheckBoxFor(m => m.IsActive, new { style = "width: 20px; margin-left: -3px;", @class = "form-control" })
+                        </div>
+                        <div class="form-group hidden" id="showLevelZone">
+                            @Html.LabelFor(m => m.Level)
+                            @Html.DropDownList("Level", (SelectList)ViewData["Levels"], new { @class = "form-control  input-sm" })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6"></div>
+                        <div class="col-md-6">
+                            <label></label>
+                            <input style="width:60px; color: white" type="submit" class="btn btn-primary" value="Save" />
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+    </div>
+</div>

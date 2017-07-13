@@ -1,0 +1,118 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.ViewModels.Shared.Grid<SSM.Models.UsersModel>
+@{
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.Partial("_TopPage",Model)
+<table class="grid" width="100%" border="0" cellpadding="0" cellspacing="0">
+    <tr>
+        <th>No</th>
+        <th>
+            <a href="#" onclick="sortAction('FullName');">
+                <div class="SortHeader-label"> Full Name</div>
+                <div id="FullName_Title" class="SortHeader"> </div>
+            </a>
+           
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('UserName');">
+                <div class="SortHeader-label">User Name</div>
+                <div id="UserName_Title" class="SortHeader"> </div>
+            </a>
+            
+        </th>   
+        <th>
+            <a href="#" onclick="sortAction('Email');">
+                <div class="SortHeader-label">Email</div>
+                <div id="Email_Title" class="SortHeader"> </div>
+            </a>
+
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('RoleName');">
+                <div class="SortHeader-label">Possition</div>
+                <div id="RoleName_Title" class="SortHeader"> </div>
+            </a>
+            
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('Department.DeptName');">
+                <div class="SortHeader-label">Department</div>
+                <div id="Department_DeptName_Title" class="SortHeader"> </div>
+            </a>                                                    
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('Company.CompanyName');">
+                <div class="SortHeader-label">Office</div>
+                <div id="Company_CompanyName_Title" class="SortHeader"> </div>
+            </a> 
+        </th>
+        <th>IsActived</th>
+        <th>Edit</th>
+        <th class="t-last">Delete</th>
+    </tr>
+    @if (Model.Data.Any())
+    {
+        int no = 0;
+        foreach (UsersModel userModel in Model.Data)
+        {
+            no++; 
+            var hightline = no % 2 == 0 ? "GridLight" : string.Empty;
+
+            <tr class="@hightline">
+                <td>@no</td>
+                <td>@userModel.FullName</td>
+                <td>@userModel.UserName</td>
+                <td>@userModel.Email</td>
+                <td>@userModel.RoleName</td>
+                <td>@userModel.DeptName</td>
+                <td>@userModel.ComName</td>
+                <td>
+                    @Html.CheckBox("IsActive", userModel.IsActive, new { @class = "serviceActive", @id = "IsActive_" + userModel.Id })
+                </td>
+                <td>
+                    @if (User1.IsAdmin())
+                    {
+                        <a href="@Url.Action("Edit", "users", new { id = userModel.Id })"><img alt=" edit" src="../../Images/btn-edit.png" /></a>
+                    }
+                </td>
+                <td class="t-last">
+                    @if (UsersModel.isAdminOrDirctor(User1))
+                    {
+                        <a href="@Url.Action("Delete", "users", new { id = userModel.Id })" onclick=" return confirm('are you sure you want to delete?') "><img alt=" delete" src="../../Images/btn-delete.png" /></a>
+                    }
+                </td>
+
+            </tr>
+
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="9">
+                No Data
+            </td>
+        </tr>
+    }
+
+</table>
+<script type="text/javascript">
+    jQuery(".serviceActive").on("click", function () {
+        var id = jQuery(this).attr("id").split("_")[1];
+        var check = jQuery(this).is(":checked");
+        var url = '@Url.Action("SetUserActive", "Users")';
+        var data = JSON.stringify({ "id": parseInt(id), "isActive": check });
+        jQuery.mbqAjax({
+            url: url,
+            type: 'post',
+            dataType: 'json',
+            contentType: "application/json; charset=utf-8",
+            data: data,
+            success: function (result) {
+            }
+        });
+    });
+</script>

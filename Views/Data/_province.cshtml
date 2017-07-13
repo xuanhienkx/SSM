@@ -1,0 +1,44 @@
+﻿@model SSM.Models.ProvinceModel
+
+@using (Ajax.BeginForm("ProvinceEdit", "Data", new AjaxOptions()
+{
+    HttpMethod = "Post",
+    OnSuccess = "formOnSuccess"
+}))
+{
+    @Html.HiddenFor(x=>x.Id)
+    @Html.HiddenFor(x=>x.CountryId)
+    <div class="col-md-12 form-group-sm form-horizontal  " style="line-height: 25px; margin-top: 20px ">
+        <div class="form-group ">
+            @Html.LabelFor(x => x.Name, new { @class = " control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(x => x.Name, new { @class = " form-control input-sm" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(x => x.TimeZone, new { @class = " control-label col-md-3" })
+            <div class="col-md-9">
+                @Html.TextBoxFor(x => x.TimeZone, new { @class = " form-control input-sm" })
+            </div>
+        </div> 
+        <div class="form-group" >
+            <div class="col-md-3"></div>
+            <div class="col-md-9">
+                <input class="btn btn-primary btn-sm" type="submit" id="btnProvinceSave" value="Save" />
+                <input class="btn btn-danger btn-sm" type="button" value="Close" onclick="return jQuery(this).parents('.jconfirm-box:first').find('.closeIcon').click();" />
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+
+    function formOnSuccess(result) {
+        if (result.success === undefined || result.success === false) {
+            jQuery("#btnProvinceSave").parents(".jconfirm-box:first").find(".content").html(result);
+            return false;
+        } else {
+            jQuery("#contryNameTittel").parents(".content:first").find("#ListDataProvince").html(result.value);
+            jQuery("#btnProvinceSave").parents(".jconfirm-box:first").find('.closeIcon').click();  
+        }
+    }
+</script>

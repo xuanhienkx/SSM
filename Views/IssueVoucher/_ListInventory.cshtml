@@ -1,0 +1,157 @@
+﻿@model SSM.ViewModels.Shared.Grid<SSM.Models.IssueVoucherModel>
+@Html.Partial("_TopPage", Model)
+<table width="100%" class="grid">
+    <thead>
+        <tr>
+
+            <th style="width: 30px"> No </th>
+            <th style="width: 30px"> </th>
+            <th style="width: 80px">  Date </th>
+            <th>  Product Name </th>
+            <th style="width: 60px">Code</th>
+            <th style="width: 100px">  Supplier </th>
+            <th style="width: 60px">  Quantity  </th>
+            <th style="width: 60px" title="Số lượng đang được chờ xuất kho">Qty Pending Out </th>
+            <th style="width: 50px">  Unit </th>
+            <th style="width: 60px">  Price </th>
+            <th style="width: 80px">  Value </th>
+            <th style="width: 80px">  Phiếu NK </th>
+            <th style="width: 70px">  Warehouse </th>
+        </tr>
+    </thead>
+    <tbody id="Databody" class="tb-grabText">
+        @if (Model.Data != null && Model.Data.Any())
+        {
+            int no = 0;
+            var proNo = 0;
+            var hightline = string.Empty;
+            var colorText = string.Empty;
+            var pAmountSum = Model.Data.Where(x => string.IsNullOrEmpty(x.VoucherNo)).Sum(x => x.Amount);
+            foreach (var it in Model.Data)
+            {
+                colorText = Model.SearchCriteria.HashOut && it.StockIn ? "stockin" : Model.SearchCriteria.HashOut && it.StockOut ? "stockout" : string.Empty;
+
+                var classColer = string.Empty;
+                if (it.Quantity < 0)
+                {
+                    classColer = "text-danger";
+                }
+                if (string.IsNullOrEmpty(it.VoucherNo))
+                {
+                    //      hightline = no % 2 == 0 ? "GridLight" : string.Empty;
+                    no++;
+                    proNo = 0;
+                    <tr class="@hightline" style=" font-weight: bold">
+                        <td>
+                            @no
+                        </td>
+                        <td>
+                            <span style="cursor: pointer" class="productExt Expand" proid="@it.Product.Id">
+                                <i class="ui-icon ui-icon-plus"></i>
+                            </span>
+                        </td>
+                        <td></td>
+                        <td>
+                            @it.Product.Name
+                        </td>
+                        <td>
+                            @it.Product.Code
+                        </td>
+
+                        <td></td>
+
+                        <td class="text-right @classColer">
+                            @string.Format("{0:N2}", it.Quantity)
+                        </td>
+                        <td class="text-right">
+                            @if (it.QuantityPendingOut > 0)
+                            {
+                                <a href="javascript:void(0)" onclick="return  GetPending(@it.Product.Id);"><span style="color: gold">@string.Format("{0:N2}", it.QuantityPendingOut)</span></a>
+                            }
+
+                        </td>
+                        <td class="">@it.Product.Uom</td>
+                        <td> </td>
+                        <td class="text-right">
+                            @string.Format("{0:N2}", it.Amount)
+                        </td>
+
+                        <td> </td>
+                        <td> </td>
+                    </tr>
+                }
+                else
+                {
+                    proNo++;
+                    //       hightline = proNo % 2 == 0 ? "GridLight" : string.Empty;
+                    <tr class="hide productItem-@it.Product.Id @colorText">
+                        <td></td>
+                        <td>
+                            @proNo
+                        </td>
+                        <td>
+                            @string.Format("{0:dd/MM/yyyy}", it.VoucherDate)
+                        </td>
+                        <td></td>
+                        <td></td>
+
+                        <td>
+                            @if (it.Supplier != null)
+                            {
+                                @it.Supplier.FullName
+                            }
+                        </td>
+                        <td class="text-right @classColer">
+                            @string.Format("{0:N2}", it.Quantity)
+                        </td>
+                        <td></td>
+                        <td class="">@it.Product.Uom</td>
+                        <td class="text-right">
+                            <span class="number2">@it.Price</span>
+
+                        </td>
+                        <td class="text-right">
+                            @string.Format("{0:N2}", it.Amount)
+                        </td>
+                        <td>@it.VoucherNo</td>
+                        <td>@it.Warehouse.Name</td>
+                    </tr>
+                }
+
+            }
+            <tr>
+                <td colspan="10" class="text-right totalSum">Total</td>
+                <td class="text-right totalSum" style="font-weight: bold">  @string.Format("{0:N2}", pAmountSum)</td> 
+                <td></td>
+                <td></td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td colspan="12" style="text-align: center"> No Data</td>
+            </tr>
+        }
+
+    </tbody>
+</table>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery(".productExt").each(function () {
+            jQuery(this).click(function () {
+                var proId = jQuery(this).attr("proid");
+
+                if (jQuery(this).hasClass("Expand")) {
+                    jQuery(this).removeClass("Expand");
+                    jQuery("#Databody").find("tr.productItem-" + proId).removeClass("hide");
+                    jQuery(this).find("i").removeClass("ui-icon-plus").addClass("ui-icon-minus"); //<i class="ui-icon ui-icon-plus"></i>
+                } else {
+                    jQuery(this).addClass("Expand");
+                    jQuery("#Databody").find("tr.productItem-" + proId).addClass("hide");
+                    jQuery(this).find("i").removeClass("ui-icon-minus").addClass("ui-icon-plus");
+                }
+            });
+        });
+    });
+    
+</script>

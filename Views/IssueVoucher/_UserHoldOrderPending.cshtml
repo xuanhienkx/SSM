@@ -1,0 +1,25 @@
+﻿@model IList<SSM.ViewModels.ShowQtyPending>
+<div style="background-color:#e6edf9;width: 100%">
+    <table style="background-color:#e6edf9; font-size:1.2em;border:1px solid #BFBFBF; width: 100%" class="grid ">
+        <tr>
+            <th>No</th>
+            <th>Phiếu Xuất</th>
+            <th>Qty</th>
+            <th>Staff</th>
+        </tr>
+        @if (Model.Any())
+        {
+            var no = 0;
+            foreach (var mt81 in Model)
+            {
+                no++;
+                <tr>
+                    <td style="width: 40px">@no</td>
+                    <td>@mt81.VoucherNo</td>
+                    <td class="text-right">@string.Format("{0:N2}", mt81.Quantity)</td>
+                    <td>@mt81.SaffName</td>
+                </tr>
+            }
+        }
+    </table>
+</div>

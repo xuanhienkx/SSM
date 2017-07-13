@@ -1,0 +1,17 @@
+﻿@model SSM.Models.NewsModel
+
+@{
+    ViewBag.Title = "Edit Company regulation"; 
+}                
+
+@using (Html.BeginForm("Edit", "Infomation", null, FormMethod.Post, new { id = "frmInfo", enctype = "multipart/form-data" }))
+{
+    @Html.Partial("_EditTemplateView")
+}
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery("#AbountUsTab").addClass("Active");
+        jQuery('#AbountUsTab').activeThisNav();
+        jQuery('a[href$= "/Infomation/Index/0"]').parent('li').addClass("subActive");
+    });
+</script>

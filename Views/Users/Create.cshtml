@@ -1,0 +1,62 @@
+﻿@using SSM.Models
+@model  SSM.Models.UsersModel
+
+@{
+    ViewBag.Title = "Create User";                                           
+}
+@using (Html.BeginForm())
+{
+    @Html.Partial("_UserEditTemplateView", Model)
+    @Html.Partial("_PemissionUserView", Model)
+
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#StaffManagementTab").addClass("Active");
+        jQuery('#StaffManagementTab').activeThisNav();
+        jQuery('#showLevelZone').hide();
+        jQuery('#showOfficeControlZone').hide();
+        jQuery('#AllowApprovedStockCard').removeAttr('checked');
+        jQuery('#AllowApprovedStockCard').attr('disabled', 'disabled');
+        if (jQuery('#RoleName').val() == 'Director') {
+            jQuery('#showLevelZone').show();
+            jQuery('#showOfficeControlZone').show();
+            if (jQuery('#Level').val() == '1') {
+                // jQuery('input[type=checkbox]').attr('checked', 'checked');
+                jQuery('#AllowApprovedStockCard').removeAttr('disabled');
+            }
+        }
+        else {
+            jQuery('#showLevelZone').hide();
+            jQuery('#showOfficeControlZone').hide();
+            jQuery('#AllowApprovedStockCard').removeAttr('checked');
+            jQuery('#AllowApprovedStockCard').attr('disabled', 'disabled');
+        }
+        jQuery('#RoleName').change(function () {
+            if (jQuery('#RoleName').val() == 'Director') {
+                jQuery('#showLevelZone').show();
+                jQuery('#showOfficeControlZone').show();
+                if (jQuery('#Level').val() == '1') {
+                    jQuery('input[type=checkbox]').attr('checked', 'checked');
+                    jQuery('#AllowApprovedStockCard').removeAttr('disabled');
+                }
+            }
+            else {
+                jQuery('#showLevelZone').hide();
+                jQuery('#showOfficeControlZone').hide();
+                jQuery('#AllowApprovedStockCard').removeAttr('checked');
+                jQuery('#AllowApprovedStockCard').attr('disabled', 'disabled');
+            }
+        });
+
+        jQuery('#Level').change(function () {
+            if (jQuery('#RoleName').val() == 'Director' && jQuery('#Level').val() == '1') {
+                jQuery('input[type=checkbox]').attr('checked', 'checked');
+                jQuery('#AllowApprovedStockCard').removeAttr('disabled');
+            } else {
+                jQuery('#AllowApprovedStockCard').attr('disabled', 'disabled');
+                jQuery('#AllowApprovedStockCard').removeAttr('checked');
+            }
+        });
+    });
+</script>

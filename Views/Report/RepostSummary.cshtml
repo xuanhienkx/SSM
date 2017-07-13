@@ -1,0 +1,147 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.SalePerformamceModel
+
+@{
+    ViewBag.Title = "title";
+     User currenUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+@using (Html.BeginForm())
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <table width="auto" cellpadding="2">
+                        <tr>
+                            <td>
+                                @Html.RadioButtonFor(m => m.Priod, 0)
+                            </td>
+                            <td>
+                                <label class="Label Monthly">Monthly Performance</label>
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.Month, new SelectList(Enumerable.Range(1, 12)), new { Class = "ShipmentSelectShort Monthly" })
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.Year, new SelectList(Enumerable.Range(2006, DateTime.Now.Year - 2006+5)), new { Class = "ShipmentSelectShort Monthly" })
+                            </td>
+                            <td><input type="submit" class="Monthly" value="OK" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.RadioButtonFor(m => m.Priod, 1)
+                            </td>
+                            <td colspan="4">
+                                <label class="Label">Period Performance /Multi Options</label>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="SearchByPeriodZone">
+                        <table width="auto" cellpadding="2">
+                            <tr>
+                                <td>
+                                    <label class="ShipmentLabel">By Shipper</label>
+                                </td>
+                                <td>
+                                    @Html.DropDownList("ShipperId", (SelectList) ViewData["Shippers"], new {Class = "ShipmentSelect"})
+                                </td>
+                                <td>
+                                    <label class="ShipmentLabel">Period</label>
+                                </td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ShipmentLabel">By Cnee</label>
+                                </td>
+                                <td>
+                                    @Html.DropDownList("CneeId", (SelectList) ViewData["Cnees"], new {Class = "ShipmentSelect"})
+                                </td>
+                                <td>
+                                    <label class="ShipmentLabel">From</label>
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.DateFrom, new {Class = "ShipmentInput"})
+                                </td>
+                                <td>
+                                    <label for="DateFrom" class="DateInput"></label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ShipmentLabel">By Agent</label>
+                                </td>
+                                <td>
+                                    @Html.DropDownList("AgentId", (SelectList) ViewData["Agents"], new {Class = "ShipmentSelect"})
+                                </td>
+                                <td>
+                                    <label class="ShipmentLabel">To</label>
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.DateTo, new {Class = "ShipmentInput"})
+                                </td>
+                                <td><label for="DateTo" class="DateInput"></label></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ShipmentLabel">By Service</label>
+                                </td>
+                                <td>
+                                    @Html.DropDownList("ServiceId", (SelectList) ViewData["Services"], new {Class = "ShipmentSelect"})
+                                </td>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Search by Period" />
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div> 
+                    @if (currenUser.IsAdminAndAcct())
+                    {
+                        @Html.Partial("_CompanyPlanPerformance")
+                    }
+                    else
+                    {
+
+                    }   
+                </div>
+            </div>
+        </div>
+    </div>
+}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#SalesTab").addClass("Active");
+        jQuery('#SalesTab').activeThisNav();
+        new DateTimePicker('DateFrom', 'dd/MM/yyyy');
+        new DateTimePicker('DateTo', 'dd/MM/yyyy');
+        if (jQuery('input[name="Priod"]:eq(0)').is(":checked")) {
+            jQuery('#SearchByPeriodZone').hide();
+            jQuery('.Monthly').each(function () {
+                jQuery(this).removeAttr("disabled");
+            });
+        } else {
+            jQuery('.Monthly').each(function () {
+                jQuery(this).attr("disabled", "disabled");
+            });
+            jQuery('#SearchByPeriodZone').show();
+        }
+
+        jQuery('input[name="Priod"]:eq(0)').click(function () {
+            jQuery('.Monthly').each(function () {
+                jQuery(this).removeAttr("disabled");
+            });
+            jQuery('#SearchByPeriodZone').hide();
+        });
+        jQuery('input[name="Priod"]:eq(1)').click(function () {
+            jQuery('.Monthly').each(function () {
+                jQuery(this).attr("disabled", "disabled");
+            });
+            jQuery('#SearchByPeriodZone').show();
+        });
+    });
+</script>

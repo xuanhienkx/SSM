@@ -1,0 +1,65 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model SSM.Models.CRMFollowEventUser
+
+@{
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+@if (Model != null)
+{
+    <td>@Model.User.FullName</td>
+    <td>@Model.User.Department.DeptName</td>
+    if (currentUser.IsDepOrDirecter())
+    {
+
+        <td class="text-center">
+            @if (Model.IsLook)
+            {
+                @Ajax.Link("", "SetLookUser", "CRMEvent", new { id = Model.Id, isLook = false }, new MyAjaxOptions()
+           {
+               HttpMethod = "get",
+               DataType = "json",
+               ContentType = "application/json; charset=utf-8",
+               UpdateTargetId = "user_" + Model.Id,
+               InsertionMode = InsertionMode.InsertAfter
+
+           }, new { @class = "fa fa-lock text-center fa-lg ", Style = "color:red;" })
+            }
+            else
+            {
+                @Ajax.Link("", "SetLookUser", "CRMEvent", new { id = Model.Id, isLook = true }, new MyAjaxOptions()
+           {
+               HttpMethod = "get",
+               DataType = "json",
+               ContentType = "application/json; charset=utf-8",
+               UpdateTargetId = "user_" + Model.Id,
+               InsertionMode = InsertionMode.InsertAfter
+               // Confirm = "Bạc muốn khôi phục lại khách hàng này?"
+
+           }, new { @class = "fa fa-unlock-alt text-center fa-lg", Style = "color:blue" })
+            }
+        </td>
+    }
+    if ((currentUser.IsDepOrDirecter() ||  currentUser.Id == Model.UserId|| currentUser.Id ==Model.CRMVisit.CreatedById || currentUser.Id == Model.AddById) && Model.IsLook == false)
+    {
+
+        <td id="del_@Model.Id" class="text-center deleteRow">
+            @Ajax.Link("", "DeleleUserFollow", "CRMEvent", new { id = Model.Id }, new MyAjaxOptions()
+       {
+           HttpMethod = "get",
+           DataType = "json",
+           ContentType = "application/json; charset=utf-8",
+           Confirm = "Bạn muốn xoá khỏi theo dõi?"
+
+       }, new { @class = "fa fa-remove  text-center ", id = Model.Id, Style = "color: red" })
+        </td>
+    }
+    else
+    {
+        <td></td>
+    }
+
+}

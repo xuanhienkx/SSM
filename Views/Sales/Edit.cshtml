@@ -1,0 +1,9 @@
+﻿@model SSM.Models.SalesModel
+
+@{
+    ViewBag.Title = "Edit Sales Order";
+}
+@using (Html.BeginForm("Edit", "Sales"))
+{
+    Html.RenderPartial("_EditTemplate", Model);
+}

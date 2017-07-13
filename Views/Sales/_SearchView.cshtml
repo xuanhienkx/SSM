@@ -1,0 +1,91 @@
+﻿@model SSM.ViewModels.TradingStockSearch
+@{
+    IEnumerable<SelectListItem> warehouses = (IEnumerable<SelectListItem>)ViewData["Warehouses"];
+    IEnumerable<SelectListItem> users = (IEnumerable<SelectListItem>)ViewData["UserTrading"];
+}
+ 
+<div id="SearchBlock" style="float: left; height: auto;"></div>
+<div class="SectionHeading">
+    <a class="SectionMode Expand" href="#">[Mode]</a>
+    <h2>Search</h2><h2 class="Header-clearSearch"><a href="javascript:void(0)" onclick="return  resetFrom(this);">[Clear Search]</a></h2>
+</div>
+<div class="SectionBlockWrapper" style="display: none;">
+    <table>
+        <tr>
+            <td class="TDClass">
+                <label>No</label>
+            </td>
+            <td class="TDClass">
+                @Html.TextBoxFor(m => m.VoucherNo, new { @class = "uppercase", maxlength = 12, placeholder = "Voucher No", style = "width: 100px;" }) 
+            </td>
+            <td class="TDClass">
+                <label>Staff</label>
+            </td>
+            <td class="TDClass">
+                @Html.DropDownList("CreatedId", users, new { style = "width: 150px;" })
+            </td>
+        </tr>
+        <tr>
+            <td class="TDClass">
+                <label>Customer</label>
+            </td>
+            <td class="TDClass">
+                @Html.TextBoxFor(m => m.Customer.FullName, new { @class = "autocomplete", placeholder = "Customer Name", style = "width: 350px;" })
+            </td>
+            <td class="TDClass">
+                <label>Warehouse</label>
+            </td>
+            <td class="TDClass">
+                @Html.DropDownList("Warehouse.Id", warehouses, new { style = "width: 150px;" })
+            </td>
+        </tr>
+        <tr>
+            <td class="TDClass">
+                <label>  Product  </label>
+            </td>
+            <td class="TDClass">
+                <span class="TDClass">
+                    @Html.TextBoxFor(m => m.Product.Code, new { @class = "autocomplete", style = "width: 95px", maxlength = 12, placeholder = "Product code" })
+                </span>
+                <span class="TDClass">
+                    @Html.TextBoxFor(m => m.Product.Name, new { @class = "autocomplete", style = "width: 240px", placeholder = "Product Name" })
+                </span>
+            </td>
+            <td class="TDClass">
+                <label> Voucher Date  </label>
+            </td>
+            <td class="TDClass tdDate">
+                <div class="">
+                    @Html.TextBoxFor(m => m.FromDate, new { @class = "datepicker fromDate  datepicker-check", style = "width: 80px", placeholder = "From" })
+                </div>
+                <div style="margin: 0 10px; width: 30px"></div>
+                <div class="">
+                    @Html.TextBoxFor(m => m.ToDate, new { @class = "datepicker toDate datepicker-check", style = "width: 80px", placeholder = "To" })
+                </div>
+            </td>
+        </tr>
+
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" onclick="" value="Search"   id="btn-search" />      
+            </td>
+        </tr>
+    </table>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery("#Customer_FullName").GetAutoSugget({
+            url: '@Url.Action("CustomerSuggest", "StockReceiving")'
+        });
+        jQuery("#Product_Code").GetAutoSugget({
+            url: '@Url.Action("ProductCodeSuggest", "StockReceiving")',
+            targerId: "#Product_Name"// targerId: "#Supplier_Id"
+        });
+        jQuery("#Product_Name").GetAutoSugget({
+            url: '@Url.Action("ProductNameSuggest", "StockReceiving")',
+            targerId: "#Product_Code"
+        });
+    });
+    
+</script>

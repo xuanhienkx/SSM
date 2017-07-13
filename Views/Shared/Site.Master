@@ -1,0 +1,70 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.Master.cs" Inherits="SSM.Views.Shared.Site" %>
+
+<%@ Import Namespace="SSM.Common" %>
+<%@ Import Namespace="SSM.Models" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>
+        <%=Helpers.SiteTitle %> SSM System-
+        <asp:ContentPlaceHolder ID="TitleContent" runat="server" />
+    </title>
+    <link href="<%=Url.Content("~/Content/ssmlogo.png")%>" rel="shortcut icon" type="image/x-icon" />
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" runat="server" />
+    <link type="text/css" rel="stylesheet" href="~/Content/global.css" media="all" runat="server" />
+    <link type="text/css" rel="stylesheet" href="~/Content/top-nav-bar.css" media="all" runat="server" />
+    <link type="text/css" rel="stylesheet" href="~/Content/main-nav-bar.css" media="all" runat="server" />
+    <link type="text/css" rel="stylesheet" href="~/Content/homepage.css" media="all" runat="server" />
+    <link type="text/css" rel="stylesheet" href="~/Content/section-block.css" media="all" runat="server" />
+    <link type="text/css" rel="stylesheet" href="~/Content/footer-bar.css" media="all" runat="server" />
+    <link type="text/css" rel="stylesheet" href="~/Content/jquery-confirm.css" media="all" runat="server" />
+    <link type="text/css" rel="stylesheet" href="~/Content/themes/base/jquery-ui.css" media="all" runat="server" />
+    <link id="Link1" type="text/css" rel="stylesheet" href="~/Content/Shipment.css" media="all" runat="server" />
+    <link id="Link2" type="text/css" rel="stylesheet" href="~/Content/Freights.css" media="all" runat="server" />
+    <link id="Link3" type="text/css" rel="stylesheet" href="~/Content/BookingConfirm.css" media="all" runat="server" />
+    <link id="Link4" type="text/css" rel="stylesheet" href="~/Content/CustomStyle.css" media="all" runat="server" />
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Content/ckeditor/ckeditor.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/jquery-2.1.4.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/jquery.unobtrusive-ajax.min.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/jquery-ui-1.11.4.min.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/jquery-cookie.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/jquery-mousewheel.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/j-select.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/j-select.external.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/main.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/utils.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/jquery.number.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/autoNumeric-min.js") %>"></script>
+
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/global.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/top-nav-bar.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/main-nav-bar.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/homepage.js") %>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/prototype.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/ui.datetimepicker.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/calendar-time-custom.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/date-validator.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/jquery-confirm.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/AjaxGlobalHandler.js")%>"></script>
+    <script type="text/javascript" src="<%=Page.ResolveClientUrl("~/Scripts/mbqScript.js")%>"></script>
+    <style type="text/css">
+        .print tr {
+            height: 35px;
+        }
+    </style>
+</head>
+
+<body>
+    <% UsersModel user = new UsersModel();
+       user.UserName = "Nguyen The Khong"; %>
+    <% Html.RenderPartial("_TopNarBarUC", user); %>
+    <% Html.RenderPartial("_MainNarBarUC"); %>
+    <div class="page">
+        <div id="main">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+        </div>
+    </div>
+    <% Html.RenderPartial("_FooterUC"); %>
+</body>
+</html>

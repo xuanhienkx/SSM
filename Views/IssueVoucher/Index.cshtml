@@ -1,0 +1,140 @@
+﻿@using System.Web.Optimization
+@using SSM.Models
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.IssueVoucherModel>
+
+@{
+    ViewBag.Title = "StockIn";
+    IEnumerable<SelectListItem> warehouses = (IEnumerable<SelectListItem>)ViewData["Warehouses"];
+}
+<style>
+    .page {
+        width: auto !important;
+        margin-left: auto;
+        margin-right: auto;
+    }
+</style>
+@Scripts.Render("~/bundles/SCFListPagingJs")
+@using (Ajax.BeginForm("Index", "IssueVoucher", new AjaxOptions()
+{
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "ListData",
+    HttpMethod = "Post"
+}))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>Current Stock </h2>
+                    </div>
+                    <div id="SearchBlock" style="float: left; height: auto;"></div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper">
+                        <table id="table-sarch">
+
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Suppier</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.Supplier.FullName, new { @class = "autocomplete", placeholder = "Supplier Name", style = "width: 350px;" })
+                                </td>
+                                <td class="TDClass">
+                                    <label>Warehouse</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.DropDownList("SearchCriteria.Warehouse.Id", warehouses, new { style = "width: 150px;" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>  Product  </label>
+                                </td>
+                                <td class="TDClass">
+                                    <span class="TDClass">
+                                        @Html.TextBoxFor(m => m.SearchCriteria.Product.Code, new { @class = "autocomplete", style = "width: 95px", maxlength = 12, placeholder = "Product code" })
+                                    </span>
+                                    <span class="TDClass">
+                                        @Html.TextBoxFor(m => m.SearchCriteria.Product.Name, new { @class = "autocomplete", style = "width: 240px", placeholder = "Product Name" })
+                                    </span>
+                                </td>
+                                <td class="TDClass">
+                                    <label> Voucher Date  </label>
+                                </td>
+                                <td class="TDClass tdDate">
+                                    <div class="">
+                                        @Html.TextBoxFor(m => m.SearchCriteria.FromDate, new { @class = "datepicker fromDate  datepicker-check", style = "width: 80px", placeholder = "From" })
+                                    </div>
+                                    <div style="margin: 0 10px; width: 30px"></div>
+                                    <div class="">
+                                        @Html.TextBoxFor(m => m.SearchCriteria.ToDate, new { @class = "datepicker toDate datepicker-check", style = "width: 80px", placeholder = "To" })
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="button" onclick=" return submitForm();" value="Search" id="btn-search" /> 
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div id="ListData">
+                        @Html.Partial("_ListInventory", Model)
+                    </div>
+
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<IssueVoucherModel>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" })
+                        <label>Rows per page</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+
+    jQuery(document).ready(function () {
+        jQuery("#TradingTab").addClass("Active");
+        jQuery('#TradingTab').activeThisNav(); 
+        jQuery("#SearchCriteria_Supplier_FullName").GetAutoSugget({
+            url: '@Url.Action("SupplierSuggest", "Supplier")'
+        });
+        jQuery("#SearchCriteria_Product_Code").GetAutoSugget({
+            url: '@Url.Action("ProductCodeSuggest", "StockReceiving")',
+            targerId: "#SearchCriteria_Product_Name"// targerId: "#Supplier_Id"
+        });
+        jQuery("#SearchCriteria_Product_Name").GetAutoSugget({
+            url: '@Url.Action("ProductNameSuggest", "StockReceiving")',
+            targerId: "#SearchCriteria_Product_Code"
+        });
+        
+    });
+    function GetPending(pId) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("ShowProductSalseHold", "IssueVoucher")',
+            data: { productId: pId },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery.dialog({
+                    title: "Thông tin nhân viên đang dữ hàng chưa bán",
+                    content: result,
+                    columnClass: 'col-md-5 col-md-offset-3',
+                    theme: 'bootstrap',
+                });
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+   
+</script>

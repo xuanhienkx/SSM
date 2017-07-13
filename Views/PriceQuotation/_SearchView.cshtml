@@ -1,0 +1,98 @@
+﻿
+@using SSM.Common
+@using SSM.Models
+@using SSM.Models.CRM
+@model PriceSearchModel
+@{
+    var allSales = (SelectList)ViewBag.AllSales;
+    var allDepts = (SelectList)ViewBag.AllDept;
+ 
+        SelectList status = (SelectList)ViewBag.PriceStatus; 
+}
+<div class="row">
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(m => m.CusId)
+</div>
+<div class="col-md-12  form-group-sm">
+    <div class="form-horizontal center-block">
+        <div class="col-md-5">
+            <div class="form-group">
+                @Html.LabelFor(m => m.RefId, "RefId", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-2 ">
+                    @Html.TextBoxFor(m => m.RefId, new { @class = "form-control " })
+                </div>
+                @Html.LabelFor(m => m.StatusId, "Trạng thái", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-4">
+                    @Html.DropDownListFor(m => m.StatusId, status,"--All--", new { @class = "form-control form-control-sm" })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.Subject, "Mô tả BG", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(m => m.Subject, new { @class = "form-control " })
+                </div>
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.CustomerName, "Khách hàng", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9">
+                    @Html.TextBoxFor(m => m.CustomerName, new { @class = "form-control " })
+                </div>
+            </div>
+
+        </div>
+        <div class="col-md-7">
+            <div class="form-group">
+                @Html.LabelFor(m => m.SalesId, "Users", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3 ">
+                    @Html.DropDownListFor(m => m.SalesId, allSales, "--Chon Sales--", new { @class = "form-control " })
+                </div>
+                @Html.LabelFor(m => m.DepId, "Phòng", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3 ">
+                    @Html.DropDownListFor(m => m.DepId, allDepts, "--Chọn phòng--", new { @class = "form-control " })
+                </div>
+
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(m => m.DateType, "Period", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-9  form-inline ">
+                    <div class="col-sm-6 row">
+                        @Html.RadioButtonFor(x => x.DateType, "U", new { @class = "radio", id = "CreateDate" })
+                        @Html.LabelFor(x => x.DateType, "Ngày tạo", new { @class = "control-label" })
+                    </div>
+                    <div class="col-sm-6 ">
+                        @Html.RadioButtonFor(x => x.DateType, "M", new { @class = "radio", id = "ModifyDate" })
+                        @Html.LabelFor(x => x.DateType, "Ngày gửi email", new { @class = "control-label" })
+                    </div>
+                    <div class="row"></div>
+                </div>
+            </div>
+            <div class="form-group form-inline">
+                @Html.LabelFor(m => m.FromDate, "FromDate", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3">
+                    @Html.TextBoxFor(m => m.FromDate, "{0:dd/MM/yyyy}", new { @class = "form-control required fromDate datepicker datepicker-check hasDatepicke" })
+                </div>
+                @Html.LabelFor(m => m.ToDate, "ToDate", new { @class = "col-sm-3 control-label" })
+                <div class="col-sm-3 ">
+                    @Html.TextBoxFor(m => m.ToDate, "{0:dd/MM/yyyy}", new { @class = "form-control toDate required  datepicker datepicker-check hasDatepicke" })
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+        <div class="pull-right col-md-push-3">
+            <input type="submit" class="btn btn-primary" value="Search" id="btn-search" />
+        </div>
+    </div>
+
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery('#UserFullName').GetAutoSugget({
+            url: '@Url.Action("UserSuggest", "CRM")',
+            //targerId: "#CrmCountryId"
+        });
+        jQuery("#CustomerName").GetAutoSugget({
+            url: '@Url.Action("CustomerSuggest", "CRM")',
+            // targerId: "#CrmCategoryId"
+        });
+    });
+</script>

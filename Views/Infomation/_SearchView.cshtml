@@ -1,0 +1,39 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.NewSearchModel
+@{
+    User user = (User)Session[AccountController.USER_SESSION_ID];
+}
+<div id="SearchBlock" style="float: left; height: auto;"></div>
+
+<div class="col-md-12 infonmation-search">
+    <div class="col-md-10">
+        <div class="form-group col-md-10">
+            @Html.LabelFor(m => m.Keyworks, "Title document", new { @class = "title-edit-document" })
+            @Html.TextBoxFor(m => m.Keyworks, new { @class = "form-control", placeholder = "Keywork search" })
+        </div>
+        <div class="col-md-12 col-md-offset-0" style="margin-left: -17px;">
+            <div class="form-group col-md-4 col-md-offset-0">
+                @Html.LabelFor(m => m.CategoryId, "Type document", new { @class = "title-edit-document" })
+                @Html.DropDownListFor(m => m.CategoryId, new SelectList(ViewBag.Categories, "Id", "NameTypeViet"), "- Select one -", new { @class = "form-control" })
+            </div>    
+            @if (user.IsDirecter())
+            {
+                <div class="form-group col-md-4">
+                    @Html.LabelFor(m => m.GroupId, "Group", new { @class = "title-edit-document" })
+                    @Html.DropDownListFor(m => m.GroupId, new SelectList(ViewBag.AllGroup, "Id", "Name"), "- Select one -", new { @class = "form-control" })
+                </div>
+            }
+            <div class="form-group">
+                @Html.LabelFor(m => m.IsPending, new { @class = "allow-another title-edit-document" })
+                @Html.CheckBoxFor(m => m.IsPending, new { @class = "resize-checkbox checkbox form-control" })
+            </div>
+        </div>
+
+       
+    </div>
+    <div class="col-md-2">
+        <input type="submit" class="btn btn-primary" value="Search" />
+    </div>
+</div>

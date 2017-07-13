@@ -1,0 +1,23 @@
+﻿@using System.Web.Optimization
+@model SSM.Models.CRM.CRMPriceQuotationModel
+
+@Styles.Render("~/Content/CRM")
+@using (Ajax.BeginForm("Create", "PriceQuotation", new AjaxOptions()
+{
+    HttpMethod = "post",
+    OnSuccess = "priceFormOnSuccess" 
+}))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4 form-horizontal">
+                    <div class="col-md-10 ">
+                        @{Html.RenderPartial("_EditTemplate", Model);}
+                    </div>   
+                    <div class="clearfix"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

@@ -1,0 +1,104 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.ViewModels.Shared.Grid<SSM.Models.NewsModel>
+@{
+    User user = (User)Session[AccountController.USER_SESSION_ID];
+}
+@Html.Partial("_TopPage", Model)
+<div style="height: auto; overflow: hidden;">
+    @if (user.IsEditReula(null))
+    {
+        @Html.ActionLink("Create regulation", "Create", "Infomation", null, new { @class = "btn btn-primary" })
+    }
+</div>
+<div class="panel panel-default info-new-main">
+    <table width="100%" cellspacing="0" cellpadding="0" border="0" class="grid">
+        <thead>
+            <tr class="info">
+                <th>Stt</th>
+                <th>
+                    <a href="#" onclick="sortAction('Hearder');">
+                        <div class="SortHeader-label">Tên tài liệu</div>
+                        <div id="Hearder_Title" class="SortHeader">
+                            <img src="/Images/sort_asc.gif" alt="sort_asc" />
+                        </div>
+                    </a>
+
+                </th>
+                <th>
+                    <a href="#" onclick="sortAction('RefDoc');">
+                        <div class="SortHeader-label">Ref docs</div>
+                        <div id="RefDoc_Title" class="SortHeader">
+                            <img src="/Images/sort_asc.gif" alt="sort_asc" />
+                        </div>
+                    </a>
+
+                </th>
+                <th>
+                    <a href="#" onclick="sortAction('Catelory.NameTypeViet');">
+                        <div class="SortHeader-label">Type</div>
+                        <div id="Catelory_NameTypeViet_Title" class="SortHeader">
+                            <img src="/Images/sort_asc.gif" alt="sort_asc" />
+                        </div>
+                    </a>
+
+                </th>
+                <th>Ngày ban hành</th>
+                <th>Ngày phê duyệt</th>
+                <th>Người soạn thảo</th>
+                <th>Phê duyệt</th>
+                <th>Ngày cập nhật</th>
+                <th>Edit</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Data != null && Model.Data.Any())
+            {
+                int no = 1;
+                var hightline = no % 2 == 0 ? "GridLight" : string.Empty;
+                var classRowErr = "";
+               
+                foreach (var it in Model.Data)
+                {
+                    if (it.DateApproved != null && it.DatePromulgate != null && it.DateApproved < it.DatePromulgate)
+                    {
+                        classRowErr = "errApproveDate";
+                    }
+                    <tr class="@hightline">
+                        <td>@no</td>
+                        <td class="@classRowErr">@Html.ActionLink(it.Header, "Detail", "Infomation", new { id = it.Id }, null)</td>
+                        <td>@it.RefDoc</td>
+                        <td>@string.Format("{0}", it.Catelory != null ? it.Catelory.NameTypeViet : string.Empty)</td>
+                        <td>@string.Format("{0:dd-MMM-yyyy}", it.DateCreate)</td>
+                        <td>@string.Format("{0:dd-MMM-yyyy}", it.DateApproved)</td>
+                        <td>@string.Format("{0}", it.CreaterBy != null ? it.CreaterBy.FullName : string.Empty)</td>
+                        <td>@string.Format("{0}", it.ApprovedBy != null ? it.ApprovedBy.FullName : string.Empty)</td>
+                        <td>@string.Format("{0:dd-MMM-yyyy}", it.DatePromulgate)</td>
+                        <td>
+                            @if (user.IsEditReula(it))
+                            {  <a href="@Url.Action("Edit","Infomation", new{id= it.Id})">
+                                <img class="icon-edit" src="~/Images/edit1.png" href="">
+                            </a>
+                            }
+                        </td>
+                        <td>
+                            @if (it.FilesList.Count > 0)
+                            {
+                                <span><img src="/Images/attach-icon.png" style="width: 25px; height: 26px;" alt="at-file" /></span>
+                            }
+                        </td>
+                    </tr>
+                            no++;
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="11" class="text-center">No Data</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

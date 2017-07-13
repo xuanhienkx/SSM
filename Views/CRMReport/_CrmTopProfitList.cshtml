@@ -1,0 +1,91 @@
+﻿@using SSM.Common
+@using SSM.Models.CRM
+@model System.Collections.Generic.List<SSM.Models.CRM.CrmFilterTopProfitByStore>
+@{
+    var isActionFollow = ViewContext.RouteData.GetRequiredString("action") == "CRMFollowProfit";
+    CRMFilterFollowProfit filter = (CRMFilterFollowProfit)ViewBag.Filter;
+}
+<div style="font-size: 1.2em">
+    @*<div class="crmplan-header-item">
+            <h3>Report by:<span class="text-danger">@ViewBag.ProfitType </span></h3>
+        </div>*@
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr class="success">
+                <th>#</th>
+                <th>Abb Name</th>
+                <th>Customer Name</th>
+                <th>Create Date</th>
+                <th>Sales</th>
+                @if (isActionFollow)
+                {
+
+                    <th class="text-right">Quotation</th>
+                    <th class="text-right">Visit</th>
+                }
+                @if (filter.IsProfit)
+                {
+
+                    <th class="text-right">Shipments</th>
+                    <th class="text-right">Profit</th>
+                }
+                else
+                {
+                    <th class="text-right">Trading Sale</th>
+                    <th class="text-right">Buying Qty</th> }
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                int i = 0;
+                foreach (var reportModel in Model)
+                {
+                    i++;
+                    <tr>
+                        <td>@i</td>
+                        <td>@reportModel.CompanyShortName</td>
+                        <td>@reportModel.CompanyName</td>
+                        <td>@string.Format("{0:dd/MM/yyyy}", reportModel.CreatedDate)</td>
+                        <td>@reportModel.FullName</td>
+                        @if (isActionFollow)
+                        {
+
+                            <th class="text-right">@reportModel.CountSendMail.ToString("N0")</th>
+                            <th class="text-right">@reportModel.Visted.ToString("N0")</th>
+                        }
+                        <td class="text-right">@reportModel.TotalShipment.ToString("N0")</td>
+                        <td class="text-right">@reportModel.Profit.ToString("N2")</td>
+                        <td class="text-center">
+                            @if (filter.IsProfit)
+                            {
+                                @Ajax.Link(" ", "ShipmentDetail", "CRM", new {id = reportModel.Id}, new MyAjaxOptions()
+                                {
+                                    HttpMethod = "get",
+                                    DataType = "json",
+                                    ContentType = "application/json; charset=utf-8"
+
+                                }, new {@class = "fa fa-eye fa-lg"})
+                            }
+                            else
+                            {
+
+                                @Ajax.Link(" ", "SalseTradingDetail", "CRM", new { id = reportModel.Id }, new MyAjaxOptions()
+                           {
+                               HttpMethod = "get",
+                               DataType = "json",
+                               ContentType = "application/json; charset=utf-8"
+
+                           }, new { @class = "fa fa-eye fa-lg" })
+                            }
+                        </td>
+                    </tr>
+
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<div id="ShipmentList">
+</div>

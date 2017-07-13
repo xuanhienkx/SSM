@@ -1,0 +1,692 @@
+.SectionBlock {
+    width: 990px;
+    position: relative;
+    margin: 0px auto;
+    background-color: #f6f6f3;
+    margin-top: 15px;
+    z-index: 500;
+}
+
+    .SectionBlock .BoxL4 {
+        padding: 15px 15px 15px 15px;
+    }
+
+    .SectionBlock .BreakLine {
+        background: url(../Images/bg-line.png) no-repeat left 5px;
+        height: 20px;
+    }
+
+    .SectionBlock div.SectionBlockWrapper {
+        padding-top: 3px;
+    }
+
+        .SectionBlock div.SectionBlockWrapper.NoPaddingTop {
+            padding-top: 0px;
+        }
+
+
+    .SectionBlock .SectionBlock {
+        width: auto;
+        margin-top: 0px;
+    }
+
+        .SectionBlock .SectionBlock > .BoxL1,
+        .SectionBlock .SectionBlock > .BoxL2,
+        .SectionBlock .SectionBlock > .BoxL3 {
+            background: none;
+        }
+
+            .SectionBlock .SectionBlock > .BoxL2 > .BoxL3 > .BoxL4 {
+                padding: 0px;
+                background: none;
+            }
+
+
+.SectionHeading { 
+    height: 20px;
+}
+
+    .SectionHeading a.SectionMode {
+        background: url("../images/bg-colapse-small.gif") no-repeat scroll left top transparent;
+        float: left;
+        height: 0;
+        margin: 3px 7px;
+        overflow: hidden;
+        padding-top: 9px;
+        text-indent: -10000px;
+        width: 9px;
+    }
+
+    .SectionHeading a.Expand {
+        background: url("../images/bg-colapse-small.gif") no-repeat scroll left -9px transparent;
+    }
+
+    .SectionHeading h3 {
+        margin: 0px;
+        font-size: 1.1em;
+        line-height: 0.9em;
+        float: left;
+        padding-right: 10px;
+    }
+
+    .SectionHeading h2 {
+        float: left;
+        font-size: 1.4em;
+        line-height: 0.9em;
+        margin: 0;
+        padding-right: 10px;
+    }
+
+.SectionBlock .SectionBlock .SectionHeading h3 {
+    font-size: 1.4em;
+}
+
+.SectionHeading span.MessageTip {
+    background: url(../Images/Menu/bg-help-heading.png) no-repeat left top;
+    height: 0px;
+    width: 11px;
+    padding-top: 11px;
+    text-indent: -10000px;
+    overflow: hidden;
+    float: left;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+.RowForm {
+    position: relative;
+    min-height: 25px;
+    z-index: 600;
+    padding-bottom: 10px;
+}
+
+.ListCheck,
+.RowCheckbox,
+.RowInputDate2,
+.RowTextArea {
+    overflow: hidden;
+    min-height: 0px;
+}
+
+.RowInputDate2 {
+    padding-bottom: 0px;
+}
+
+.RowSelect {
+    z-index: 601;
+}
+
+.ProgressBar p {
+    background: url(../Images/Menu/bg-progress.png) no-repeat left top;
+    width: 947px;
+    padding-left: 11px;
+}
+
+    .ProgressBar p span {
+        background-image: url(../Images/Menu/progress.png);
+        background-repeat: no-repeat;
+        display: block;
+        height: 22px;
+        text-align: center;
+        font-size: 1.6em;
+        font-weight: bolder;
+        padding-top: 3px;
+    }
+
+.ListCheck {
+    padding-left: 20px;
+}
+
+.RowForm .RowLabel {
+    float: left;
+    width: 255px;
+    padding-right: 30px;
+    text-align: right;
+    font-size: 1.2em;
+    font-weight: bolder;
+    padding-top: 5px;
+    line-height: 1em;
+    margin: 0px;
+}
+
+.RowForm p.Data {
+    float: left;
+    font-size: 1.2em;
+    padding-top: 5px;
+    line-height: 1em;
+    margin: 0px;
+}
+
+.RowForm input.InputText {
+    border: 1px #bfbfbf solid;
+    font-size: 1.2em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #6e6d65;
+    padding: 4px 7px;
+    width: 272px;
+    float: left;
+}
+
+.RowForm.ErrorRow .RowLabel {
+    color: #ef1e23;
+}
+
+.RowForm.ErrorRow input.InputText {
+    border: 1px #ef1e23 solid;
+    color: #ef1e23;
+}
+
+.RowForm.WarningRow .RowLabel {
+    color: #ea9909;
+}
+
+.RowForm.WarningRow input.InputText {
+    border: 1px #ea9909 solid;
+    color: #ea9909;
+}
+
+.RowForm select {
+    border: 1px #bfbfbf solid;
+    font-size: 1.2em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #6e6d65;
+    padding: 4px 7px;
+    width: 272px;
+    float: left;
+}
+
+.RowForm .SelectReplace {
+    float: left;
+    position: relative;
+}
+
+.RowForm textarea {
+    border: 1px #bfbfbf solid;
+    font-size: 1.2em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #6e6d65;
+    padding: 1px 1px 1px 7px;
+    width: 663px;
+    height: 81px;
+    float: left;
+}
+
+.RowForm > span.MessageTip {
+    background: url(../Images/Menu/bg-help.png) no-repeat left top;
+    height: 0px;
+    width: 16px;
+    padding-top: 16px;
+    text-indent: -10000px;
+    overflow: hidden;
+    display: block;
+    position: absolute;
+    left: 20px;
+    top: 4px;
+    cursor: pointer;
+}
+
+.RowForm > span.Error {
+    background: url(../Images/Menu/bg-error.png) no-repeat left top;
+    left: 583px;
+    display: none;
+}
+
+.RowForm > span.ErrorLite {
+    background: url(../Images/Menu/bg-error-lite.png) no-repeat left top;
+    left: 578px;
+    display: none;
+    width: 357px;
+    padding-top: 0px;
+    height: 21px;
+    top: -1px;
+    text-indent: 0px;
+    color: #ed1f24;
+    padding: 5px 0px 0px 34px;
+    font-weight: bolder;
+    font-size: 1.1em;
+    text-decoration: none;
+}
+
+.RowForm.ErrorRow > span.Error {
+    display: block;
+}
+
+.RowForm.ErrorRow > span.ErrorLite {
+    display: block;
+}
+
+.RowForm > span.Warning {
+    background: url(../Images/Menu/bg-warning.png) no-repeat left top;
+    left: 583px;
+    display: none;
+}
+
+.RowForm > span.WarningLite {
+    background: url(../Images/Menu/bg-warning-lite.png) no-repeat left top;
+    left: 578px;
+    display: none;
+    width: 357px;
+    padding-top: 0px;
+    height: 21px;
+    top: -1px;
+    text-indent: 0px;
+    color: #eb9909;
+    padding: 5px 0px 0px 34px;
+    font-weight: bolder;
+    font-size: 1.1em;
+    text-decoration: none;
+}
+
+.RowForm.WarningRow > span.Warning {
+    display: block;
+}
+
+.RowForm.WarningRow > span.WarningLite {
+    display: block;
+}
+
+.RowForm span.Require {
+    background: url(../Images/Menu/bg-require.png) no-repeat left top;
+    height: 0px;
+    width: 7px;
+    padding-top: 8px;
+    text-indent: -10000px;
+    overflow: hidden;
+    display: block;
+    position: absolute;
+    left: 265px;
+    top: 8px;
+}
+
+.RowForm span.Note {
+    font-size: 1em;
+    display: block;
+    padding-left: 292px;
+    clear: left;
+    color: #a8a7a7;
+    height: 10px;
+}
+
+.RowForm ul.RadioList {
+    float: left;
+    margin: 0px;
+    padding: 5px 0px 0px;
+}
+
+.RowForm ul.CheckList {
+    float: left;
+    margin: 0px;
+    padding: 0px;
+}
+
+.RowForm ul.RadioList li {
+    list-style: none;
+    float: left;
+    padding-right: 50px;
+}
+
+.RowForm ul.CheckList li {
+    list-style: none;
+    padding: 2px 0px 3px;
+    float: left;
+    clear: left;
+}
+
+    .RowForm ul.RadioList li input,
+    .RowForm ul.CheckList li input {
+        vertical-align: middle;
+    }
+
+    .RowForm ul.RadioList li label,
+    .RowForm ul.CheckList li label {
+        vertical-align: middle;
+        font-size: 1.2em;
+    }
+
+        .RowForm ul.CheckList li label.CheckReplace {
+            background: url(../Images/Menu/bg-checkbox.png) no-repeat left 1px;
+            padding: 0px 0px 0px 24px;
+            float: left;
+        }
+
+        .RowForm ul.CheckList li label.CheckReplaceActive {
+            background: url(../Images/Menu/bg-checkbox.png) no-repeat left -62px;
+        }
+
+        .RowForm ul.RadioList li label.RadioReplace {
+            background: url(../Images/Menu/bg-radiobox.png) no-repeat left 1px;
+            padding: 0px 0px 0px 24px;
+            float: left;
+        }
+
+        .RowForm ul.RadioList li label.RadioReplaceActive {
+            background: url(../Images/Menu/bg-radiobox.png) no-repeat left -62px;
+        }
+
+.RowForm a.HelpItem {
+    background: url(../Images/Menu/bg-help-item.png) no-repeat left top;
+    height: 0px;
+    width: 13px;
+    padding-top: 13px;
+    text-indent: -10000px;
+    overflow: hidden;
+    float: left;
+    margin: 2px 0px 0px 12px;
+    display: inline;
+}
+
+
+.ListCheck ul.CheckList {
+    padding-left: 17px;
+    float: none;
+    overflow: hidden;
+}
+
+.ListCheck ul.CheckListType2 {
+    width: 230px;
+    float: left;
+}
+
+.ListCheck ul.CheckList li {
+    clear: none;
+    width: 230px;
+}
+
+    .ListCheck ul.CheckList li.Special {
+        clear: left;
+        width: 920px;
+        font-weight: bolder;
+        padding-bottom: 8px;
+    }
+
+.ListCheck ul.CheckListType2 li.Special {
+    width: 230px;
+}
+
+.BoxHeading2,
+.BoxHeading,
+.DroitsHeading,
+.ListCheckHeading {
+    overflow: hidden;
+    height: 14px;
+    padding-bottom: 11px;
+}
+
+.BoxHeading2,
+.BoxHeading {
+    height: 30px;
+}
+
+.ListCheckHeading a.ListCheckMode {
+    background: url(../Images/Menu/bg-colapse-small.gif) no-repeat left top;
+    height: 0px;
+    width: 9px;
+    padding-top: 9px;
+    text-indent: -10000px;
+    overflow: hidden;
+    float: left;
+    margin: 2px 7px 0px 0px;
+}
+
+.ListCheckHeading a.Expand {
+    background: url(../Images/Menu/bg-colapse-small.gif) no-repeat left -9px;
+}
+
+.BoxHeading2 h6,
+.BoxHeading h5,
+.DroitsHeading h4,
+.ListCheckHeading h4,
+.ListCheckHeading h6 {
+    margin: 0px;
+    font-size: 1.4em;
+    line-height: 0.9em;
+    float: left;
+    padding-right: 10px;
+}
+
+.DroitsHeading h4 {
+    padding-left: 36px;
+    font-size: 1.5em;
+    text-transform: uppercase;
+}
+
+.BoxHeading2 h6,
+.BoxHeading h5 {
+    font-size: 1.6em;
+    padding: 13px 10px 0px 13px;
+}
+
+.BoxHeading a.MessageTip,
+.DroitsHeading a.MessageTip,
+.ListCheckHeading a.MessageTip {
+    background: url(../Images/Menu/bg-help-heading.png) no-repeat left top;
+    height: 0px;
+    width: 11px;
+    padding-top: 11px;
+    text-indent: -10000px;
+    overflow: hidden;
+    float: left;
+    margin-top: 0px;
+}
+
+.BoxHeading a.MessageTip {
+    margin-top: 15px;
+}
+
+/* Form  select customize */
+.SectionBlock p.SelectReplace {
+    margin: 0px;
+    background: url(../Images/Menu/bg-select.gif) no-repeat left top;
+    width: 261px;
+    height: 19px;
+    float: left;
+    padding: 4px 20px 0px 7px;
+    cursor: default;
+    color: #6e6d65;
+    font-size: 1.2em;
+    margin-right: 5px;
+}
+
+.SectionBlock .SelectReplaceHolder {
+    border: 1px #bfbfbf solid;
+    width: 261px;
+    position: absolute;
+    left: 0px;
+    top: 21px;
+    z-index: 1000;
+    background: #fff;
+    overflow: hidden;
+}
+
+.SectionBlock div.jScrollPaneTrack {
+    position: absolute;
+    right: 0px;
+    top: 0px;
+    background: #ececec;
+    z-index: 1000;
+    height: 100%;
+}
+
+    .SectionBlock div.jScrollPaneTrack .jScrollPaneDrag {
+        position: absolute;
+        background: #cccccc;
+    }
+
+.SectionBlock ul.SelectReplaceDropdownList {
+    margin: 0px;
+    padding: 3px 0px 5px;
+    width: 261px;
+}
+
+    .SectionBlock ul.SelectReplaceDropdownList li {
+        list-style: none;
+        padding: 1px 0px 1px 7px;
+        cursor: default;
+        color: #6e6d65;
+        font-size: 1.2em;
+        white-space: nowrap;
+    }
+
+        .SectionBlock ul.SelectReplaceDropdownList li.OptionGroup {
+            font-size: 1.2em;
+            padding: 3px 0px 3px 5px;
+            font-weight: bolder;
+        }
+
+        .SectionBlock ul.SelectReplaceDropdownList li.OnSelect {
+            background: #eeeeee !important;
+        }
+
+.RightWrapper {
+    position: relative;
+    padding-bottom: 5px;
+}
+
+    .RightWrapper .TreeView {
+        position: absolute;
+        left: 23px;
+        top: 0px;
+    }
+
+        .RightWrapper .TreeView .BorderBoxL4 {
+            width: 449px;
+        }
+
+    .RightWrapper .Specif {
+        margin: 0px 21px 0px 486px;
+    }
+
+.Specif .BorderBoxL4,
+.TreeView .BorderBoxL4 {
+    height: 570px;
+    overflow: hidden;
+}
+
+.Specif .ListCheck {
+    padding-left: 13px;
+}
+
+    .Specif .ListCheck ul {
+        padding: 0px;
+    }
+
+.Specif .BreakLine {
+    margin-left: 13px;
+    margin-right: 13px;
+}
+
+.Specif .BtnHolder {
+    margin: 0px 13px;
+}
+
+.Specif .ButtonType3Small {
+    margin-top: 0px;
+    margin-bottom: 0px;
+}
+
+.Specif .ButtonType1 {
+    margin-bottom: 0px;
+    clear: left;
+}
+
+.LightBoxContents .SectionBlock {
+    width: 688px;
+}
+
+.LightBoxContents .RowForm .RowLabel {
+    width: 154px;
+}
+
+.LightBoxContents .RowForm input.InputText {
+    width: 172px;
+}
+
+.LightBoxContents .RowForm span.Require {
+    left: 164px;
+}
+
+.LightBoxContents .RowForm span.Note {
+    padding-left: 192px;
+}
+
+.LightBoxContents .RowForm > span.Error {
+    left: 382px;
+}
+
+.LightBoxContents .RowForm > span.Warning {
+    left: 382px;
+}
+
+.LightBoxContents .RightWrapper {
+    padding-bottom: 0px;
+}
+
+    .LightBoxContents .RightWrapper .Specif {
+        margin: 0px 0px 0px 335px;
+        width: 322px;
+    }
+
+.LightBoxContents .BoxHeading2 h6 {
+    font-size: 1.4em;
+}
+
+.RightWrapper .ListCheckHeading h6 {
+    font-size: 1.2em;
+}
+
+.RightWrapper .Family {
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 311px;
+}
+
+.LightBoxContents .ListCheck ul.CheckList {
+    width: 600px;
+}
+
+    .LightBoxContents .ListCheck ul.CheckListType2,
+    .LightBoxContents .ListCheck ul.CheckList li {
+        width: 200px;
+    }
+
+        .LightBoxContents .ListCheck ul.CheckList li.Special {
+            width: 600px;
+        }
+
+.LightBoxContents .BorderBoxL4 {
+    height: auto;
+}
+
+.LightBoxContents .first {
+    border: none;
+    padding-top: 8px;
+}
+
+
+ul.CheckListData {
+    margin: 0px;
+    padding: 0px;
+}
+
+    ul.CheckListData li {
+        list-style: none;
+        float: left;
+        clear: left;
+        overflow: hidden;
+    }
+
+        ul.CheckListData li span {
+            float: left;
+            font-size: 1.2em;
+        }
+
+/**/
+.RowTextArea textarea {
+    margin: 0 0 10px;
+}
+
+.RowTextArea span.ErrorLite {
+    position: static !important;
+    margin: 0 0 0 285px !important;
+}

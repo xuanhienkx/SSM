@@ -1,0 +1,106 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.CRM.CrmCusDocumentModel
+@{
+    var user = (User)Session[AccountController.USER_SESSION_ID];
+}
+@using (Html.BeginForm("Edit", "CRMDocument", FormMethod.Post, new { id = "frm", enctype = "multipart/form-data" }))
+{
+    @Html.HiddenFor(m => m.CrmCusId)
+    @Html.HiddenFor(m => m.Id)
+    @Html.AntiForgeryToken()
+    <div class="form-group-sm">
+        <div class="form-group">
+            @Html.ValidationSummary(true)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.DocName, "Tên tài liệu", new { @class = "col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.DocName, new { @class = "form-control" })
+                <div class="icon-required center-block">*</div>
+                @Html.ValidationMessageFor(m => m.DocName)
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Uploads, "Chọn tài liệu", new { @class = "col-sm-3 control-label" })
+            <div class="col-sm-9">
+                <div class="col-md-12 row" id=" ">
+                    @if (Model.FilesList.Count > 0)
+                    {
+                        @Html.Partial("_listFiles", Model.FilesList);
+                    }
+                    else
+                    {
+                        <div id="attachment">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr><th>FileName</th><th>File Size(Kb)</th><th></th></tr>
+                                </thead>
+                                <tbody id="listfileView"></tbody>
+                            </table>
+                        </div>
+                    }
+
+                </div>
+                <input type="file" id="files" name="files" multiple style="display: none">
+                <input type="button" class="btn btn-link" id="btn-selectFile" value="select file..." /><br />
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.LinkDoc, "Link tài liệu", new { @class = "col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.TextBoxFor(m => m.LinkDoc, new { @class = "form-control" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Description, "Ghi chú", new { @class = "col-sm-3 control-label" })
+            <div class="col-sm-9">
+                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 5 })
+            </div>
+        </div>
+        @if (user.IsDepOrDirecter() || user.Id == Model.CreatedById || Model.Id == 0)
+        {
+            <div class="form-group">
+                <button type="button" class="btn btn-primary" id="btn-submit">Cập nhật</button>
+                <button type="reset" class="btn btn-default">Làm lại</button>
+            </div>
+        }
+
+    </div>
+}
+@Scripts.Render("~/bundles/CRMJS")
+<script type="text/javascript">
+    function deleteFile(t) {
+        var $td = jQuery(t);
+        var idfile = parseInt($td.attr("id"));
+        var url = '@Url.Action("DeleteFile")';
+        jQuery.mbqConfirm({
+            content: "Bạn thực sự muốn xoá file không?",
+            title: "Xác nhận",
+            confirm: function (obj) {
+                jQuery.mbqAjax({
+                    url: url,
+                    type: 'post',
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                    data: JSON.stringify({ id: idfile }),
+                    success: function (result) {
+                        if (result.isFalse == true) {
+                            jQuery.mbqAlert({
+                                title: "Error",
+                                content: result.Message,
+                                columnClass: 'col-md-6 col-md-offset-2',
+                                theme: 'bootstrap',
+                                type: 'error'
+                            });
+                        } else {
+                            $td.parent("tr").remove();
+                        }
+                    }
+                });
+            }
+        });
+    }
+</script>

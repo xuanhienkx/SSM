@@ -1,0 +1,328 @@
+﻿@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+
+@{
+    User User1 = (User)Session[SSM.Controllers.AccountController.USER_SESSION_ID];
+    bool hashNewInfo = (bool)Session[SSM.Controllers.AccountController.USER_HASH_NEWINFO];
+    string classNewinfo = string.Empty;
+    if (hashNewInfo)
+    {
+        classNewinfo = "classNewinfo";
+    }
+}
+<div id="mainNav">
+    <div class="MainNavHolder">
+        <div class="MainNavHolderL2">
+            <ul id="mainNavBar">
+                <li class="MainNavTab Active" id="FileTab">
+                    <a href="@Url.Action("Index", "Shipment" , new {id=0})" title="Administrator"><span>Home</span></a>
+                    <ul>
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">Shipment Management</a>
+                            <ul>
+                                @if (User1.IsFreight())
+                                {
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/shipmetCr.png);" href="@Url.Action("Create", "Shipment" , new {id=0})" title="New shipment">New shipment</a></li>
+                                }
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-edit.png);" href="@Url.Action("Index", "Shipment" , new {id=0})" title="Register">Shipment List</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">Consol Management </a>
+                            <ul>
+                                @if (User1.IsFreight())
+                                {
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/shipmentcreatedCt.jpg);" href="@Url.Action("CreateControl", "Shipment" , new {id=0})" title="New shipment">New Consol</a></li>
+                                }
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-edit.png);" href="@Url.Action("ListControl", "Shipment" , new {id=0})" title="Register">Consol List</a></li>
+
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="MainNavTab" id="RatesTab">
+                    <a href="@Url.Action("ListFreight", "Freight", new { id = 0, freighttype = "OceanFreight" })" title="Contents"><span>Rates</span></a>
+                    <ul>
+                        @if (User1.AllowUpdateSeaRate || User1.AllowUpdateAirRate)
+                        {
+                            <li class="MainNavGroup">
+                                <a href="#" title="Creation">Create Freight</a>
+                                <ul>
+                                    @if (User1.AllowUpdateSeaRate)
+                                    {
+                                        <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-add.png);" href="@Url.Action("CreateFreight", "Freight" , new { id=0 })" title="Create Freight">New Freight</a></li>
+                                    }
+                                </ul>
+                            </li>
+                        }
+                        <li class="MainNavGroup">
+                            <a href="#" title="Modification">List Freight</a>
+                            <ul>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-data-site-archives.png);" href="@Url.Action("ListFreight", "Freight" , new {id=0, freighttype="OceanFreight" })" title="Editorial">Ocean Feight</a></li>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-data-site-archives.png);" href="@Url.Action("ListFreight", "Freight" , new {id=0, freighttype="AirFreight" })" title="Form">Air Freight</a></li>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-data-site-archives.png);" href="@Url.Action("ListFreight", "Freight", new { id = 0, freighttype = "InlandRates" })" title="Survey">Inland Rates</a></li>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-data-site-archives.png);" href="@Url.Action("ListFreight", "Freight", new { id = 0, freighttype = "CompanyTariff" })" title="Editorial">Company Tariff</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="MainNavTab" id="databaseTab">
+                    <a href="@Url.Action("Index", "Data", new { id = 0 })" title="Database"><span>Database</span></a>
+                    <ul>
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">Customers</a>
+                            <ul>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-modification-modifygroup.png);" href="@Url.Action("Index", "Data", new { id = 0 })" title="Customer">Customers</a></li>
+                            </ul>
+                        </li>
+
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">Partners</a>
+                            <ul>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-modification-modifygroup.png);" href="@Url.Action("Carrier", "Data", new { id = 0 })" title="Carriers">Carriers</a></li>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-modification-modifygroup.png);" href="@Url.Action("Agent", "Data", new { id = 0 })" title="Agent">Agent</a></li>
+                            </ul>
+                        </li>
+                        @if (User1.IsAdmin())
+                        {
+                            <li class="MainNavGroup">
+                                <a href="#" title="Properties">Categories</a>
+                                <ul>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-doc-edit.png);" href="@Url.Action("Country", "Data", new { id = 0 })" title="Air Country">Countries</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-doc-edit.png);" href="@Url.Action("Area", "Data", new { id = 0 })" title="Air Area"> Area</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-doc-edit.png);" href="@Url.Action("Unit", "Data", new { id = 0 })" title="Air Unit"> Unit</a></li>
+                                </ul>
+                            </li>
+                        }
+                        <li class="MainNavGroup">
+                            <a href="#" title="Product">Trading</a>
+                            <ul>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-doc-edit.png);" href="@Url.Action("Index", "Supplier", new { id = 0 })" title="Air Line">Supplier</a></li>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-doc-edit.png);" href="@Url.Action("Index", "Warehouse", new { id = 0 })" title="Air Line">WareHoure</a></li>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-doc-edit.png);" href="@Url.Action("Index", "Product", new { id = 0 })" title="Air Line">Products</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li class="MainNavTab" id="CrmTab">
+                    <a href="@Url.Action("Index","CRM")" title="Administrator"><span>CRM</span></a>
+                    <ul>
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">Data</a>
+                            <ul>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("Index","CRM")" title="Customers">Customers</a></li>
+
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("Index","CRMDocument")" title="Form">Tài liệu</a></li>
+                                @if (User1.IsAdmin())
+                                {
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("CRMBaseList", "CRM")" title="Form">Base Data</a></li>
+                                }
+
+
+                            </ul>
+                        </li>
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">Action/Status</a>
+                            <ul>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("Index","PriceQuotation")" title="Customers">Báo Giá</a></li>
+
+                                <li class="MainNavLink" id="CalendarEvenMenu"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("CalendarView", "CRMEvent")" title="Thăm viếng">Lịch</a></li>
+
+                            </ul>
+                        </li>
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">Reports</a>
+                            <ul>
+                               <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("CRMFollowProfit", "CRMReport" , new { id=0 })" title="Reports">Follow Customer</a></li>
+                                @*@if (User1.IsAdmin())
+                                {*@
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("Index", "CRMReport" , new { id=0 })" title="Reports">Monthly</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("PersonalFollowp", "CRMReport", new { type = SummaryByType.ByUser })" title="Reports">Follow</a></li>
+                                @*}*@
+
+                            </ul>
+                        </li>
+                        @*@if (User1.IsAdmin())
+                        {*@
+                            <li class="MainNavGroup">
+                                <a href="#" title="Properties">Kế hoạch</a>
+                                <ul>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("Index", "CRMPlan", new { id=0})" title="Kế hoạch phòng">KH Phòng</a></li>
+                                    @if (User1.IsComDirecter())
+                                    {
+                                        <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("PlanOffice", "CRMPlan", new { id = 0 })" title="Kế hoạch Office">KH Office</a></li>
+                                    }
+
+                                </ul>
+                            </li>
+                        @*}*@
+
+                    </ul>
+                </li>
+                <li class="MainNavTab" id="SalesTab">
+                    <a href="@Url.Action("Plan4SalesRedirect", "Users" , new { id=0 })" title="Administrator"><span>Sales</span></a>
+                    <ul>
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">Actions</a>
+                            <ul>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("Plan4SalesRedirect", "Users" , new { id=0 })" title="Editorial">Plan for Sales/Dept/Office</a></li>
+
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-other-importuser.png);" href="@Url.Action("SalePerformance", "Report" , new {id=0, comid=0, deptid=0})" title="Form">Period Performance</a></li>
+
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                @if (User1.IsAdmin())
+                {
+                    <li class="MainNavTab" id="SettingTab">
+                        <a href="@Url.Action("DisplaySetting", "Users" , new {id=0})" title="Administrator"><span>Setting</span></a>
+                        <ul>
+                            <li class="MainNavGroup">
+                                <a href="#" title="Properties">Update</a>
+                                <ul>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-item.png);" href="@Url.Action("DisplaySetting", "Users" , new {id=0})" title="Editorial">Sale Setting</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-item.png);" href="@Url.Action("Index", "Services" , new {id=0})" title="Editorial">Services</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                @if (User1.IsAdminAndAcct())
+                {
+                    <li class="MainNavTab" id="AccountingTab">
+                        <a href="@Url.Action("UnIssuedInvoice", "Shipment" , new { id=0 })" title="Administrator"><span>Accounting</span></a>
+                        <ul>
+                            <li class="MainNavGroup">
+                                <a href="#" title="Properties">Properties</a>
+                                <ul>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-modify-forms.png);" href="@Url.Action("ViewSOA", "Shipment" , new { id=0 })" title="Form">SOA</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-stat.png);" href="@Url.Action("FindInvoice", "Shipment" , new { id=0 })" title="Form">Find Invoice</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                <li class="MainNavTab" id="ReportTab">
+                    <a href="@Url.Action("DepartmentReport", "Report" , new { id=0 })" title="Administrator"><span>Report</span></a>
+                    <ul>
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">Personal/Offices</a>
+                            <ul>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-stat.png);" href="@Url.Action("PersonalReport", "Report" , new { id=0 })" title="Report1">Personal</a></li>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-stat.png);" href="@Url.Action("DepartmentReport", "Report" , new { id=0 })" title="Report2">Department</a></li>
+                                @if (User1.IsAdminAndAcct())
+                                {
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-stat.png);" href="@Url.Action("OfficeReport", "Report" , new { id=0 })" title="Report3">Offices</a></li>
+                                }
+
+                            </ul>
+                        </li>
+                        @if (User1.IsDirecter())
+                        {
+                            <li class="MainNavGroup">
+                                <a href="#" title="Properties">Profit</a>
+                                <ul>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-stat.png);" href="@Url.Action("Index", "ProfitReport", new { id = 0 })" title="Report2">Top Profit</a></li>
+
+                                </ul>
+                            </li>
+                        }
+
+                    </ul>
+                </li>
+                @if (User1.IsTrading())
+                {
+                    <li class="MainNavTab" id="TradingTab">
+                        <a href="@Url.Action("Index", "Sales", new { id = 0 })" title="Trading"><span>Trading</span></a>
+                        <ul>
+
+                            <li class="MainNavGroup">
+                                <a href="#" title="Properties">Data Entry</a>
+                                <ul>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/order.png);" href="@Url.Action("Index", "StockReceiving", new { id = 0 })" title="Purchase Order">Purchase Order<br />(NK)</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/sales.png);" href="@Url.Action("Index", "Sales", new { id = 0 })" title="Sales Order">Sales Order<br />(XK)</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/money.png);" href="@Url.Action("CalculateCost", "IssueVoucher", new { id = 0 })" title="Calculate for cost of sales">Calculate for cost of sales</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/moverStock.png);" href="@Url.Action("MoveStockToNextYear", "IssueVoucher", new { id = 0 })" title="Move Stock To Next Year">Move Stock To Next Year</a></li>
+                                </ul>
+                            </li>
+                            <li class="MainNavGroup">
+                                <a href="#" title="Product">Report</a>
+                                <ul>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/stock.png);" href="@Url.Action("Index", "IssueVoucher", new { id = 0 })" title="Stock saving report">Current Stock</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/report.png);" href="@Url.Action("ReportStockInOut", "IssueVoucher", new { id = 0 })" title="Receipt summary report">Inventory<br />(History)</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-doc-edit.png);" href="@Url.Action("MonthYearReport", "IssueVoucher", new { id = 0 })" title="Stock Summary">Stock Summary</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                }
+                <li class="MainNavTab @classNewinfo" id="AbountUsTab">
+                    <a href="@Url.Action("Index", "OutNew", new {id = 0})" title="About us"><span>About Us</span></a>
+                    <ul>
+                        <li class="MainNavGroup">
+                            <a href="#" title="Properties">AbountUs Management</a>
+                            <ul>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-modification-modifygroup.png);" href="@Url.Action("Index", "OutNew", new {id = 0})" title="Information">Information</a></li>
+                                <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-modification-modifygroup.png);" href="@Url.Action("Index", "Infomation", new { id = 0 })" title="Company Regulation">Company Regulation</a></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </li>
+
+                <li class="MainNavTab" id="Li1">
+                    <a href="#" title="Administrator"></a>
+                </li>
+                @if (User1.IsAdmin())
+                {
+                    <li class="MainNavTab " id="StaffManagementTab">
+                        <a href="@Url.Action("Index", "Users", new { id = 0 })" title="Administrator"><span>Staff Setting</span></a>
+                        <ul>
+                            <li class="MainNavGroup">
+                                <a href="#" title="Staff Management">Staff Management</a>
+                                <ul>
+                                    <li class="MainNavLink" title="Create Users"><a style="background-image: url(../../Images/Menu/bg-users-creation-createuser.png);" href="@Url.Action("Create", "Users", new {id = 0})">Create Staff</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-modification-modifygroup.png);" href="@Url.Action("Index", "Users", new { id = 0 })">List Staff</a></li>
+
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/bg-users-modification-modifyuser.png);" href="@Url.Action("detail", "Users", new {id = User1.Id})">My Pofile</a></li>
+                                </ul>
+                            </li>
+                            <li class="MainNavGroup">
+                                <a href="#" title="Offices Management">Offices</a>
+                                <ul>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-edit.png);" href="@Url.Action("Department", "Users", new {id = (long) 0})">Departments</a></li>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-edit.png);" href="@Url.Action("Company", "Users", new {id = (long) 0})">Offices</a></li>
+                                </ul>
+                            </li>
+                            <li class="MainNavGroup">
+                                <a href="#" title="Group Management">Group</a>
+                                <ul>
+                                    <li class="MainNavLink"><a style="background-image: url(../../Images/Menu/nav-sys-edit.png);" href="@Url.Action("Index", "Group", new {id = (long)0})">Groups</a></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                }
+
+            </ul>
+
+            <a id="navMode" href="#" title="Mode">Mode</a>
+            <div id="subNav"></div>
+        </div>
+        <div id="btnf-refresh">
+            <div id="btnfc-refresh" class="refreshButton">Refresh</div>
+        </div>
+
+    </div>
+</div><div style="border-top:1px solid #BFBFBF;border-bottom:3px solid #F6F6F3"></div>
+
+
+<script type="text/javascript">
+    jQuery("#btnfc-refresh").on('click', function (e) {
+        window.location.reload(false);
+    });
+</script>

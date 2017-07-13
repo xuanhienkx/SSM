@@ -1,0 +1,139 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.CRM.CRMPriceQuotationModel
+@{
+
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    SelectList status =(SelectList) ViewBag.PriceStatus;
+} 
+<h3 class="">@ViewBag.Title</h3>
+<div>
+    <p>Những thông tin có đánh dấu <span style="color: red">*</span> là bắt buộc nhập.</p>
+</div>
+<div class="row">
+    @Html.ValidationSummary(true)
+    @Html.HiddenFor(m => m.CrmCusId)
+    <div class="" id="postrror"></div>
+</div>
+@if (!Model.IsCusCreate)
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.CrmCusName, "Khách hàng", new { @class = "col-sm-3 control-label" })
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.CrmCusName, new { @class = "form-control" })
+            <div class="icon-required center-block">*</div>
+            @Html.ValidationMessageFor(m => m.CrmCusName)
+
+        </div>
+    </div>
+}
+else if (ViewContext.RouteData.GetRequiredString("action") == "Edit")
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.CrmCusName, "Khách hàng", new { @class = "col-sm-3 control-label", disabled = "disabled" })
+        <div class="col-sm-9">
+            @Html.TextBoxFor(m => m.CrmCusName, new { @class = "form-control" })
+            <div class="icon-required center-block">*</div>
+            @Html.ValidationMessageFor(m => m.CrmCusName)
+
+        </div>
+    </div>
+}
+else if (Model.IsCusCreate)
+{
+    @Html.HiddenFor(m => m.CrmCusName)
+}
+
+<div class="form-group">
+    @Html.LabelFor(m => m.Subject, "Mô tả báo giá", new { @class = "col-sm-3 control-label" })
+    <div class="col-sm-9">
+        @Html.TextBoxFor(m => m.Subject, new { @class = "form-control" })
+        <div class="icon-required center-block">*</div>
+        @Html.ValidationMessageFor(m => m.Subject)
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Description, "Ghi chú", new { @class = "col-sm-3 control-label" })
+    <div class="col-sm-9">
+        @Html.TextAreaFor(m => m.Description, new { @class = "form-control", rows = 5 })
+    </div>
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.StatusId, "Tiến độ", new { @class = "col-sm-3 control-label" })
+    <div class="col-sm-9">
+        @Html.DropDownListFor(m => m.StatusId, status, new { @class = "form-control" })
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-sm-3 control-label"></label>
+    <div class="col-sm-9">
+        @if (currentUser.IsDepOrDirecter() || Model.CRMCustomer == null || (Model.CRMCustomer.CreatedById != null && currentUser.Id == Model.CRMCustomer.CreatedById) || Model.Id == 0)
+        {
+            <input type="submit" class="btn btn-primary" value="Save" />
+            @Html.ActionLink("Go To List", "Index", "PriceQuotation", null, new { @class = "btn btn-default" })
+            if (ViewContext.RouteData.GetRequiredString("action") == "Edit")
+            {
+                <button class="btn btn-red" id="btn-delete">Delete</button>
+                <button class="btn btn-info" id="btn-sendEmail" style="width: 60px" type="button">
+                    <i class="fa fa-envelope-o"></i>
+                </button>
+            }
+        }
+        
+    </div>
+</div>
+
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function() {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+        jQuery('#CrmCusName').GetAutoSugget({
+            url: '@Url.Action("CustomerSuggest", "CRM")',
+            targerId: "#CrmCusId"
+        });                             
+        jQuery("select[id='Status'] option[value='All']").remove();
+        if (jQuery("#btn-sendEmail") != undefined) {
+            jQuery("#btn-sendEmail").on("click", function(e) {
+                e.preventDefault();
+                jQuery.mbqAjax({
+                    url: '@Url.Action("PriceQuotationSendMail", "PriceQuotation")',
+                    data: { id: @Model.Id },
+                    method: "GET",
+                    dataType: 'json',
+                    contentType : "application/json; charset=utf-8"
+                    //success: function(result) {
+                    //    jQuery.mbqDialog({
+                    //        title: "Nhập thông tin gui email ",
+                    //        content: result,
+                    //        columnClass: 'col-md-8 col-md-offset-2',
+                    //        theme: 'bootstrap',
+                    //    });
+                    //},
+                    //error: function(XMLHttpRequest, textStatus, errorThrown) {
+                    //    alert("Error getting prospect list: " + textStatus);
+                    //}
+                });
+            });
+        }
+    });
+
+    function priceFormOnSuccess(data, textStatus, jqXHR) {
+        jQuery.mbqAjaxSuccess(data, {
+            success: function(result) {
+                if (result.success === true) {
+                    jQuery(".closeIcon").click();
+                    jQuery("#btn-search-clear").click();
+                } else {
+                    jQuery(".jconfirm-box .content").html(data.value.Views);
+                }
+            },
+            onFailure: function(errs) {
+                jQuery("#postrror").html(errs);
+            }
+        });
+    }
+</script>

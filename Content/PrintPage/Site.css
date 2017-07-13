@@ -1,0 +1,322 @@
+﻿/*----------------------------------------------------------
+The base color for this template is #5c87b2. If you'd like
+to use a different color start by replacing all instances of
+#5c87b2 with your new color.
+----------------------------------------------------------*/
+.grid tr:hover td {
+	background-color: #7b9de5;
+	color: #ffffff;
+}
+.grid :last-child {
+border:medium none;
+}
+/* PRIMARY LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+/* you can specify a greater or lesser percentage for the 
+page width. Or, you can specify an exact pixel width. */
+.page
+{
+    width: 1080px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#main
+{
+    padding: 0px;
+    _height: 1px; /* only IE6 applies CSS properties starting with an underscore */
+    min-height:258px;
+   color: #696969;
+}
+
+/* FORM LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+fieldset 
+{
+    margin: 1em 0;
+    padding: 1em 10px !important;
+    border: 1px solid #fff !improtant;
+}
+
+legend 
+{
+  /*  font-size: 1.2em;
+    font-weight: 600;
+    padding: 2px 4px 8px 4px;*/
+}
+
+/* TABLE
+----------------------------------------------------------*/
+
+table 
+{
+  border-collapse: collapse;
+}
+talbe td 
+{
+    text-align:right;
+    vertical-align:top;
+}
+ 
+.grid td 
+{
+  padding: 5px; 
+  font-size:1.1em; 
+  border-right: 1px solid #CCCCCC; 
+}
+
+.grid th
+{
+  padding: 6px 5px;
+  text-align: left;
+  font-size:1.2em;
+  border-right: 1px solid #CCCCCC; 
+}
+
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+/*input[type=button],input[type=submit] 
+{
+   border:1px solid #BFBFBF; 
+   padding: 4px 7px;
+   background-color:#338899;
+   color:White;
+   font-weight:bold;
+}
+input[type=button]:hover,input[type=submit]:hover 
+{
+    border:1px solid #BFBFBF; 
+   padding: 3px 7px;
+   background-color:#338899;
+   color:Silver;
+   font-weight:bold;
+    }*/
+
+.field-validation-error
+{
+    color:#FF0000;
+font-size:1.2em;
+text-align:left;
+float:left;
+}
+
+.field-validation-valid
+{
+    display: none;
+}
+
+.input-validation-error
+{
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+.validation-summary-errors {
+color:#FF0000;
+font-size:1.2em;
+/*text-align:center;*/
+}
+
+.validation-summary-valid
+{
+    display: none;
+}
+
+/* Styles for editor and display helpers
+----------------------------------------------------------*/
+.display-label,
+.editor-label,
+.display-field,
+.editor-field
+{
+    margin: 0.5em 0;
+}
+
+ .DivHeader 
+{
+   margin:0 auto;
+   position:relative;
+   width:100%;
+}
+.SSMRowFormItem 
+{
+    width:100%;
+    min-height:29px;
+    padding-bottom:10px;
+    position:relative;
+    z-index:600;
+    float:left;
+}
+.SSMRowFormItem label
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:30px;
+    padding-top:5px;
+    text-align:right;
+    width:300px;
+}
+.SSMRowFormItem input
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:300px;   
+    }
+    
+.SSMRowFormItem textarea {
+border:1px solid #BFBFBF;
+color:#6E6D65;
+float:left;
+font-family:Arial,Helvetica,sans-serif;
+font-size:1.2em;
+height:81px;
+padding:1px 1px 1px 7px;
+width:306px;
+}
+.SSMRowFormItem select {
+border:1px solid #BFBFBF;
+color:#6E6D65;
+float:left;
+font-family:Arial,Helvetica,sans-serif;
+font-size:1.2em;
+padding:4px;
+width:316px;
+}
+
+.SSMRowFormRight
+{
+    width:50%;
+    min-height:120px;
+    padding-bottom:10px;
+    position:relative;
+    z-index:600;
+    float:left;
+}
+.SSMRowFormRight label
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:30px;
+    padding-top:5px;
+    text-align:right;
+    width:35%;
+}
+
+.SSMRowFormRight input
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:55%;   
+    }
+ .SettingUserTd
+ {
+     width:330px;
+     text-align:right;
+     padding-right:15px;
+     font-size:1.2em;
+     font-weight:bolder;
+     line-height:1em;
+ } 
+ .SettingUserTdRight
+ {
+     text-align:left;
+     font-size:1.2em;
+     font-weight:bolder;
+     line-height:1em;
+ } 
+ .AddUserLegend 
+ {
+    font-size:1.4em;
+    font-weight:bolder;
+    line-height:1em;
+    /*margin-left:200px !important;*/
+    padding-bottom:15px;
+ }
+.TDClass label
+{
+    float:left;
+    font-size:1.2em;
+    font-weight:bolder;
+    line-height:1em;
+    margin:0;
+    padding-right:30px;
+    padding-top:5px;
+    text-align:right;
+    width:210px;
+}
+.TDClass input
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:250px;   
+}
+.TDClass select
+{
+    border:1px solid #BFBFBF;
+    color:#6E6D65;
+    float:left;
+    font-family:Arial,Helvetica,sans-serif;
+    font-size:1.2em;
+    padding:4px 7px;
+    width:266px;   
+}
+.TDClass textarea {
+border:1px solid #BFBFBF;
+color:#6E6D65;
+float:left;
+font-family:Arial,Helvetica,sans-serif;
+font-size:1.2em;
+height:81px;
+padding:1px 1px 1px 7px;
+width:256px;
+}
+
+label.DateInput {
+background:url("../Images/bg-date.png") no-repeat scroll left top transparent;
+cursor:pointer;
+display:inline;
+float:left;
+height:0;
+margin-left:6px;
+overflow:hidden;
+padding:25px 0 0;
+text-indent:-10000px;
+width:25px;
+}
+.GridLight
+{
+    background-color:#fff;
+}
+.GridYellowLight 
+{
+    background-color:Yellow;
+}    
+.Subject 
+{
+        color:#6D6D65;
+        font-weight:bold;
+        font-size:1.8em;
+        margin:0;
+        padding:0 0 15px;
+ }

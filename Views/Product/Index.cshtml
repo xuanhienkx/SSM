@@ -1,0 +1,145 @@
+﻿@using System.Web.Optimization
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model GridNew<Product, ProductModel>
+
+@{
+    ViewBag.Title = "Product";
+    User User1 = (User)Session[AccountController.USER_SESSION_ID]; 
+}
+
+@using (Ajax.BeginForm("Index", "Product",new AjaxOptions()
+{
+    InsertionMode = InsertionMode.Replace,
+    UpdateTargetId = "ListData",
+    HttpMethod = "Post"
+}))
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <div class="DivHeader">
+                        <h2>List Products</h2>
+                    </div>
+                    <div id="SearchBlock" style="float: left; height: auto;"></div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper" style="display: none;">
+                        <table id="table-sarch">
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Code</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.HiddenFor(m => m.SearchCriteria.Id)
+                                    @Html.TextBoxFor(m => m.SearchCriteria.Code, new { maxlength = "15" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="TDClass">
+                                    <label>Name</label>
+                                </td>
+                                <td class="TDClass">
+                                    @Html.TextBoxFor(m => m.SearchCriteria.Name, new { maxlength = "100" })
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+                                    <input type="submit" value="Search" id="btn-search" />
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                   
+                    <div id="ListData">
+                        @Html.Partial("_productList",Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<Product>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" })
+                        <label>Rows per page</label>
+                    </div>
+                    <div style="height: auto; overflow: hidden;">
+                        @if (User1.IsDataTrading())
+                        {
+                            <input type="button" onclick="return edit(0)" id="CreateDept1" value="Create a Product" />
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<div class="SectionBlock Expanded BoxL1" id="ModifyDeptZone">
+</div>
+@Scripts.Render("~/bundles/SCFListPagingJs")
+<script type="text/javascript">
+ 
+
+    function GetDetailProduc(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("Edit", "Product")',
+            data: { id: id, isDetail: true },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery.mbqDialog({
+                    title: 'Product Info',
+                    content: result,
+                    columnClass: 'col-md-7 col-md-offset-4'
+                });
+                // Autocomplete();
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#", "") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#Code').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+    function edit(id) {
+        jQuery.mbqAjax({
+            url: '@Url.Action("Edit", "Product")',
+            data: { id: id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#ModifyDeptZone").html(result);
+                jQuery('#ModifyDeptZone').show();
+                Autocomplete();
+                if (!window.location.href.endsWith("ModifyForm")) {
+                    window.location = window.location.href.replace("#", "") + '#ModifyForm';
+                } else {
+                    window.location = window.location.href;
+                }
+                jQuery('#Code').focus();
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    }
+
+    
+    jQuery(document).ready(function () {
+        jQuery("#databaseTab").addClass("Active");
+        jQuery('#databaseTab').activeThisNav();
+        jQuery('#ModifyDeptZone').hide();
+    });
+    function Autocomplete() {
+        jQuery("#SupplierNameAuto").GetAutoSugget({
+            url: '@Url.Action("SupplierSuggest", "Supplier")',
+            targerId: "#SupplierId"
+        });
+    }
+    
+</script>

@@ -1,0 +1,115 @@
+﻿@using SSM.Models
+@using SSM.Models.CRM               
+@model List<SSM.ViewModels.Reports.CRM.PersonalReport>
+
+@{
+    var listCusHashPrice = (List<ReportCustomerViewModel>)ViewBag.ListPrice;
+    var listCusHashEvent = (List<ReportCustomerViewModel>)ViewBag.ListEvents;
+}
+<div>
+    <div class="crmplan-header-item">
+        <h3>1. Tình hình thực hiện kế thoạch trong tháng</h3>
+    </div>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th rowspan="3" style="width: 30%; vert-align: middle; text-align: center; ">Công việc</th>
+                    <th rowspan="3" style="width: 10%; vert-align: middle">Kế hoạch tháng này</th>
+                    <th colspan="4" class="text-center" style="width: 40%">Báo cáo</th>
+                    <th rowspan="2" colspan="2" style="width: 10%">Tổng cộng thực hiện cả tháng</th>
+                    <th rowspan="3" style="width: 5%; vert-align: middle">Xếp loại</th>
+                    <th rowspan="3" style="width: 5%; vert-align: middle">Kế hoạch tháng sau</th>
+                </tr>
+                <tr>
+                    <th colspan="2">Từ ngày 1-15</th>
+                    <th colspan="2">16- cuối tháng</th>
+                </tr>
+                <tr>
+                    <th> Số lượng</th>
+                    <th> %</th>
+                    <th> Số lượng</th>
+                    <th> %</th>
+                    <th> Số lượng</th>
+                    <th> %</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var d in Model)
+                {
+                    <tr>
+                        <td>@d.PlanName</td>
+                        <td>@d.PlanValue</td>
+                        <td>@d.FistExc</td>
+                        <td>@d.FrirsPercen</td>
+                        <td>@d.LastExc</td>
+                        <td>@d.LastPercen</td>
+                        <td>@d.TotalExc</td>
+                        <td>@d.TotalPercen</td>
+                        <td>@d.Classification</td>
+                        <td>@d.PlanValueNextMonth</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div>
+    <div class="crmplan-header-item">
+        <h3>2.Danh sách khách hàng báo giá lần đầu trong tháng</h3>
+    </div>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 50px">Ngày</th>
+                    <th style="width: 220px">Tên công ty</th>
+                    <th>Người liên lạc</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (listCusHashPrice != null && listCusHashPrice.Any())
+                {
+                    foreach (var it in listCusHashPrice)
+                    {
+                        <tr>
+                            <td>@it.DateTime.ToString("dd/MM/yyyy")</td>
+                            <td>@it.CompanyName</td>
+                            <td>@Html.Raw(it.ContactName)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div>
+    <div class="crmplan-header-item">
+        <h3>3. Danh sách khách hàng viếng thăm trong tháng</h3>
+    </div>
+    <div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th style="width: 50px">Ngày</th>
+                    <th style="width: 220px">Tên công ty</th>
+                    <th>Người liên lạc</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (listCusHashEvent != null && listCusHashEvent.Any())
+                {
+                    foreach (var it in listCusHashEvent)
+                    {
+                        <tr>
+                            <td>@it.DateTime.ToString("dd/MM/yyyy")</td>
+                            <td>@it.CompanyName</td>
+                            <td>@Html.Raw(it.ContactName)</td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>      
+    </div>
+</div>
+

@@ -1,0 +1,94 @@
+﻿@using System.Web.Optimization
+@using SSM.Common
+@using SSM.Models.CRM
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CRM.CRMBaseModel>
+
+@Styles.Render("~/Content/CRM")
+@Scripts.Render("~/bundles/SCFListPagingJs")
+
+<div class="SectionBlock Expanded BoxL1 fullPage">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4">
+                <div class="col-md-9" style="border-right: 1px solid #00bfff">
+                    @using (Ajax.BeginForm("CRMBaseList", new AjaxOptions()
+                    {
+                        HttpMethod = "post",
+                        UpdateTargetId = "ListData",
+                        InsertionMode = InsertionMode.Replace
+                    }))
+                    {
+
+                    <div class="DivHeader">
+                        <h2>
+                            @ViewBag.Title
+                        </h2>
+                    </div>
+                    <div class="SectionHeading">
+                        @Html.Partial("_HearderSearch")
+                    </div>
+                    <div class="SectionBlockWrapper" style="display: block;">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.SearchCriteria.ModelTypeName, "Loại", new { @class = "col-sm-3 control-label" })
+                                <div class="col-sm-9 col-md-offset-0">
+                                    <div class="pull-left">
+                                        @Html.EnumDropDownListFor(m => m.SearchCriteria.ModelTypeName, new { @class = "form-control", Styles = "width:60px" })
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(m => m.SearchCriteria.Name, new { @class = "col-sm-3 control-label" })
+                                <div class="col-sm-9 col-md-offset-0">
+                                    <div class="pull-left">
+                                        @Html.TextBoxFor(m => m.SearchCriteria.Name, new { @class = "form-control" })
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <input type="submit" class="btn btn-primary" id="btnSearch" value="Search" />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                        </div>
+
+                    </div>
+                    <div id="ListData">
+                        @Html.Partial("_ListBase", Model)
+                    </div>
+                    <div id="gridFooter">
+                        @Html.DropDownList("Pager.PageSize", Grid<CRMBaseModel>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label>
+                        <span class="display-crm-total">
+                            @Html.Raw(ViewBag.TotalDisplay)
+                        </span>
+                    </div>
+                    }
+                </div>
+                <div class="col-md-3" id="crmSettingData">
+                    @{Html.RenderAction("CrmSetting", "CRM");}
+                </div>
+                <div class="clearfix"></div>
+            </div>
+        </div>
+    </div>
+</div>
+<div>
+</div>
+
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#CrmTab").addClass("Active");
+        jQuery('#CrmTab').activeThisNav();
+    });
+</script>
+

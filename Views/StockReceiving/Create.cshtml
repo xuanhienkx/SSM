@@ -1,0 +1,10 @@
+﻿@using SSM.Models
+@model SSM.Models.OrderModel
+
+@{ 
+    ViewBag.Title = "Create Purchase Order";
+}
+@using (Html.BeginForm("Create", "StockReceiving"))
+{
+    Html.RenderPartial("_EditTemplate", Model);
+}

@@ -1,0 +1,36 @@
+﻿@using System.Web.Optimization
+<!DOCTYPE html>
+
+<html>
+<head> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <title> @ViewBag.Title </title>
+    <link href="@Url.Content("~/Content/ssmlogo.png")" rel="shortcut icon" type="image/x-icon" />
+    @Styles.Render("~/Content/Bootstrap")
+    @Styles.Render("~/Content/SCFCssInfo")
+    <style type="text/css">
+        .print tr {
+            height: 35px;
+        }
+    </style>  
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryui")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/Bootstrap")
+    @Scripts.Render("~/bundles/SCFJsInfo")
+   
+</head>
+    <body>
+        @Html.Partial("_TopNarBarUC")
+        @Html.Partial("_MainNarBarUC")
+        <div class="border-all">
+            <div class="ajaxProcessBar" id="waitting">  </div>
+            <div class="col-md-12">
+                @RenderBody()
+            </div> 
+            @Html.Partial("_FooterUC")
+        </div>
+   
+    </body>
+</html>

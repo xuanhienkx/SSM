@@ -1,0 +1,103 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.CRM.CrmCusDocumentModel>
+
+@{
+
+    var user = (User)Session[AccountController.USER_SESSION_ID];
+    var footerDisplay = (string)ViewBag.TotalDisplay;
+}
+@Html.Partial("_TopPage", Model)
+<div style="height:auto;overflow: hidden;">
+    @*@Ajax.Link("Tạo tài liệu", "Edit", "CRMDocument", new { cusId = 0, id = 0 }, new MyAjaxOptions()
+        {
+            HttpMethod = "get",
+            DataType = "json",
+            ContentType = "application/json; charset=utf-8"
+
+        }, new { @class = "btn btn-primary" })*@
+</div>
+<table class="grid table table-condensed">
+    <tr>
+        <th>
+            <a href="#" onclick="sortAction('Id');">
+                <div class="SortHeader-label">Id</div>
+                <div id="Id_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('DocName');">
+                <div class="SortHeader-label">Tên tài liệu</div>
+                <div id="DocName_Title" class="SortHeader">
+                    <img src="/Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        <th>Khách hàng</th>
+        <th>Ngày cập nhật</th>
+        <th>Sales</th>
+        <th>Delete</th>
+    </tr>
+    @if (Model.Data != null && Model.Data.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (var it in Model.Data)
+        {
+            if (it != null)
+            {
+
+                <tr>
+                    <td class="crm-id">
+                        @Ajax.Link(it.Id.ToString("D4"), "Edit", "CRMDocument", new { id = it.Id, cusId = it.CrmCusId }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8"
+
+                   }, null)
+                    </td>
+                    <td>@it.DocName</td>
+                    <td>@it.CRMCustomer.CompanyShortName</td>
+                    <td>@Html.ToDateDisplay(it.ModifiedDate)</td>
+                    <td>@it.Sales.FullName</td>
+                    @if (user.IsDepOrDirecter() || user.Id == it.CreatedById)
+                    {
+                        <td class="text-center deleteRow" id="del_@it.Id">
+                            @Ajax.Link("", "Delete", "CRMDocument", new { id = it.Id, cusId = it.CrmCusId }, new MyAjaxOptions()
+                           {
+                               HttpMethod = "get",
+                               DataType = "json",
+                               Confirm = "Bạn muốm xoá tài không?",
+                               ContentType = "application/json; charset=utf-8"
+
+                           }, new { @class = "fa fa-trash trDel", id = it.Id })
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                </tr>
+            }
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="6" class="text-center">No data</td>
+        </tr>
+    }
+</table>
+<div id="gridFooter">
+    @Html.DropDownList("Pager.PageSize", Grid<CrmCusDocumentModel>.PageSizeSelectList(), new { onchange = "onPageSizeChange()" }) <label>Rows per page</label>
+    <span class="display-crm-total">
+        @Html.Raw(footerDisplay)
+    </span>
+</div>

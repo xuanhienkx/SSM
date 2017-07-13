@@ -1,0 +1,26 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model SSM.Models.CRM.PlanFilter
+@{
+    var deptlist = (SelectList)ViewBag.AlldeptSalseList;
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+<div class="form-group">
+    @Html.LabelFor(m => m.Month)
+    @Html.DropDownListFor(m => m.Month, new SelectList(Enumerable.Range(1, 12)), new { Class = "form-control", style = "width: 100px" })
+</div>
+<div class="form-group">
+    @Html.LabelFor(m => m.Year)
+    @Html.DropDownListFor(m => m.Year, new SelectList(Enumerable.Range(2006, (DateTime.Now.Year - 2006) + 5)), new { Class = "form-control", style = "width: 100px" })
+</div>
+@if (currentUser.IsDepOrDirecter() || currentUser.IsAccountant())
+{
+    <div class="form-group">
+        @Html.LabelFor(m => m.Id, "Sales")
+        @Html.DropDownListFor(m => m.Id, deptlist, new { Class = "form-control", style = "width: 220px" })
+    </div>
+}
+@Html.HiddenFor(m => m.FromDate)
+@Html.HiddenFor(m => m.ToDate)
+<button type="submit" class="btn btn-primary">Search</button>

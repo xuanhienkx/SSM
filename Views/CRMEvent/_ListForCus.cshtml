@@ -1,0 +1,185 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model IEnumerable<SSM.Models.CRM.CRMEventModel>
+@{
+    bool isEventAction = (bool)ViewBag.IsEventAction;
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    long cusId = 0;
+    List<int> repeatDay = new List<int>();
+    var listDay = ModelExtensions.GetListOfDescription<DayOfWeek>();
+}
+<table class="grid table table-condensed">
+    <tr>
+        <th>JobRef</th>
+        <th>Tiêu đề</th>
+        <th>Khách hàng</th>
+        <th>Bắt đầu</th>
+        <th>Tình trạng</th>
+        @if (isEventAction)
+        {
+
+            <th>Type</th>
+        }
+        <th>Sales</th>
+        <th>Delete</th>
+        <th>Reminder</th>
+        <th>Email</th>
+        <th>User Follow</th>
+    </tr>
+    @if (Model != null && Model.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (var it in Model)
+        {
+            if (it != null)
+            {
+                cusId = it.CrmCusId;
+                <tr>
+                    <td class="crm-id">
+                        @Ajax.Link(it.Id.ToString("D4"), "Edit", "CRMEvent", new { id = it.Id }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8"
+
+                   }, null)
+
+                    </td>
+                    <td>@it.Subject</td>
+                    <td>@it.CRMCustomer.CompanyShortName</td>
+                    <td>@Html.ToDateDisplay(it.DateBegin)</td>
+                    <td>@it.Status</td>
+
+                    @if (isEventAction)
+                    {
+                        if (it.CRMEventType != null)
+                        {
+
+                            <td>@it.CRMEventType.Name</td>
+                        }
+                        else
+                        {
+                            <td></td>
+                        }
+                    }
+                    <td>@it.CreatedBy.FullName</td>
+                    <td class="text-center deleteRow" id="del_@it.Id">
+                        @if (currentUser.IsDepOrDirecter() || currentUser.Id == it.CreatedBy.Id)
+                        {
+                            @Ajax.Link("", "Delete", "CRMDocument", new { id = it.Id, cusId = it.CrmCusId }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8"
+
+                       }, new { @class = "fa fa-trash trDel", id = it.Id })
+                        }
+                    </td>
+                    <td>
+                        @if (it.IsSchedule)
+                        {
+                            if (!string.IsNullOrEmpty(it.DayWeekOfRemider))
+                            {
+                                repeatDay = it.DayWeekOfRemider.Split(',').Where(x => !string.IsNullOrEmpty(x)).Select(x => int.Parse(x)).ToList();
+                            }
+                            <div class="show-reminder">
+                                <i class="fa fa-clock-o"></i>
+                                <div class="col-md-6 hidden reminder-detail">
+                                    <div class="col-md-12">
+                                        <label class="control-label inlin-item "> Repeat Day </label>
+                                        <ul class="list-inline inlin-item" style="margin-right: -30px; margin-left: 8px">
+                                            @foreach (DayOfWeek dayOfWeek in listDay)
+                                            {
+                                                <li class="checkbox">
+                                                    <label>
+                                                        @if (repeatDay.Contains((int)dayOfWeek))
+                                                        {
+                                                            <input type="checkbox" checked="checked" disabled="disabled" class="checkbox" value="true" />
+                                                            <b>@dayOfWeek.ToString().Substring(0, 3)</b>
+                                                        }
+                                                        else
+                                                        {
+                                                            <input type="checkbox" class="checkbox" disabled="disabled" />
+                                                            @dayOfWeek.ToString().Substring(0, 3)
+                                                        }
+
+                                                    </label>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label class="control-label inlin-item" style="margin-right: 15px"> Begin Date </label>
+                                        @string.Format("{0:dd/MM/yyyy}", it.DateBegin)
+                                        <label class="control-label inlin-item"> Time </label>
+                                        @string.Format("{0}", it.TimeOfRemider)
+                                        <label class="control-label inlin-item"> End Date </label>
+                                        @string.Format("{0:dd/MM/yyyy}", it.DateEnd)
+                                    </div>
+                                </div>
+                            </div>
+                        }
+                    </td>
+                    @if (currentUser.IsDepOrDirecter() || currentUser.Id == it.CreatedBy.Id)
+                    {
+                        <td class="text-center deleteRow">
+                            @if (it.UsersFollow != null && it.UsersFollow.Any())
+                            {
+                                @Ajax.Link("", "SendEventEmail", "CRMEvent", new { id = it.Id }, new MyAjaxOptions()
+                           {
+                               HttpMethod = "get",
+                               DataType = "json",
+                               ContentType = "application/json; charset=utf-8"
+
+                           }, new { @class = "fa fa-envelope-o", id = "mail_" + it.Id })
+                            }
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td>
+                        @Html.Raw(it.UserFollowNames)
+                    </td>
+                </tr>
+            }
+        }
+    }
+</table>
+@if (cusId > 0)
+{
+    <div id="btn-dialogRefesh" class="inlin-item" style="margin-left: 10px;margin-left: 28px;  margin-top: -2px;  position: fixed;">
+        @Ajax.Link("", "ListByCus", "CRMEvent", new { refId = cusId, isEventAction = isEventAction }, new MyAjaxOptions()
+   {
+       HttpMethod = "get",
+       DataType = "json",
+       ContentType = "application/json; charset=utf-8"
+
+   }, new { @class = "fa fa-refresh" })
+
+
+    </div>
+}
+
+<script type="text/javascript">
+    jQuery(function () {
+        if (jQuery("#btn-dialogRefesh").length > 0) {
+            var btn = jQuery(".jconfirm-box").find("#btn-dialogRefesh").clone();
+            jQuery(".jconfirm-box").find(".title-c").append(btn);
+            jQuery(".jconfirm-box").find(".content").find("#btn-dialogRefesh").remove();
+        }
+        if (jQuery('.show-reminder').length > 0) {
+            jQuery('.show-reminder').on('mouseover', function () {
+                var content = jQuery(this).find('.reminder-detail').html();
+                jQuery.mbqAlert({
+                    title: "Reminder detail",
+                    content: content
+                });
+            });
+        }
+    });
+</script>

@@ -1,0 +1,47 @@
+﻿@using SSM.Common
+@model SSM.Models.OrderDetailModel
+@{ 
+    IEnumerable<SelectListItem> warehouseList = (IEnumerable<SelectListItem>)ViewData["Warehouses"];
+    var index = (int)ViewData["tabindex"];
+}
+
+<tr class="editorRow">
+    @using (Html.BeginCollectionItem("OrderDetails"))
+    {
+        <td>
+            @Html.HiddenFor(x => x.RowId)
+            @Html.HiddenFor(x => x.Tax)
+            @Html.HiddenFor(x => x.TaxRate)
+            <span class="deleteRow">
+                <i class="ui-icon ui-icon-minus" style="color: red"></i>
+            </span>
+        </td>
+        <td>
+            @Html.HiddenFor(x => x.ProductId, new { @class = "ProductId  required " })
+            @Html.TextBoxFor(x => x.ProductCode, new { @class = "ProductCode autocomplete", style = "width:98%", maxlength = "200", tabindex = index++, modelName = "Product" })
+        </td>
+        <td>@Html.TextBoxFor(x => x.UOM, new { @class = " UOM required", style = "width:98%", @readonly = "readonly" })</td>
+        <td>
+            @Html.DropDownList("WarehouseId", warehouseList, new { @class = "WarehouseId  required ", style = "width:98%", tabindex = index++ })
+        </td>
+        <td>@Html.TextBoxFor(x => x.Quantity, new { @class = "currency Quantity call", style = "width:98%", maxlength = 12, tabindex = index++ })</td>
+        <td>@Html.TextBoxFor(x => x.Price, new { @class = "currency4 Price call", style = "width:98%", maxlength = 12, tabindex = index++ })</td>
+        <td style="width:120px">
+            @Html.TextBoxFor(x => x.Amount, new { @class = "currency Amount textbold", style = "width:98%", @readonly = "readonly" })
+        </td>
+        <td>@Html.TextBoxFor(x => x.ImportTaxRate, new { @class = "currency ImportTaxRate call", maxlength = 7, style = "width:98%", tabindex = index++ })</td>
+        <td style="width:70px">
+            @Html.TextBoxFor(x => x.ImportTax, new { @class = "number ImportTax textbold", style = "width:98%", @readonly = "readonly" })
+        </td>
+        <td>@Html.TextBoxFor(x => x.TransportFee, new { @class = "currency TransportFee call", maxlength = 12, style = "width:98%", tabindex = index++ })</td>
+        <td>@Html.TextBoxFor(x => x.InlandFee, new { @class = "currency InlnadFee call", maxlength = 12, style = "width:98%", tabindex = index++ })</td>
+        <td>@Html.TextBoxFor(x => x.Fee1, new { @class = "currency Fee1 call", maxlength = 12, style = "width:98%", tabindex = index++ })</td>
+        <td>@Html.TextBoxFor(x => x.Fee2, new { @class = "currency Fee2 call", maxlength = 12, style = "width:98%", tabindex = index++ })</td>
+        <td> @Html.TextBoxFor(x => x.Total, new { @class = "currency Total textbold", style = "width:98%", @readonly = "readonly" })  </td>
+        <td> @Html.TextBoxFor(x => x.VnTotal, new { @class = "currencyVn VnTotal textbold", style = "width:98%", @readonly = "readonly" })  </td>
+        <td style="width:90px">
+            @Html.TextBoxFor(x => x.PriceReceive, new { @class = "currency4 PriceReceive ", style = "width:98%", @readonly = "readonly" })
+        </td>
+        <td>@Html.TextBoxFor(x => x.Note, new { tabindex = index++, style = "width:98%", maxlength = 250, })</td>
+    }
+</tr>

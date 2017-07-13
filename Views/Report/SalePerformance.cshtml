@@ -1,0 +1,570 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@model SSM.Models.SalePerformamceModel
+
+@{
+    ViewBag.Title = "title";
+    IEnumerable<ViewPerformance> ViewPerformancesCom = (IEnumerable<ViewPerformance>)ViewData["ViewPerformancesCom"];
+    User User1 = (User)Session[AccountController.USER_SESSION_ID];
+
+    String Action = (String)ViewData["Action"];
+    IEnumerable<QuantityUnits> QuantityUnits1Com = (IEnumerable<QuantityUnits>)ViewData["QuantityUnits1Com"];
+    IEnumerable<Shipment> Shipments1 = (IEnumerable<Shipment>)ViewData["PeriodShipments"];
+    IEnumerable<ViewPerformance> ViewPerformancesDept = (IEnumerable<ViewPerformance>)ViewData["ViewPerformancesDept"];
+    IEnumerable<QuantityUnits> QuantityUnits1Dept = (IEnumerable<QuantityUnits>)ViewData["QuantityUnits1Dept"];
+    IEnumerable<ViewPerformance> ViewPerformances = (IEnumerable<ViewPerformance>)ViewData["ViewPerformances"];
+    IEnumerable<QuantityUnits> QuantityUnits1 = (IEnumerable<QuantityUnits>)ViewData["QuantityUnits"];
+    IEnumerable<ViewPerformance> ViewPerformances2 = (IEnumerable<ViewPerformance>)ViewData["ViewPerformances"];
+    IEnumerable<QuantityUnits> QuantityUnits2 = (IEnumerable<QuantityUnits>)ViewData["QuantityUnits"];
+}
+@using (Html.BeginForm())
+{
+    <div class="SectionBlock Expanded BoxL1">
+        <div class="BoxL2">
+            <div class="BoxL3">
+                <div class="BoxL4">
+                    <table width="auto" cellpadding="2">
+                        <tr>
+                            <td>
+                                @Html.RadioButtonFor(m => m.Priod, 0)
+                            </td>
+                            <td>
+                                <label class="Label Monthly">Monthly Performance</label>
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.Month, new SelectList(Enumerable.Range(1, 12)), new { Class = "ShipmentSelectShort Monthly" })
+                            </td>
+                            <td>
+                                @Html.DropDownListFor(m => m.Year, new SelectList(Enumerable.Range(2006, (DateTime.Now.Year - 2006) + 5)), new { Class = "ShipmentSelectShort Monthly" })
+                            </td>
+                            <td><input type="submit" class="Monthly btn btn-info" value="OK" style="padding: 4px 10px;" /></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                @Html.RadioButtonFor(m => m.Priod, 1)
+                            </td>
+                            <td colspan="4">
+                                <label class="Label">Period Performance /Multi Options</label>
+                            </td>
+                        </tr>
+                    </table>
+                    <div id="SearchByPeriodZone">
+                        <table width="auto" cellpadding="2">
+                            <tr>
+                                <td>
+                                    <label class="ShipmentLabel">By Shipper</label>
+                                </td>
+                                <td>
+                                    @Html.DropDownList("ShipperId", (SelectList)ViewData["Shippers"], new { Class = "ShipmentSelect" })
+                                </td>
+                                <td>
+                                    <label class="ShipmentLabel">By Sales</label>
+                                </td>
+                                <td>
+                                    @Html.DropDownList("SaleId", (SelectList)ViewData["Users"], new { Class = "ShipmentSelect" })
+                                </td>
+                                <td>
+                                    
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ShipmentLabel">By Cnee</label>
+                                </td>
+                                <td>
+                                    @Html.DropDownList("CneeId", (SelectList)ViewData["Cnees"], new { Class = "ShipmentSelect" })
+                                </td>
+                                <td>
+                                    <label class="ShipmentLabel">From</label>
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.DateFrom, new { Class = "ShipmentInput" })
+                                </td>
+                                <td>
+                                    <label for="DateFrom" class="DateInput"></label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ShipmentLabel">By Agent</label>
+                                </td>
+                                <td>
+                                    @Html.DropDownList("AgentId", (SelectList)ViewData["Agents"], new { Class = "ShipmentSelect" })
+                                </td>
+                                <td>
+                                    <label class="ShipmentLabel">To</label>
+                                </td>
+                                <td>
+                                    @Html.TextBoxFor(m => m.DateTo, new { Class = "ShipmentInput" })
+                                </td>
+                                <td><label for="DateTo" class="DateInput"></label></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label class="ShipmentLabel">By Service</label>
+                                </td>
+                                <td>
+                                    @Html.DropDownList("ServiceId", (SelectList)ViewData["Services"], new { Class = "ShipmentSelect" })
+                                </td>
+                                <td>                                                   
+                                    @Html.LabelFor(m => m.IsConsole, "By Console", new { @class = "ShipmentLabel" })
+                                </td>
+                                <td>
+                                    @Html.CheckBoxFor(m=>m.IsConsole)
+                                </td>
+                                <td></td>
+                            </tr> 
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <input type="submit" class="btn btn-primary" value="Search by Period" />
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                    @if (UsersModel.isAdminOrDirctor(User1))
+                    {
+                        <div>
+                            <div style=" padding-top: 15px; overflow: hidden;"><label class="Label">Your Performance as below : </label></div>
+                            @if (ViewPerformancesCom != null && ViewPerformancesCom.Any())
+                            {
+                                <div style="overflow: hidden;"><label class="Label">By Offices</label></div>
+                                <table border="1px solid #BFBFBF" width="auto" class="tableNormal">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Dept</th>
+                                        <th>Plan</th>
+                                        <th>Perform</th>
+                                        <th>Percent(%)</th>
+                                        @foreach (SaleTypePerform SaleTypePerform1 in ViewPerformancesCom.ElementAt(0).SaleTypePerforms)
+                                        {
+
+                                            <th>@SaleTypePerform1.SaleType </th>
+                                        }
+                                        <th>bonus</th>
+                                        <th>Shipments</th>
+                                        <th>Detail</th>
+                                    </tr>
+                                    @foreach (ViewPerformance ViewPerformance1 in ViewPerformancesCom)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @ViewPerformance1.Name
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Dept
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Plan
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Perform.ToString("0.0")
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Percent.ToString("0.00") %
+                                            </td>
+                                            @foreach (SaleTypePerform SaleTypePerform1 in ViewPerformance1.SaleTypePerforms)
+                                            {
+
+                                                <td>@SaleTypePerform1.Perform</td>
+                                            }
+                                            <td>
+                                                @ViewPerformance1.Bonus.ToString("0.00")
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Shipments
+                                            </td>
+                                            <td>
+                                                <a href="@Url.Action("SalePerformance", "Report", new {comid = ViewPerformance1.UserId, deptid = 0}) "><img alt="Detail" src="../../Images/btn-view.png" /></a>
+                                            </td>
+                                        </tr>
+                                    }
+                                </table>
+                            }
+                            else
+                            {
+                                <div style="  overflow: hidden;"><label class="Label">Empty results</label></div>
+                            }
+
+                            @if (QuantityUnits1Com != null && QuantityUnits1Com.Count() > 0)
+                            {
+                                <div style="overflow: hidden; padding-top: 15px;"><label class="Label">Quantity</label></div>
+                                <table border="1px solid #BFBFBF" width="auto" class="grid">
+                                    <tr>
+                                        @foreach (QuantityUnits Unit1 in QuantityUnits1Com)
+                                        {
+                                            <td>
+                                                @Unit1.UnitName = @Unit1.UnitCount
+                                            </td>
+                                        }
+                                    </tr>
+                                </table>
+                            }
+
+                            <div style=" overflow: hidden; padding-top: 30px;"><label class="Label">View Details</label></div>
+                            @if (Shipments1 != null && Shipments1.Count() > 0)
+                            {
+                                <table class="tableNormal" width="100%" border="0" cellpadding="0" cellspacing="0">
+                                    <tr>
+
+                                        <th>
+                                            Ref
+                                        </th>
+                                        <th>
+                                            Date
+                                        </th>
+                                        <th>
+                                            Shipper
+                                        </th>
+                                        <th>
+                                            Cnee
+                                        </th>
+                                        <th>
+                                            Agent
+                                        </th>
+                                        <th>
+                                            Service
+                                        </th>
+
+                                        <th>
+                                            Quantity
+                                        </th>
+                                        <th>
+                                            Sale
+                                        </th>
+                                        <th>
+                                            Type
+                                        </th>
+                                        <th class="t-last">
+                                            Profit
+                                        </th>
+
+                                    </tr>
+                                    @foreach (Shipment Shipment1 in Shipments1)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @if (Shipment1.IsMainShipment != null && Shipment1.IsMainShipment == true)
+                                                {
+                                                    <b class="char-shipcontrol">C</b>@Shipment1.Id
+                                                }
+                                                else if (Shipment1.ShipmentRef != null)
+                                                {
+                                                    @Shipment1.Id  <b class="char-shipcontrol">C</b>
+                                                }
+                                                else
+                                                {
+                                                    @Shipment1.Id
+                                                }
+                                            </td>
+
+                                            <td>
+                                                @Shipment1.DateShp.Value.ToString("dd/MM/yyyy")
+                                            </td>
+                                            <td>
+                                                @string.Format("{0}", Shipment1.Customer1 != null ? Shipment1.Customer1.CompanyName : "")
+                                            </td>
+                                            <td>
+                                                @string.Format("{0}", Shipment1.Customer != null ? Shipment1.Customer.CompanyName : "")
+                                            </td>
+                                            <td>
+                                                @string.Format("{0}", Shipment1.Agent != null ? Shipment1.Agent.AbbName : "")
+                                            </td>
+                                            <td>
+                                                @string.Format("{0}", Shipment1.ServicesType != null ? Shipment1.ServicesType.SerivceName : Shipment1.ServiceName)
+                                            </td>
+                                            <td>
+                                                @string.Format("{0}x{1}", Shipment1.QtyNumber, Shipment1.QtyUnit)
+                                            </td>
+                                            <td>
+                                                @Shipment1.User.FullName
+                                            </td>
+                                            <td>
+                                                @Shipment1.SaleType
+                                            </td>
+                                            <td class="t-last">
+                                                @if (Shipment1.Revenue != null && Shipment1.Revenue.Earning.HasValue)
+                                                {
+                                                    <span>@Shipment1.Revenue.Earning.Value.ToString("N2")</span>
+                                                }
+                                            </td>
+                                        </tr>
+                                    }
+
+                                </table>
+                            }
+                            @if (ViewData["ViewCompany"] != null)
+                            {
+                                <div style=" overflow: hidden; padding-top: 20px;"><label class="Label">By Departments</label></div>
+                                if (ViewPerformancesDept != null && ViewPerformancesDept.Any())
+                                {
+                                    <table border="1px solid #BFBFBF" width="60%" class="tableNormal">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Dept</th>
+                                            <th>Plan</th>
+                                            <th>Perform</th>
+                                            <th>Percent(%)</th>
+                                            @foreach (SaleTypePerform SaleTypePerform1 in ViewPerformancesDept.ElementAt(0).SaleTypePerforms)
+                                            {
+
+                                                <th>@SaleTypePerform1.SaleType </th>
+
+                                            }
+                                            <th>bonus</th>
+                                            <th>Shipments</th>
+                                            <th>Detail</th>
+                                        </tr>
+                                        @foreach (ViewPerformance ViewPerformance1 in ViewPerformancesDept)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @ViewPerformance1.Name
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Dept
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Plan
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Perform.ToString("0.0")
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Percent.ToString("0.00") %
+                                                </td>
+                                                @foreach (SaleTypePerform saleTypePerform1 in ViewPerformance1.SaleTypePerforms)
+                                                {
+
+                                                    <td>@saleTypePerform1.Perform</td>
+
+                                                }
+                                                <td>
+                                                    @ViewPerformance1.Bonus.ToString("0.00")
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Shipments
+                                                </td>
+                                                <td>
+                                                    @{
+                                            long CompanyId = long.Parse(Request.Params.Get("ComId"));
+                                                    }
+                                                    <a href="@Url.Action("Saleperformance", "Report", new {comid = CompanyId, deptid = ViewPerformance1.UserId}) "><img alt="Detail" src="../../Images/btn-view.png" /></a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+
+                                    if (QuantityUnits1Dept != null && QuantityUnits1Dept.Count() > 0)
+                                    {
+                                        <div style="  overflow: hidden; padding-top: 15px;"><label class="Label">Quantity</label></div>
+                                        <table border="1px solid #BFBFBF" width="auto" class="tableNormal">
+                                            <tr>
+                                                @foreach (QuantityUnits Unit1 in QuantityUnits1Dept)
+                                                {
+                                                    <td>
+                                                        @Unit1.UnitName = @Unit1.UnitCount
+                                                    </td>
+                                                }
+                                            </tr>
+                                        </table>
+                                    }
+                                }
+                                else
+                                {
+                                    <div style=" overflow: hidden;"><label class="Label">Empty results</label></div>
+                                }
+
+                            }
+
+                            @if (ViewData["ViewDepartment"] != null)
+                            {
+                                <div style=" overflow: hidden; padding-top: 20px;"><label class="Label">By Sales</label></div>
+                                if (ViewPerformances != null && ViewPerformances.Count() > 0)
+                                {
+                                    <table border="1px solid #BFBFBF" width="60%" class="tableNormal">
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>Dept</th>
+                                            <th>Plan</th>
+                                            <th>Perform</th>
+                                            <th>Percent(%)</th>
+                                            @foreach (SaleTypePerform SaleTypePerform1 in ViewPerformances.ElementAt(0).SaleTypePerforms)
+                                            {
+
+                                                <th>@SaleTypePerform1.SaleType </th>
+
+                                            }
+                                            <th>bonus</th>
+                                            <th>Shipments</th>
+                                        </tr>
+                                        @foreach (ViewPerformance ViewPerformance1 in ViewPerformances)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    @ViewPerformance1.Name
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Dept
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Plan
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Perform.ToString("0.0")
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Percent.ToString("0.00") %
+                                                </td>
+                                                @foreach (SaleTypePerform SaleTypePerform1 in ViewPerformance1.SaleTypePerforms)
+                                                {
+
+                                                    <td>@SaleTypePerform1.Perform</td>
+
+                                                }
+                                                <td>
+                                                    @ViewPerformance1.Bonus.ToString("0.00")
+                                                </td>
+                                                <td>
+                                                    @ViewPerformance1.Shipments
+                                                </td>
+                                            </tr>
+                                        }
+                                    </table>
+                                }
+                                else
+                                {
+                                    <div><label>Empty results</label></div>
+                                }
+                                if (QuantityUnits1 != null && QuantityUnits1.Count() > 0)
+                                {
+                                    <div style="  overflow: hidden; padding-top: 15px;"><label class="Label">Quantity</label> </div>
+                                    <table border="1px solid #BFBFBF" width="auto" class="grid">
+                                        <tr>
+                                            @foreach (QuantityUnits Unit1 in QuantityUnits1)
+                                            {
+                                                <td>
+                                                    @Unit1.UnitName = @Unit1.UnitCount
+                                                </td>
+                                            }
+                                        </tr>
+                                    </table>
+                                }
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div>
+                            <div style="  overflow: hidden; padding-top: 15px;"><label class="Label">Your Performance</label></div>
+                            @if (ViewPerformances2 != null && ViewPerformances2.Count() > 0)
+                            {
+                                <table width="60%" class="grid" border="1px solid #BFBFBF">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Dept</th>
+                                        <th>Plan</th>
+                                        <th>Perform</th>
+                                        <th>Percent(%)</th>
+                                        @foreach (SaleTypePerform SaleTypePerform1 in ViewPerformances2.ElementAt(0).SaleTypePerforms)
+                                        {
+
+                                            <th>@SaleTypePerform1.SaleType </th>
+                                        }
+                                        <th>bonus</th>
+                                        <th>Shipments</th>
+                                    </tr>
+                                    @foreach (ViewPerformance ViewPerformance1 in ViewPerformances2)
+                                    {
+                                        <tr>
+                                            <td>
+                                                @ViewPerformance1.Name
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Dept
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Plan
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Perform.ToString("0.0")
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Percent.ToString("0.0") %
+                                            </td>
+                                            @foreach (SaleTypePerform SaleTypePerform1 in ViewPerformance1.SaleTypePerforms)
+                                            {
+                                                <td>@SaleTypePerform1.Perform</td>
+
+                                            }
+                                            <td>
+                                                @ViewPerformance1.Bonus.ToString("0.00")
+                                            </td>
+                                            <td>
+                                                @ViewPerformance1.Shipments
+                                            </td>
+                                        </tr>
+
+                                    }
+
+
+                                </table>
+                                <div style="  overflow: auto; padding-top: 15px;"><label class="Label"> Quantity</label></div>
+                                if (QuantityUnits2 != null && QuantityUnits2.Count() > 0)
+                                {
+                                    <table width="auto" class="grid">
+                                        <tr>
+                                            @foreach (QuantityUnits Unit1 in QuantityUnits2)
+                                            {
+                                                <td>
+                                                    @Unit1.UnitName = @Unit1.UnitCount
+                                                </td>
+                                            }
+                                        </tr>
+                                    </table>
+                                }
+                            }
+                        </div>
+                    }
+
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#SalesTab").addClass("Active");
+        jQuery('#SalesTab').activeThisNav();
+        new DateTimePicker('DateFrom', 'dd/MM/yyyy');
+        new DateTimePicker('DateTo', 'dd/MM/yyyy');
+        if (jQuery('input[name="Priod"]:eq(0)').is(":checked")) {
+            jQuery('#SearchByPeriodZone').hide();
+            jQuery('.Monthly').each(function () {
+                jQuery(this).removeAttr("disabled");
+            });
+        } else {
+            jQuery('.Monthly').each(function () {
+                jQuery(this).attr("disabled", "disabled");
+            });
+            jQuery('#SearchByPeriodZone').show();
+        }
+
+        jQuery('input[name="Priod"]:eq(0)').click(function () {
+            jQuery('.Monthly').each(function () {
+                jQuery(this).removeAttr("disabled");
+            });
+            jQuery('#SearchByPeriodZone').hide();
+        });
+        jQuery('input[name="Priod"]:eq(1)').click(function () {
+            jQuery('.Monthly').each(function () {
+                jQuery(this).attr("disabled", "disabled");
+            });
+            jQuery('#SearchByPeriodZone').show();
+        });
+    });
+</script>

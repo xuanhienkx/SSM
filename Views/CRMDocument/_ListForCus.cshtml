@@ -1,0 +1,64 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@model IEnumerable<SSM.Models.CRM.CrmCusDocumentModel>
+@{
+
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+<table class="grid table table-condensed">
+    <tr>
+        <th>DocName</th>
+        <th>Khách hàng</th>
+        <th>Ngày cập nhật</th>
+        <th>Delete</th>
+    </tr>
+    @if (Model != null && Model.Any())
+    {
+        int no = 0;
+        var classLight = string.Empty;
+        foreach (var it in Model)
+        {
+            if (it != null)
+            {
+                <tr>
+                    <td class="crm-id">
+                        @Ajax.Link(it.DocName, "Edit", "CRMDocument", new { id = it.Id, cusId = it.CrmCusId }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8"
+
+                   }, null)
+
+                    </td>
+                    <td>@it.CRMCustomer.CompanyShortName</td>
+                    <td>@Html.ToDateDisplay(it.ModifiedDate)</td>
+                    @if (currentUser.IsDepOrDirecter() || currentUser.Id == it.CreatedById)
+                    {
+                        <td class="text-center deleteRow" id="del_@it.Id">
+                            @Ajax.Link("", "Delete", "CRMDocument", new { id = it.Id, cusId = it.CrmCusId }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8"
+
+                       }, new { @class = "fa fa-trash trDel", id = it.Id })
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                </tr>
+            }
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="5" class="text-center">No data</td>
+        </tr>
+    }
+</table>

@@ -1,0 +1,185 @@
+﻿@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@model System.Collections.Generic.List<SSM.Models.Shipment>
+    @{
+        var filterModel = (CRMSearchModel)Session[CRMController.CRM_SEARCH_MODEL];
+        var shipmentPeriod = (List<Shipment>)ViewBag.ShimentPeriod;
+    }
+    <div>
+        <div class="crmplan-header-item">
+            <h3>Shipments of:<span class="text-success">@ViewBag.ProfitType </span></h3>
+        </div>
+    </div>
+    <div>
+
+
+        <table class="table table-bordered table-hover" width="100%" border="0" cellpadding="0" cellspacing="0">
+            <tr class="success">
+
+                <th>
+                    Ref
+                </th>
+                <th>
+                    Date
+                </th>
+                <th>
+                    Shipper
+                </th>
+                <th>
+                    Cnee
+                </th>
+                <th>
+                    Agent
+                </th>
+                <th>
+                    Service
+                </th>
+
+                <th>
+                    Quantity
+                </th>
+                <th>
+                    Sale
+                </th>
+                <th>
+                    Type
+                </th>
+                <th class="t-last">
+                    Profit
+                </th>
+
+            </tr>
+            @if (filterModel != null && filterModel.ToDate != null && filterModel.FromDate != null && shipmentPeriod != null && shipmentPeriod.Any())
+            {
+                <tr style="border-top: 2px solid #228b22;border-bottom: 2px solid #228b22;">
+                    <th colspan="10" class="text-crm-successed">
+                        Shipment of customer from @string.Format("{0:dd/MM/yyyy}", filterModel.FromDate) to @string.Format("{0:dd/MM/yyyy}", filterModel.ToDate)
+                    </th>
+                </tr>
+                foreach (Shipment item in shipmentPeriod)
+                {
+                    <tr>
+                        <td class="text-crm-successed">
+                            @if (item.IsMainShipment != null && item.IsMainShipment == true)
+                             {
+                            <b class="char-shipcontrol">C</b>@item.Id
+                             }
+                             else if (item.ShipmentRef != null)
+                             {
+                            @item.Id  <b class="char-shipcontrol">C</b>
+                             }
+                             else
+                             {
+                            @item.Id
+                             }
+                        </td>
+
+                        <td>
+                            @item.DateShp.Value.ToString("dd/MM/yyyy")
+                        </td>
+                        <td>
+                            @string.Format("{0}", item.Customer1 != null ? item.Customer1.CompanyName : "")
+                        </td>
+                        <td>
+                            @string.Format("{0}", item.Customer != null ? item.Customer.CompanyName : "")
+                        </td>
+                        <td>
+                            @string.Format("{0}", item.Agent != null ? item.Agent.AbbName : "")
+                        </td>
+                        <td>
+                            @string.Format("{0}", item.ServicesType != null ? item.ServicesType.SerivceName : item.ServiceName)
+                        </td>
+                        <td>
+                            @string.Format("{0}x{1}", item.QtyNumber, item.QtyUnit)
+                        </td>
+                        <td>
+                            @item.User.FullName
+                        </td>
+                        <td>
+                            @item.SaleType
+                        </td>
+                        <td class="t-last text-right">
+                            @if (item.Revenue != null && item.Revenue.Earning.HasValue)
+                             {
+                            <span>@item.Revenue.Earning.Value.ToString("N2")</span>
+                             }
+                        </td>
+                    </tr>
+
+                }
+                if (Model != null && Model.Any())
+                {
+                    <tr style="border-top: 2px solid #228b22; border-bottom: 2px solid #ffa500;">
+                        <th colspan="10" class="text-crm-finished">
+                            @if (Model != null && Model.Any())
+                            {
+                                @: Shipmmet before @string.Format("{0:dd/MM/yyyy}", filterModel.FromDate)
+                            }
+                        </th>
+                    </tr>
+                }
+                else
+                {
+                    <tr style="border-top: 2px solid #228b22;">
+                        <th colspan="10" class="text-crm-finished">    
+                        </th>
+                    </tr>
+                }
+
+            }
+
+            @foreach (Shipment item in Model)
+            {
+
+                <tr>
+                    <td>
+                        @if (item.IsMainShipment != null && item.IsMainShipment == true)
+                            {
+                            <b class="char-shipcontrol">C</b>@item.Id
+                            }
+                            else if (item.ShipmentRef != null)
+                            {
+                            @item.Id  <b class="char-shipcontrol">C</b>
+                            }
+                            else
+                            {
+                            @item.Id
+                            }
+                    </td>
+
+                    <td>
+                        @item.DateShp.Value.ToString("dd/MM/yyyy")
+                    </td>
+                    <td>
+                        @string.Format("{0}", item.Customer1 != null ? item.Customer1.CompanyName : "")
+                    </td>
+                    <td>
+                        @string.Format("{0}", item.Customer != null ? item.Customer.CompanyName : "")
+                    </td>
+                    <td>
+                        @string.Format("{0}", item.Agent != null ? item.Agent.AbbName : "")
+                    </td>
+                    <td>
+                        @string.Format("{0}", item.ServicesType != null ? item.ServicesType.SerivceName : item.ServiceName)
+                    </td>
+                    <td>
+                        @string.Format("{0}x{1}", item.QtyNumber, item.QtyUnit)
+                    </td>
+                    <td>
+                        @item.User.FullName
+                    </td>
+                    <td>
+                        @item.SaleType
+                    </td>
+                    <td class="t-last text-right">
+                        @if (item.Revenue != null && item.Revenue.Earning.HasValue)
+                            {
+                            <span>@item.Revenue.Earning.Value.ToString("N2")</span>
+                            }
+                    </td>
+                </tr>
+            }
+
+        </table>
+    </div>

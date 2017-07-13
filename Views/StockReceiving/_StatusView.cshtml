@@ -1,0 +1,75 @@
+﻿@model SSM.Models.OrderModel
+@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@{
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+    var hidencalss = Model.Status == VoucherStatus.Pending ? string.Empty : " hide ";
+}
+<div class="list button" id="btn-BaseAction">
+    <div>
+        @if (currentUser.IsEditTrading())
+        {
+
+            <input type="button" class="btn btn-primary " id="btnnew" value="New" />
+            if ((Model.VoucherId > 0 && ((Model.CreateBy != null && Model.CreateBy == currentUser.Id)) || currentUser.IsAdmin()))
+            {
+                <input type="button" class="btn btn-primary Hold @hidencalss" id="btnEdit" value="Edit" />
+                <input type="button" value="Save" class="btn btn-primary Hold @hidencalss" id="btnSave" />
+            }
+            else if (Model.VoucherId <= 0)
+            {
+                <input type="button" class="btn btn-primary Hold @hidencalss" id="btnCancle" value="Rest" />
+                <input type="button" value="Save" class="btn btn-primary Hold @hidencalss" id="btnSave" />
+
+            }
+        }
+        <input type="button" class="btn btn-primary " id="btnPrint" value="Print" />
+        <input type="button" class="btn btn-primary " id="btnExit" value="Exit" />
+        @if (Model.VoucherId > 0)
+        {
+            <div id="btn-Action" style="display: inline">
+                @Html.Raw(ModelExtensions.StockButtonAction(currentUser, Model.Status, Model.VoucherId, Model.UserCreated))
+            </div>
+
+        }
+    </div>
+    <div>
+        @if ((Model.VoucherId > 0 && ((Model.CreateBy != null && Model.CreateBy == currentUser.Id)) || currentUser.IsAdmin()))
+        {
+            <input type="button" class="btn Hold btn-red @hidencalss" id="btnCancle" value="Reset" />
+            <samp style="width: 50px"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</samp>
+            if (Model.VoucherId > 0)
+            {
+                <a href="@Url.Action("Delete", "Sales", new {id = Model.VoucherId})" class="btn btn-red Hold @hidencalss" id="btnDelete" onclick=" return confirm('Are you sure you want to delete?') ">Delete</a>
+            }
+        }
+    </div>
+</div>
+<div id="sutatus-user-action" class="user-action">
+    @if (Model.VoucherId > 0)
+    {
+        var userSubmited = Model.UserSubmited ?? new User();
+        var cserChecked = Model.UserChecked ?? new User();
+        var cserApproved = Model.UserApproved ?? new User();
+        <ul>
+            <li class="submited bloock">
+                <div> <label class="lb-text">Submitted by:</label><span class="text-right right">@userSubmited.FullName</span> </div>
+                <div> <label class="lb-text">Date:</label><span class="text-right right">@string.Format("{0:dd/MM/yyyy HH:mm}", Model.DateSubmited)</span> </div>
+            </li>
+            <li class="checked bloock">
+                <div> <label class="lb-text">Checked by:</label><span class="text-right right">@cserChecked.FullName</span> </div>
+                <div> <label class="lb-text">Date:</label><span class="text-right right">@string.Format("{0:dd/MM/yyyy HH:mm}", Model.DateChecked) </span> </div>
+            </li>
+            <li class="approved bloock">
+                <div> <label class="lb-text">Approved by:</label><span class="text-right right">@cserApproved.FullName</span> </div>
+                <div> <label class="lb-text">Date:</label><span class="text-right right">@string.Format("{0:dd/MM/yyyy HH:mm}", Model.DateApproved) </span> </div>
+            </li>
+        </ul>
+    }
+</div>
+
+<div style="clear: both"></div>
+
+

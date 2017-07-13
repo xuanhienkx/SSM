@@ -1,0 +1,407 @@
+﻿@using System.Web.Optimization
+@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Services
+@using SSM.ViewModels
+@using SSM.ViewModels.Shared
+@model SSM.ViewModels.Shared.Grid<SSM.Models.Shipment>
+
+@{
+
+    var User1 = (User)Session[AccountController.USER_SESSION_ID];
+    long revenue_id = Session[ShipmentController.REVENUE_ID] != null ? (long)Session[ShipmentController.REVENUE_ID] : 0;
+    var Shipments1 = (IEnumerable<Shipment>)Model.Data;
+
+}
+@Html.Partial("_TopPage", Model)
+<table class="grid" width="100%" border="0" cellpadding="0" cellspacing="0" style="color: black">
+    <tr>
+        <th></th>
+        <th>
+            STS
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('ShipmentRef');">
+                <div class="SortHeader-label">Ref</div>
+                <div id="ShipmentRef_Title" class="SortHeader">
+                    <img src="../../Images/sort_asc.gif" />
+                </div>
+            </a>
+        </th>
+        
+        <th>
+            <a href="#" onclick="sortAction('DateShp');">
+                <div class="SortHeader-label">Date</div>
+                <div id="DateShp_Title" class="SortHeader"></div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('Customer1.CompanyName');">
+                <div class="SortHeader-label">Shipper</div>
+                <div id="Customer1_CompanyName_Title" class="SortHeader"></div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('Customer.CompanyName');">
+                <div class="SortHeader-label">Cnee</div>
+                <div id="Customer_CompanyName_Title" class="SortHeader"></div>
+            </a>
+        </th>
+        <th>
+            <a href="#" onclick="sortAction('Agent.AbbName');">
+                <div class="SortHeader-label">Agent</div>
+                <div id="Agent_AbbName_Title" class="SortHeader"></div>
+            </a>
+        </th>
+        <th>
+            MBL
+        </th>
+        <th>
+            HBL
+        </th>
+        <th>
+            Service
+        </th>
+        <th>
+            Quantity
+        </th>
+        <th>
+            Sale
+        </th>
+        <th> Type </th>
+        <th> COM </th>
+        <th> INV </th>
+        <th>
+            Edit
+        </th>
+        <th class="t-last">
+            Delete
+        </th>
+    </tr>
+    <tbody id="Databody" class="tb-grabText">
+        @if (Shipments1 != null && Shipments1.Count() > 0)
+        {
+
+
+            int count = 0;
+            string classRequestRevied = "";
+            string nobillClass = "";
+            string subClass = "";
+            string masterClass = "";
+            long idMaster = 0;
+            foreach (Shipment Shipment1 in Shipments1)
+            {
+                classRequestRevied = "";
+                nobillClass = "";
+                subClass = "";
+                masterClass = "";
+                count++;
+                bool ood = count%2 == 0;
+                var lb = string.Empty;
+                var orderNo = string.Empty;
+                if (Shipment1.MT81 != null)
+                {
+                    lb = ((VoucherStatus) Shipment1.MT81.Status.Value).GetStringLabel();
+                    orderNo = Shipment1.MT81.VoucherNo;
+                }
+                bool nobill = string.IsNullOrEmpty(Shipment1.MasterNum) || Shipment1.MasterNum.Equals("CHUA BILL") || string.IsNullOrEmpty(Shipment1.HouseNum) || Shipment1.HouseNum.Equals("CHUA BILL");
+                var colorStaus = lb == "S" ? "red" : lb == "A" ? "Blue" : lb == "C" ? "cyan" : "#fff";
+                var rowClass = Shipment1.Id == revenue_id ? "GridYellowLight" : ood == true ? "GridLight" : String.Empty;
+                nobillClass = nobill == true ? "bgorange" : "";
+
+                var status = ShipmentModel.ViewStatus(Shipment1.RevenueStatus);
+                if (Shipment1.IsMainShipment)
+                {
+                    idMaster = 0;
+                    masterClass = "controlMaster";
+                }
+                else
+                {
+                    subClass = "subControl_" + Shipment1.ShipmentRef;
+                    idMaster++;
+                }
+
+                if (Shipment1.Revenue != null)
+                {
+                    if (Shipment1.Revenue.IsRevised)
+                    {
+                        classRequestRevied = "RevenueIsRevised";
+                    }
+                    else if (Shipment1.Revenue.IsRequest)
+                    {
+                        classRequestRevied = "RevenueIsRequest";
+                    }
+                    else
+                    {
+                        classRequestRevied = "";
+                    }
+                }
+
+                <tr class="@rowClass @masterClass @subClass">
+
+                    @if (Shipment1.IsMainShipment)
+                    {
+                        <td>
+                            <span style="cursor: pointer" class="productExt Expand" proid="@Shipment1.Id">
+                                <i class="ui-icon ui-icon-minus"></i>
+                            </span>
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                    }
+                    <td align="center" class="@nobillClass ">
+                        @if (status == "A")
+                        {
+                            <label style="font-weight: bold; color: Blue">@status</label>
+                        }
+                        @if (status == "S")
+                        {
+                            <label style="font-weight: bold; color: Red">@status</label>
+                        }
+                    </td>
+                    <td style="white-space: nowrap" class="@classRequestRevied" title="@Shipment1.ShipmentRef">
+                        @if (Shipment1.IsMainShipment != null && Shipment1.IsMainShipment == true)
+                        {
+                            <b class="char-shipcontrol">C</b>
+                            <a href="@Url.Action("Revenue", "Shipment", new {id = Shipment1.Id})">@string.Format("{0}", Shipment1.Id)</a>
+                        }
+                        else if (Shipment1.ShipmentRef != null)
+                        {
+                            <a href="@Url.Action("Revenue", "Shipment", new {id = Shipment1.Id})">@string.Format("{0}", Shipment1.Id)</a>
+                            <b class="char-shipcontrol">C</b>
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Revenue", "Shipment", new {id = Shipment1.Id})">@Shipment1.Id</a>
+                        }
+
+                    </td>
+
+                    <td>
+                        @Shipment1.DateShp.Value.ToString("dd/MM/yyyy")
+
+                    </td>
+                    <td class="truncate">
+                        @string.Format("{0}", Shipment1.Customer1 != null ? Shipment1.Customer1.CompanyName : "")
+                    </td>
+                    <td class="truncate">
+                        @string.Format("{0}", Shipment1.Customer != null ? Shipment1.Customer.CompanyName : "")
+                    </td>
+                    <td class="truncate">
+                        @string.Format("{0}", Shipment1.Agent != null ? Shipment1.Agent.AbbName : "")
+                    </td>
+                    <td>
+                        @Shipment1.MasterNum
+                    </td>
+                    <td>
+                        @Shipment1.HouseNum
+                    </td>
+                    <td>
+                        @string.Format("{0}", Shipment1.ServicesType != null ? Shipment1.ServicesType.SerivceName : Shipment1.ServiceName)
+                    </td>
+                    <td>
+                        @string.Format("{0}x{1}", Shipment1.QtyNumber, Shipment1.QtyUnit)
+                    </td>
+                    <td>
+                        @Shipment1.User.FullName
+                    </td>
+                    <td>
+                        @if ((Shipment1.SaleType) == "Sales")
+                        {
+                            <label style="font-weight: normal; color: Red">@Shipment1.SaleType</label>
+                        }
+                        else if ((Shipment1.SaleType) == "MgrSales")
+                        {
+                            <label style="font-weight: normal; color: #0E2BDF">@Shipment1.SaleType</label>
+                        }
+                        else
+                        {
+                            <label style="font-weight: normal; color: Black">@Shipment1.SaleType</label>
+                        }
+
+
+                    </td>
+                    <td>
+                        @if (Shipment1.Revenue != null && (Shipment1.Revenue.EXCommision2Shipper.Value > 0 || Shipment1.Revenue.EXCommision2Carrier.Value > 0))
+                        {
+
+                            <span class="commistion_check" style="cursor: pointer" id="commistion_@Shipment1.Id"><i class="ui-icon  ui-icon-check"></i></span>
+                            <div class="commistion" style="display: none" id="commistionInfo_@Shipment1.Id">
+                                <div>
+                                    <label class="left">Commision to customer</label>
+                                    <label class="right">@string.Format("{0:N}", Shipment1.Revenue.EXCommision2Shipper.Value)</label>
+                                </div>
+                                <div>
+                                    <label class="left">Commision to carrier</label>
+                                    <label class="right">@string.Format("{0:N}", Shipment1.Revenue.EXCommision2Carrier.Value)</label>
+                                </div>
+                            </div>
+                        }
+                    </td>
+                    <td>
+                        @if (Shipment1.Revenue != null && (
+                            !string.IsNullOrEmpty(Shipment1.Revenue.AccInv1)
+                            || !string.IsNullOrEmpty(Shipment1.Revenue.AccInv2)
+                            || !string.IsNullOrEmpty(Shipment1.Revenue.AccInv3)
+                            || !string.IsNullOrEmpty(Shipment1.Revenue.AccInv4)
+                            || Shipment1.Revenue.AccInvDate1.HasValue
+                            || Shipment1.Revenue.AccInvDate2.HasValue
+                            || Shipment1.Revenue.AccInvDate3.HasValue
+                            || Shipment1.Revenue.AccInvDate4.HasValue
+
+                            ))
+                        {
+                            <span class="invoice_check" style="cursor: pointer" id="invoice_@Shipment1.Id"><i class="ui-icon  ui-icon-check"></i></span>
+                            <table id="invoiceInfo_@Shipment1.Id" class="invoiceInfoTable" style="height: 274px; background-color: #e3f7e5; border: 2px solid #BFBFBF; text-align: center; width: 200px; display: none">
+
+                                <tr>
+                                    <th style="width: 40px; text-align: left" class="">No</th>
+                                    <th style="width: 60px" class="text-right">AccInv</th>
+                                    <th style="width: 80px" class="text-right">AccInvDate</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        1
+                                    </td>
+                                    <td class="text-right">
+                                        @Shipment1.Revenue.AccInv1
+                                    </td>
+                                    <td class="text-right">
+                                        @string.Format("{0:dd/MM/yyyy}", Shipment1.Revenue.AccInvDate1)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        2
+                                    </td>
+                                    <td class="text-right">
+                                        @Shipment1.Revenue.AccInv2
+                                    </td>
+                                    <td class="text-right">
+                                        @string.Format("{0:dd/MM/yyyy}", Shipment1.Revenue.AccInvDate2)
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        3
+                                    </td>
+                                    <td class="text-right">
+                                        @Shipment1.Revenue.AccInv3
+                                    </td>
+                                    <td class="text-right">
+                                        @string.Format("{0:dd/MM/yyyy}", Shipment1.Revenue.AccInvDate3)
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>
+                                        4
+                                    </td>
+                                    <td class="text-right">
+                                        @Shipment1.Revenue.AccInv4
+                                    </td>
+                                    <td class="text-right">
+                                        @string.Format("{0:dd/MM/yyyy}", Shipment1.Revenue.AccInvDate4)
+                                    </td>
+                                </tr>
+
+
+                            </table>
+
+                        }
+                    </td>
+                    @if (User1.IsOwnner(Shipment1.SaleId.Value))
+                    {
+                        <td>
+                            <a href="@Url.Action("Edit", "Shipment", new {id = Shipment1.Id})">
+                                <img alt="Edit" src="../../Images/btn-edit.png" />
+                            </a>
+
+                        </td>
+                        <td class="t-last">
+
+                            @if (!Shipment1.RevenueStatus.Equals(ShipmentModel.RevenueStatusCollec.Approved.ToString()))
+                            {
+                                <a href="@Url.Action("Delete", "Shipment", new {id = Shipment1.Id})" onclick=" return confirm('Are you sure you want to delete?') ">
+                                    <img alt="Delete" src="../../Images/btn-delete.png" />
+                                </a>
+                            }
+
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                        <td class="t-last"></td>
+                    }
+                </tr>
+
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="17" class="text-center">
+                    Data is not found!!!
+                </td>
+            </tr>
+        }
+
+ 
+    </tbody>
+</table>
+<script type="text/javascript"> 
+    var time = new Date().getTime();
+    jQuery(document).ready(function () {
+        //function refresh() {
+        //    if (new Date().getTime() - time >= 120000) {
+        //        jQuery("#outFind").click();
+        //    }
+        //    else
+        //        setTimeout(refresh, 120000);
+        //}
+        //setTimeout(refresh, 120000);
+        jQuery(".commistion_check").click(function () {
+            var $els = jQuery(this);
+            var id = $els.attr("id").split("_")[1];
+            var data = jQuery("#commistionInfo_" + id).html();
+            jQuery.dialog({
+                title: "Commistion Infor",
+                content: data,
+                columnClass: 'col-md-3 col-md-offset-2',
+                theme: 'bootstrap',
+            });
+            
+        });
+
+        jQuery(".invoice_check").click(function () {
+            var $els = jQuery(this);
+            var id = $els.attr("id").split("_")[1];
+            var data = jQuery("#invoiceInfo_" + id).html();
+            jQuery.dialog({
+                title: "Account Invoice NO. / Date",
+                content: data,
+                columnClass: 'col-md-3 col-md-offset-2',
+                theme: 'bootstrap',
+            });
+        });
+        jQuery(".productExt").each(function () {
+            jQuery(this).click(function () {
+                var proId = jQuery(this).attr("proid");
+
+                if (jQuery(this).hasClass("Expand")) {
+                    jQuery(this).removeClass("Expand");
+                    jQuery("#Databody").find("tr.subControl_" + proId).removeClass("hide");
+                    jQuery(this).find("i").removeClass("ui-icon-plus").addClass("ui-icon-minus"); //<i class="ui-icon ui-icon-plus"></i>
+                } else {
+                    jQuery(this).addClass("Expand");
+                    jQuery("#Databody").find("tr.subControl_" + proId).addClass("hide");
+                    jQuery(this).find("i").removeClass("ui-icon-minus").addClass("ui-icon-plus");
+                }
+            });
+        });
+    });
+</script> 

@@ -1,0 +1,70 @@
+﻿@using SSM.Models
+@model dynamic
+
+@{
+    List<ViewPerformance> viewPerformancesCom = (List<ViewPerformance>)ViewData["ViewPerformancesCom"];
+}          
+<div>
+    <div style="height: 25px; padding-top: 15px; overflow: hidden;"><label class="Label">Your Performance as below : </label></div>
+    @if (viewPerformancesCom != null && viewPerformancesCom.Count() > 0)
+    {
+        <div style="height: 25px; overflow: hidden;"><label class="Label">By Offices</label></div>
+        <table border="1px solid #BFBFBF" width="auto" class="tableNormal">
+            <tr>
+                <th>Name</th>
+                <th>Dept</th>
+                <th>Plan</th>
+                <th>Perform</th>
+                <th>Percent(%)</th>
+                @foreach (SaleTypePerform saleTypePerform in viewPerformancesCom.ElementAt(0).SaleTypePerforms)
+                {
+
+                    <th>@saleTypePerform.SaleType </th>
+                }
+                <th>bonus</th>
+                <th>Shipments</th>
+                <th>Detail</th>
+            </tr>
+            @foreach (ViewPerformance viewPerformance1 in viewPerformancesCom)
+            {
+                <tr>
+                    <td>
+                        @viewPerformance1.Name
+                    </td>
+                    <td>
+                        @viewPerformance1.Dept
+                    </td>
+                    <td>
+                        @viewPerformance1.Plan
+                    </td>
+                    <td>
+                        @viewPerformance1.Perform.ToString("0.0")
+                    </td>
+                    <td>
+                        @viewPerformance1.Percent.ToString("0.00") %
+                    </td>
+                    @foreach (SaleTypePerform saleTypePerform1 in viewPerformance1.SaleTypePerforms)
+                    {
+
+                        <td>@saleTypePerform1.Perform</td>
+                    }
+                    <td>
+                        @viewPerformance1.Bonus.ToString("0.00")
+                    </td>
+                    <td>
+                        @viewPerformance1.Shipments
+                    </td>
+                    <td>
+                        <a href="@Url.Action("SalePerformance", "Report", new {comid = viewPerformance1.UserId, deptid = 0}) "><img alt="Detail" src="../../Images/btn-view.png" /></a>
+                    </td>
+                </tr>
+            }
+        </table>
+    }
+    else
+    {
+        <div style="height: 25px; overflow: hidden;"><label class="Label">Empty results</label></div>
+    }
+
+
+</div>

@@ -1,0 +1,120 @@
+﻿@using SSM.Models
+@model SSM.Models.CustomerModel
+<div class="BoxL2">
+    <div class="BoxL3">
+        <div class="BoxL4">
+            <div class="DivHeader">
+                <h2>
+                    Modify Customer
+                </h2>
+            </div>
+            <div style="width: 100%" id="ModifyForm">
+                @using (Html.BeginForm("EditCustomer", "Data" , FormMethod.Post, new { id = "frmCustomer" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <table>
+                        <tr>
+                            <td class="TDClass"><label>Abb Name</label></td>
+                            <td class="TDClass">
+                                @Html.HiddenFor(m => m.Id, new { id = "Id" })
+                                @Html.HiddenFor(m => m.CrmCusId, new { id = "CrmCusId" })
+                                @Html.HiddenFor(m => m.IsMove)                 
+                                @Html.HiddenFor(m => m.IsMove)                 
+                                @Html.HiddenFor(m => m.MovedUserId)                 
+                                @Html.TextBoxFor(m => m.CompanyName, new { id = "CompanyName", maxlength = "20", onblur = "javaScript:jQuery(this).replaceSpecialCharacter();" })<br />
+                                <span>Tìm kỹ trước khi nhập mới, tên viết tắt không quá 20 ký tự.</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass"><label>Customer Name</label></td>
+                            <td class="TDClass">
+                                @Html.TextBoxFor(m => m.FullName, new { id = "FullName", maxlength = "100" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Address
+                                </label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.TextAreaFor(m => m.Address, new { id = "Address", maxlength = "200" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Customer Type
+                                </label>
+                            </td>
+                            <td class="TDClass">
+
+                                @Html.DropDownList("Type", (SelectList)ViewData["CustomerTypes"], new { id = "Type" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="TDClass">
+                                <label>
+                                    Description
+                                </label>
+                            </td>
+                            <td class="TDClass">
+                                @Html.TextAreaFor(m => m.Description, new { id = "Description", style = "width: 643px; height: 96px;" })
+                                <br />
+                                <div>
+                                    <span>Ghi chú được nhập tối đa 500 ký tự.</span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td>
+                                @if (Model.Id != 0)
+                                {
+                                    <input type="button" id="btnSave" onclick="return Customer.SubmitForm();" value="Updade" />
+                                }
+                                else
+                                {
+                                    <input type="button" id="btnSave" onclick="return Customer.SubmitForm();" value="Create" />
+                                }
+                                  
+                                <input type="button" value="Cancel" onclick="javascript:jQuery('#ModifyDeptZone').hide();" style="width:75px; background-color:#ED1B2E;" />
+                            </td>
+                        </tr>
+                    </table>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#btnSave").click(function (e) {
+            var form = document.getElementById('frmCustomer');
+            var formData = new FormData(form);
+            var check = Customer.SubmitForm();
+            if (check == true) {
+                e.preventDefault();
+                jQuery.mbqAjax({
+                    method: "POST",
+                    dataType: 'html',
+                    contentType: false,
+                    processData: false,
+                    url: '@Url.Action("EditCustomer","Data")',
+                    data: formData,
+                    success: function (data) {
+                        if (data === "1") {
+                            window.location.href = '@Url.Action("Index","Data")';
+                        } else {
+                            jQuery("#ModifyDeptZone").html(data);
+                            jQuery('#ModifyDeptZone').show();
+                        }
+                    }
+                });
+            } else {
+                return false;
+            }
+        });
+    });
+
+</script>

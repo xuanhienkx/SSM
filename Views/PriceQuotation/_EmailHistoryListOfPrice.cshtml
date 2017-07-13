@@ -1,0 +1,57 @@
+﻿@using SSM.Common
+@model SSM.Models.CRM.CRMPriceQuotationModel 
+<div class="row">
+    <div class="col-md-10"><h3>Job Ref: @Model.Id.ToString("D4")</h3></div>
+    <div class="col-md-2 center-block media-bottom deleteRow" id="email-refresh"><i class="fa fa-refresh fa-2x text-success right" style="margin-top: 25px;"></i></div>  
+</div>
+
+<div class="clearfix"></div>
+@if (Model.CRMEmailHistories.Count > 0)
+{
+    <div>
+        Lịch sử gửi mail: Total:@Model.CountSendMail mail last mail sent: @Html.ToDateDisplay(Model.LastDateSend, true)
+    </div>
+}   
+<div style=" border: 2px solid #fff;
+    margin-top: 5px;
+    height: 280px;
+    overflow: auto;
+    padding: 5px">
+    <table class="table table-striped fa-border">
+        <tr>
+            <th>To</th>
+            <th>Subject</th>
+            <th>Date</th>
+        </tr>
+        <tbody >
+            @if (Model.CRMEmailHistories.Any())
+            {
+                foreach (var emailHistory in Model.CRMEmailHistories.OrderByDescending(x=>x.DateSend))
+                {
+                    <tr>
+                        <td>@emailHistory.ToAddress</td>
+                        <td>@emailHistory.Subject</td>
+                        <td class="text-right">@Html.ToDateDisplay(emailHistory.DateSend, true)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>   
+</div>
+<script type="text/javascript">
+    jQuery("#email-refresh").on("click", function(e) {   
+        jQuery.mbqAjax({
+            url: '@Url.Action("EmailHistoryOfPrice", "PriceQuotation")',
+            data: { id: @Model.Id },
+            method: "GET",
+            dataType: 'html',
+            success: function (result) {
+                jQuery("#emailListInfo").html(result);
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                alert("Error getting prospect list: " + textStatus);
+            }
+        });
+    });
+
+</script>

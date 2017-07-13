@@ -1,0 +1,147 @@
+﻿@using SSM.Common
+@using SSM.Controllers
+@using SSM.Models
+@using SSM.Models.CRM
+@using SSM.Services
+@model System.Collections.Generic.IEnumerable<SSM.Models.CRMPriceQuotation>
+@{
+    long cusId = 0;
+    var currentUser = (User)Session[AccountController.USER_SESSION_ID];
+}
+<div class="">
+    <table class="grid table table-condensed">
+        <tr>
+            <th>
+                <a href="#" onclick="sortAction('Id');">
+                    <div class="SortHeader-label">Job Ref</div>
+                    <div id="Id_Title" class="SortHeader">
+                        <img src="/Images/sort_asc.gif" />
+                    </div>
+                </a>
+            </th>
+            <th>
+                <a href="#" onclick="sortAction('Subject');">
+                    <div class="SortHeader-label">Mô tả báo giá</div>
+                    <div id="Subject_Title" class="SortHeader">
+                        <img src="/Images/sort_asc.gif" />
+                    </div>
+                </a>
+            </th>
+            <th>Khách hàng</th>
+
+            <th>Ngày tạo</th>
+            <th>Số lần gửi email</th>
+            <th>Ngày gửi cuối</th>
+            <th>Tiến độ</th>
+            <th>Sale</th>
+            <th>Delete</th>
+            <th>Email</th>
+        </tr>
+        @if (Model != null && Model.Any())
+        {
+            int no = 0;
+
+            var classLight = string.Empty;
+            foreach (CRMPriceQuotation it in Model)
+            {
+                cusId = it.CrmCusId;
+                CRMPriceStaus status = CRMPriceStaus.All;
+                if (it.CRMPriceStatus != null)
+                {
+                    status = (CRMPriceStaus)it.CRMPriceStatus.Code;
+                }
+                var classColor = string.Empty;
+                if (status.Equals(CRMPriceStaus.Following))
+                {
+                    classColor = "text-crm-regular";
+                }
+                else if (status.Equals(CRMPriceStaus.Finished))
+                {
+                    classColor = "text-crm-successed";
+                }
+                else if (status.Equals(CRMPriceStaus.Cancel))
+                {
+                    classColor = "text-crm-finished";
+                }
+                <tr>
+                    <td>
+                        @Ajax.Link(it.Id.ToString("D4"), "Edit", "PriceQuotation", new { id = it.Id }, new MyAjaxOptions()
+                   {
+                       HttpMethod = "get",
+                       DataType = "json",
+                       ContentType = "application/json; charset=utf-8"
+                   }, new { @class = classColor })
+                    </td>
+                    <td>@it.Subject</td>
+                    <td>@it.CRMCustomer.CompanyShortName</td>
+                    <td>@Html.ToDateDisplay(it.CreatedDate)</td>
+                    <td>@it.CountSendMail</td>
+                    <td>@Html.ToDateDisplay(it.LastDateSend)</td>
+                    <td class="@classColor">@string.Format("{0}", it.CRMPriceStatus != null ? it.CRMPriceStatus.Name : "Other")</td>
+                    <td>@it.User.FullName</td>
+                    @if (currentUser.IsDepOrDirecter() || currentUser.Id == it.CreatedById)
+                    {
+                        <td class="text-center deleteRow" id="del_@it.Id">
+                            @Ajax.Link("", "Delete", "PriceQuotation", new { id = it.Id, cusId = it.CrmCusId }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8",
+                           Confirm = "Bạn thực sự muốn xoá báo giá này không?"
+
+                       }, new { @class = "fa fa-trash trDel" })
+                        </td>
+                        <td class="text-center deleteRow">
+                            @Ajax.Link("", "PriceQuotationSendMail", "PriceQuotation", new { id = it.Id }, new MyAjaxOptions()
+                       {
+                           HttpMethod = "get",
+                           DataType = "json",
+                           ContentType = "application/json; charset=utf-8"
+
+                       }, new { @class = "fa fa-envelope-o", id = "mail_" + it.Id })
+
+                        </td>
+                    }
+                    else
+                    {
+                        <td></td>
+                        <td></td>
+
+                    }
+
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="10" class="text-center">Không có dữ liệu</td>
+            </tr>
+        }
+    </table>
+</div>
+
+@if (cusId > 0)
+{
+    <div id="btn-priceRefesh" class="inlin-item" style="margin-left: 10px;margin-left: 28px;  margin-top: -2px;  position: fixed;">
+        @Ajax.Link("", "ListByCus", "PriceQuotation", new { refId = cusId }, new MyAjaxOptions()
+   {
+       HttpMethod = "get",
+       DataType = "json",
+       ContentType = "application/json; charset=utf-8"
+
+   }, new { @class = "fa fa-refresh" })
+
+
+    </div>
+}
+
+<script type="text/javascript">
+    jQuery(function () {
+        if (jQuery("#btn-priceRefesh").length > 0) {
+            var btn = jQuery(".jconfirm-box").find("#btn-priceRefesh").clone();
+            jQuery(".jconfirm-box").find(".title-c").append(btn);
+            jQuery(".jconfirm-box").find(".content").find("#btn-priceRefesh").remove();
+        }
+    });
+</script>
