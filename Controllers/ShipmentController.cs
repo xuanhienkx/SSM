@@ -2019,6 +2019,8 @@ namespace SSM.Controllers
         [HttpPost]
         public ActionResult ViewSOA(SOAModel Model1)
         {
+            agents = agents ?? agentService.GetAll(a => a.IsActive).OrderBy(x => x.AbbName);
+            ViewData["AgentsList"] = new SelectList(agents, "Id", "AbbName");
             if (Model1.AgentId <= 0)
             {
                 return View(Model1);
