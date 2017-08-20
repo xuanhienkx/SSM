@@ -83,18 +83,18 @@
                                 %>
                                 <tr>
                         <td><label class="Label">Profit of <%= ReportProcess.ElementAt(1).PerformModels.ElementAt(ti).SaleType %></label></td>
-                        <td><%= ReportProcess.ElementAt(0).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(1).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(2).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(3).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(4).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(5).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(6).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(7).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(8).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(9).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(10).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(11).PerformModels.ElementAt(ti).Profit.ToString("N2")%></td>
+                        <td><%= ReportProcess.ElementAt(0).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(1).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(2).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(3).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(4).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(5).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(6).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(7).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(8).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(9).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(10).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(11).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
                         <td><%= TotalProfiltSaleTypes[ti].ToString("N2")%></td>
                         </tr>
                         <tr>
@@ -119,19 +119,19 @@
                                                
                         <tr>
                         <td><label class="Label">Total profit</label></td>
-                        <td><%= ReportProcess.ElementAt(0).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(1).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(2).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(3).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(4).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(5).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(6).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(7).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(8).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(9).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(10).SumProfit.ToString("N2")%></td>
-                        <td><%= ReportProcess.ElementAt(11).SumProfit.ToString("N2")%></td>
-                        <td><%= TotalProfilt.ToString("N2")%></td>
+                        <td><%= ReportProcess.ElementAt(0).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(1).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(2).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(3).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(4).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(5).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(6).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(7).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(8).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(9).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(10).SumProfit.ToString("N0")%></td>
+                        <td><%= ReportProcess.ElementAt(11).SumProfit.ToString("N0")%></td>
+                        <td><%= TotalProfilt.ToString("N0")%></td>
                         </tr>
                         <tr>
                         <td><label class="Label">Total perform(%)</label></td>
