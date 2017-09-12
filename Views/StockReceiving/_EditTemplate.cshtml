@@ -85,7 +85,7 @@
                     var notePrints = jQuery(".jconfirm-box-container").find("#NotePrints").val();
                     var id = jQuery("#VoucherId").val();
                     var data = { id: id,note : notePrints };
-                    
+                    var includeCheck = jQuery(".jconfirm-box-container").find("#includeLogin").is(":checked");
                     jQuery.mbqAjax({
                         url: '@Url.Action("UpdateNote", "StockReceiving")',
                         method: 'POST',
@@ -95,7 +95,7 @@
                         success: function(result) {
                             if (result == "ok") {
                                 jQuery("#NotePrints-html > textarea#NotePrints").val(notePrints);
-                                window.open("@Url.Action("Print", new { id = Model.VoucherId})");
+                                window.open("@Url.Action("Print", new { id = Model.VoucherId})" +"?isLogin=" + includeCheck);
                                 jQuery(".closeIcon").click();
                                 window.location.href = "@Url.Action("Edit", new { id = Model.VoucherId})";
                             } else {
@@ -532,6 +532,9 @@
     <div class="clearfix">
         <span>Ghi chú được nhập tối đa 1000 ký tự.</span>
     </div>
+    <div>
+    <input type="checkbox" name="includeLogin" id="includeLogin" checked="checked" /><span>Người đăng nhập là người lập phiếu.</span>
+</div>
 </div>
 <script type="text/javascript">
      

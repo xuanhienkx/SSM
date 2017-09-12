@@ -8,6 +8,8 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
+using CrystalDecisions.ReportAppServer.ReportDefModel;
+
 namespace SSM.Reports {
     using System;
     using System.ComponentModel;

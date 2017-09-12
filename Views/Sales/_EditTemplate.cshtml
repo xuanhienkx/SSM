@@ -57,7 +57,7 @@
             check = jQuery("form").CheckRequired();
             var rate = parseFloat(jQuery("#ExchangeRate").val().replace(/\,/g, ''));
             if (check == false)
-                return false; 
+                return false;
             else if (rate == 0) {
                 jQuery("#ExchangeRate").focus();
                 jQuery("#ExchangeRate").addClass("input-validation-error");
@@ -93,7 +93,8 @@
                     var notePrints = jQuery(".jconfirm-box-container").find("#NotePrints").val();
                     var id = jQuery("#VoucherId").val();
                     var data = { id: id,note : notePrints };
-                    
+                    var includeCheck = jQuery(".jconfirm-box-container").find("#includeLogin").is(":checked");
+                    console.log(includeCheck);
                     jQuery.mbqAjax({
                         url: '@Url.Action("UpdateNote", "Sales")',
                         method: 'POST',
@@ -101,8 +102,8 @@
                         dataType: "json",
                         contentType: "application/json; charset=utf-8",
                         success: function(result) {
-                            if (result == "ok") {
-                                window.open("@Url.Action("Print", new { id = Model.VoucherId})");
+                            if (result === "ok") {   
+                                window.open("@Url.Action("Print", new { id = Model.VoucherId})" +"?isLogin=" + includeCheck);
                                 jQuery(".closeIcon").click();
                                 jQuery("#NotePrints-html #NotePrints").val(notePrints);
                                 window.location.href = "@Url.Action("Edit", new { id = Model.VoucherId})";
@@ -115,7 +116,7 @@
                             }
                         }
                     });
-                   
+
                 },
                 cancel: function () {
 
@@ -298,7 +299,7 @@
             return false;
         });
         jQuery(".call").blur(function () {
-            var exRate = parseFloat(jQuery("#ExchangeRate").val().replace(/\,/g, '')); 
+            var exRate = parseFloat(jQuery("#ExchangeRate").val().replace(/\,/g, ''));
             var $tr = jQuery(this).parents("tr:first");
             var qty = parseFloat($tr.find(".Quantity:first").val().replace(/\,/g, ''));
             var vnprice = parseFloat($tr.find(".VnPrice:first").val().replace(/\,/g, ''));
@@ -311,7 +312,7 @@
             $tr.find(".Amount:first").val(tt.toFixed(2).toLocaleString());
             $tr.find(".VnAmount:first").val(vntt.toLocaleString());
             callSumTotal();
-              
+
              jQuery(document).InitFormat();
         });
         jQuery(".resizable").TablResizable();
@@ -361,7 +362,7 @@
             var qty = parseFloat($tr.find(".Quantity:first").val().replace(/\,/g, ''));
             var amount = parseFloat($tr.find(".Amount:first").val().replace(/\,/g, ''));
             var vnAmount = parseFloat($tr.find(".VnAmount:first").val().replace(/\,/g, ''));
-            tQuantity += qty; 
+            tQuantity += qty;
             tAmount += amount;
             tVnAmount += vnAmount;
         });
@@ -369,7 +370,7 @@
         var $trSum = jQuery(".sumrow");
         $trSum.find(".TQuantity:first").html(tQuantity.toLocaleString());
         $trSum.find(".TAmount:first").html(tAmount );
-        $trSum.find(".TVnAmount:first").html(tVnAmount.toLocaleString()); 
+        $trSum.find(".TVnAmount:first").html(tVnAmount.toLocaleString());
         jQuery("#totalAmoutSale.vAmount").val(sumTotal.toLocaleString());
 
     }
@@ -546,10 +547,13 @@
     </div>
 </div>
 <div style="display: none" id="NotePrints-html">
-    @Html.TextAreaFor(m => m.NotePrints, new { style = "width: 663px; height: 230px;", maxlength=1000, cols = "40" })
+    @Html.TextAreaFor(m => m.NotePrints, new { style = "width: 663px; height: 230px;", maxlength = 1000, cols = "40" })
     <br />
     <div class="clearfix">
         <span>Ghi chú được nhập tối đa 1000 ký tự.</span>
+    </div>
+    <div>
+        <input type="checkbox" name="includeLogin" id="includeLogin" checked="checked"/><span>Người đăng nhập là người lập phiếu.</span>
     </div>
 </div>
 <script type="text/javascript">

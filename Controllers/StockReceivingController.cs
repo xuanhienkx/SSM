@@ -332,17 +332,17 @@ namespace SSM.Controllers
             return Json(html, JsonRequestBehavior.AllowGet);
         }
 
-        public void Print(long id)
+        public void Print(long id, bool isLogin = true)
         {
             var allEverest = new List<StockInDetailReport>();
             var order = stockReceivingService.GetByModel(id);
             allEverest.AddRange(order.OrderDetails.Select(x => new StockInDetailReport
             {
-                ProductCode = x.Product.Code ?? "",
-                ProductName = x.Product.Name ?? "",
-                WarehouseName = x.Warehouse.Name ?? "",
+                ProductCode = $"{x.Product.Code}",
+                ProductName = $"{x.Product.Name}{ Environment.NewLine}- Tại: {x.Warehouse.Name}",
+                WarehouseName = $"{x.Warehouse.Name}",
                 Unit = x.UOM ?? "",
-                WarehouseAddress = x.Warehouse.Address ?? "",
+                WarehouseAddress =$"{ x.Warehouse.Address}",
                 Price = x.PriceReceive,
                 Quantity = x.Quantity,
                 Amount = x.Total
@@ -356,6 +356,7 @@ namespace SSM.Controllers
                 rd.SetParameterValue("supplierName", order.Supplier.FullName ?? "");
                 rd.SetParameterValue("supplierAddress", order.Supplier.Address ?? "");
                 rd.SetParameterValue("voucherDate", order.VoucherDate ?? DateTime.Now);
+                rd.SetParameterValue("DesignerName", isLogin ? CurrenUser.FullName : " ");
                 rd.SetParameterValue("strDate",
                     string.Format("Ngày {0:dd} tháng {0:MM} năm {0:yyyy}", order.VoucherDate ?? DateTime.Now));
                 rd.SetParameterValue("totalString", order.TTT.DecimalToString(CodeCurrency.USD));
@@ -364,7 +365,7 @@ namespace SSM.Controllers
                 rd.SetParameterValue("voucherNo", order.VoucherNo ?? " ");
                 rd.SetParameterValue("note", string.IsNullOrEmpty(order.NotePrints) ? " " : order.NotePrints);
                 rd.ExportToHttpResponse(ExportFormatType.PortableDocFormat, System.Web.HttpContext.Current.Response,
-                    false, string.Format("phieunhap_{0}", order.VoucherNo));
+                    false, $"phieunhap_{order.VoucherNo}");
                 rd.Dispose();
             }
             catch (Exception ex)

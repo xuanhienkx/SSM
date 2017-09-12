@@ -213,14 +213,14 @@ namespace SSM.Controllers
             ViewData["tabindex"] = tabindex;
             return PartialView("_SalesDetailView", new SalesDetailModel());
         }
-        public void Print(long id)
+        public void Print(long id, bool isLogin = true)
         {
             var allEverest = new List<StockInDetailReport>();
             var order = salesServices.GetModelById(id);
             allEverest.AddRange(order.DetailModels.Select(x => new StockInDetailReport
             {
                 ProductCode = x.Product.Code,
-                ProductName = x.Product.Name,
+                ProductName = $"{x.Product.Name}{ Environment.NewLine}- Tại: {x.Warehouse.Name}",
                 WarehouseName = x.Warehouse.Name,
                 Unit = x.UOM,
                 WarehouseAddress = x.Warehouse.Address ?? string.Empty,
@@ -231,19 +231,20 @@ namespace SSM.Controllers
 
             try
             {
-                ReportDocument rd = new ReportDocument();
+                var rd = new ReportDocument();
                 rd.Load(Path.Combine(Server.MapPath(@"~/bin/Reports"), "RpStockOut.rpt"));
                 rd.SetDataSource(allEverest);
                 rd.SetParameterValue("supplierName", order.Customer.FullName ?? "");
                 rd.SetParameterValue("supplierAddress", order.Customer.Address ?? "");
                 rd.SetParameterValue("voucherDate", order.VoucherDate ?? DateTime.Now);
+                rd.SetParameterValue("DesignerName", isLogin ? CurrenUser.FullName : " ");
                 rd.SetParameterValue("note", string.IsNullOrEmpty(order.NotePrints) ? " " : order.NotePrints);
                 rd.SetParameterValue("strDate",
                     string.Format("Ngày {0:dd} tháng {0:MM} năm {0:yyyy}", order.VoucherDate ?? DateTime.Now));
                 rd.SetParameterValue("totalString", order.VnAmount.DecimalToString(CodeCurrency.VND));
                 rd.SetParameterValue("voucherNo", order.VoucherNo ?? " ");
                 rd.ExportToHttpResponse(ExportFormatType.PortableDocFormat, System.Web.HttpContext.Current.Response,
-                    false, string.Format("phieuxuat_{0}", order.VoucherNo));
+                    false, $"phieuxuat_{order.VoucherNo}");
                 rd.Dispose();
             }
             catch (Exception ex)
@@ -263,7 +264,7 @@ namespace SSM.Controllers
                     {
                         shipmentServices.DeleteShipment(mt.Shipments.Id);
                     }
-                    Logger.Log(string.Format("{0} delete sale order with id {1} bill {2}", CurrenUser.FullName, mt.VoucherID, mt.VoucherNo));
+                    Logger.Log($"{CurrenUser.FullName} delete sale order with id {mt.VoucherID} bill {mt.VoucherNo}");
                     salesServices.DeleteOrder(mt);
 
                 }
