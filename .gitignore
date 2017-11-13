@@ -7,3 +7,8 @@
 /packages
 /.vs/SSM/v15
 /Logs
+/.vs/config
+/SSM.csproj.user
+/SSM.csproj.vspscc
+/SSM.sln.DotSettings.user
+/SSM.vssscc
