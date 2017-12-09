@@ -151,6 +151,7 @@ namespace SSM.Services.CRM
                              && (filter.JobCategory.Id == 0 || x.CrmCategoryId == filter.JobCategory.Id)
                              && (filter.CrmGroup.Id == 0 || x.CrmGroupId == filter.CrmGroup.Id)
                              && (filter.SaleType.Id == 0 || x.SaleTypeId == filter.SaleType.Id)
+                             && (filter.Province.Id == 0 || x.CrmProvinceId == filter.Province.Id)
                              && (filter.SalesId == 0 || x.CreatedById == filter.SalesId || Context.CRMFollowCusUsers.Any(f => f.CrmId == x.Id && f.UserId == filter.SalesId)));
       if (filter.DeptId != 0)
       {
@@ -470,6 +471,7 @@ namespace SSM.Services.CRM
       fModel.CrmGroup = fModel.CrmGroup ?? new CRMGroup();
       fModel.CRMSource = fModel.CRMSource ?? new CRMSource();
       fModel.JobCategory = fModel.JobCategory ?? new CRMJobCategory();
+      fModel.Province = fModel.Province ?? new Province();
       totalRows = 0;
       var qr = GetQuyryCustomers(fModel, currenUser);
       totalRows = qr.Count();

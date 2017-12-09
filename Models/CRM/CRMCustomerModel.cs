@@ -91,6 +91,7 @@ namespace SSM.Models.CRM
         public CRMSource CRMSource { get; set; }
         public CRMGroup CrmGroup { get; set; }
         public SaleType SaleType { get; set; }
+        public Province Province{ get; set; }
         public long? Id { get; set; }
         public string Email { get; set; }
         public string Phone { get; set; }   

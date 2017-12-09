@@ -238,9 +238,7 @@ namespace SSM.Controllers
                 cusFollow = list.Count(x => x.Code == CRMStatusCode.Potential
                 && (filterModel.SalesId == 0 || x.Customer.CreatedById == filterModel.SalesId)
                 && (filterModel.DeptId == 0 || x.CreaterdBy.DeptId == filterModel.DeptId));
-                // cusRegular = list.Count(x => x.Customer.CRMStatus.Code == (byte)CRMStatusCode.Lost
-                //&& (filterModel.SalesId == 0 || x.Customer.CreatedById == filterModel.SalesId)
-                // && (filterModel.DeptId == 0 || x.CreaterdBy.DeptId == filterModel.DeptId));
+                
                 cuscompleted = list.Count(x => x.Code == CRMStatusCode.Success
                 && (filterModel.SalesId == 0 || x.Customer.CreatedById == filterModel.SalesId)
                 && (filterModel.DeptId == 0 || x.CreaterdBy.DeptId == filterModel.DeptId));
@@ -810,7 +808,7 @@ namespace SSM.Controllers
         }
         public JsonResult ProvinceSuggest(string term, long countryId)
         {
-            var result = provinceService.GetQuery(x => x.Name.ToLower().Contains(term.ToLower()) && countryId == x.CountryId)
+            var result = provinceService.GetQuery(x => x.Name.ToLower().Contains(term.ToLower()) && (countryId==0 || countryId == x.CountryId))
                 .OrderBy(x => x.Name).Take(20)
                 .Select(x => new { id = x.Id, Display = x.Name })
                 .ToList();
