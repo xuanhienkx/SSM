@@ -12,3 +12,5 @@
 /SSM.csproj.vspscc
 /SSM.sln.DotSettings.user
 /SSM.vssscc
+/Properties/PublishProfiles/CustomProfile.pubxml.user
+/.vs/SSM.sqlite
