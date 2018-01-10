@@ -1101,14 +1101,10 @@ namespace SSM.Services
             return "";
         }
 
-        public Setting getComLogoSetting(String Name)
+        public Setting getComLogoSetting(string Name)
         {
-            Setting TaxSetting = getSetting(Name);
-            if (TaxSetting != null)
-            {
-                return TaxSetting;
-            }
-            return null;
+            var taxSetting = getSetting(Name);
+            return taxSetting ?? null;
         }
         public bool UpdateTaxCommission(long Tax)
         {
@@ -1121,9 +1117,11 @@ namespace SSM.Services
                 }
                 else
                 {
-                    Setting setting1 = new Setting();
-                    setting1.DataCode = SettingModel.TAX_COMMISSION;
-                    setting1.DataValue = Tax.ToString();
+                    var setting1 = new Setting
+                    {
+                        DataCode = SettingModel.TAX_COMMISSION,
+                        DataValue = Tax.ToString()
+                    };
                     db.Settings.InsertOnSubmit(setting1);
                 }
                 db.SubmitChanges();
@@ -1138,16 +1136,18 @@ namespace SSM.Services
         {
             try
             {
-                Setting pageSetting = Context.Settings.FirstOrDefault(x => x.DataCode == SettingModel.PAGE_SETTING);
+                var pageSetting = Context.Settings.FirstOrDefault(x => x.DataCode == SettingModel.PAGE_SETTING);
                 if (pageSetting != null)
                 {
                     pageSetting.DataValue = page.ToString();
                 }
                 else
                 {
-                    Setting setting1 = new Setting();
-                    setting1.DataCode = SettingModel.PAGE_SETTING;
-                    setting1.DataValue = page.ToString();
+                    var setting1 = new Setting
+                    {
+                        DataCode = SettingModel.PAGE_SETTING,
+                        DataValue = page.ToString()
+                    };
                     db.Settings.InsertOnSubmit(setting1);
                 }
                 db.SubmitChanges();
@@ -1169,9 +1169,11 @@ namespace SSM.Services
                 }
                 else
                 {
-                    Setting setting1 = new Setting();
-                    setting1.DataCode = SettingModel.PAGE_SETTING;
-                    setting1.DataValue = day;
+                    var setting1 = new Setting
+                    {
+                        DataCode = SettingModel.PAGE_SETTING,
+                        DataValue = day
+                    };
                     db.Settings.InsertOnSubmit(setting1);
                 }
                 db.SubmitChanges();
@@ -1283,7 +1285,6 @@ namespace SSM.Services
         {
             try
             {
-
                 db.SaleTypes.DeleteOnSubmit(getSaleTypeById(Id));
                 db.SubmitChanges();
                 return true;

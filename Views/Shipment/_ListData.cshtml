@@ -81,10 +81,7 @@
             Sale
         </th>
         <th> Type </th>
-        @if (User1.IsAdmin())
-        {
-            <th> APPR </th>
-        }
+        <th> APPR </th>
         <th> COM </th>
         <th> INV </th>
         <th>
@@ -230,26 +227,23 @@
 
 
                 </td>
-                @if (User1.IsAdmin())
-                {
-                    <td>
-                        @if (Shipment1.Revenue != null)
+                <td>
+                    @if (Shipment1.Revenue != null)
+                    {
+                        if ((Shipment1.Revenue.SaleType) == "Sales")
                         {
-                            if ((Shipment1.Revenue.SaleType) == "Sales")
-                            {
-                                <label style="font-weight: normal; color: Red">@Shipment1.Revenue.SaleType</label>
-                            }
-                            else if ((Shipment1.Revenue.SaleType) == "MgrSales")
-                            {
-                                <label style="font-weight: normal; color: #0E2BDF">@Shipment1.Revenue.SaleType</label>
-                            }
-                            else
-                            {
-                                <label style="font-weight: normal; color: Black">@Shipment1.Revenue.SaleType</label>
-                            }
+                            <label style="font-weight: normal; color: Red">@Shipment1.Revenue.SaleType</label>
                         }
-                    </td>
-                }
+                        else if ((Shipment1.Revenue.SaleType) == "MgrSales")
+                        {
+                            <label style="font-weight: normal; color: #0E2BDF">@Shipment1.Revenue.SaleType</label>
+                        }
+                        else
+                        {
+                            <label style="font-weight: normal; color: Black">@Shipment1.Revenue.SaleType</label>
+                        }
+                    }
+                </td>
                 <td>
                     @if (Shipment1.Revenue != null && (Shipment1.Revenue.EXCommision2Shipper.Value > 0 || Shipment1.Revenue.EXCommision2Carrier.Value > 0))
                     {

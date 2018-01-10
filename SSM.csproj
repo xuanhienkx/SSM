@@ -256,6 +256,7 @@
     <Compile Include="Controllers\ProfitReportController.cs" />
     <Compile Include="Controllers\ReportController.cs" />
     <Compile Include="Controllers\SalesController.cs" />
+    <Compile Include="Controllers\SaleTypesController.cs" />
     <Compile Include="Controllers\ServicesController.cs" />
     <Compile Include="Controllers\ShipmentController.cs" />
     <Compile Include="Controllers\StockReceivingController.cs" />

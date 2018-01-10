@@ -104,8 +104,6 @@ namespace SSM.Controllers
                                     Sord = "asc",
                                     Sidx = "FullName"
                                 }
-
-
                             );
                 userGrid.SearchCriteria = new UsersModel();
             }

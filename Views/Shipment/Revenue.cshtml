@@ -426,17 +426,17 @@
                                             </tr>
                                             <tr>
                                                 <td></td>
-                                                <td>Request</td>
-                                                <td>Approved</td>
+                                                <td>Approved SaleType</td>
+                                               @* <td>Approved</td>*@
                                                 <td colspan="2" style="text-align: center">Bonus</td>
                                             </tr>
                                             <tr>
                                                 <td></td>
-                                                <td>
+                                               @* <td>
                                                     <input disabled="disabled" value="@ViewData["saletype"]" class="ShipmentInputShort" />
-                                                </td>
-                                                <td>
-                                                    @Html.DropDownListFor(m => m.BonRequest, new SelectList(saleTypes, "Value", "Name"), new { @class = "RevenueInv" })
+                                                </td>*@
+                                                <td colspan="2">
+                                                    @Html.DropDownListFor(m => m.BonRequest, new SelectList(saleTypes, "Value", "Name"), new { @class = "RevenueInv" , style= "width:225px" })
 
                                                 </td>
                                                 <td>@Html.TextBoxFor(m => m.BonApprove, new { ReadOnly = "true", Class = "RevenueInvText" })%</td>

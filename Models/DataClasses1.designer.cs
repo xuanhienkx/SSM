@@ -117,9 +117,6 @@ namespace SSM.Models
     partial void InsertSalePlan(SalePlan instance);
     partial void UpdateSalePlan(SalePlan instance);
     partial void DeleteSalePlan(SalePlan instance);
-    partial void InsertSaleType(SaleType instance);
-    partial void UpdateSaleType(SaleType instance);
-    partial void DeleteSaleType(SaleType instance);
     partial void InsertServerFile(ServerFile instance);
     partial void UpdateServerFile(ServerFile instance);
     partial void DeleteServerFile(ServerFile instance);
@@ -243,10 +240,13 @@ namespace SSM.Models
     partial void InsertCRMVisit(CRMVisit instance);
     partial void UpdateCRMVisit(CRMVisit instance);
     partial void DeleteCRMVisit(CRMVisit instance);
+    partial void InsertSaleType(SaleType instance);
+    partial void UpdateSaleType(SaleType instance);
+    partial void DeleteSaleType(SaleType instance);
     #endregion
 		
 		public DataClasses1DataContext() : 
-				base(global::System.Configuration.ConfigurationManager.ConnectionStrings["SSMConnectionString"].ConnectionString, mappingSource)
+				base(global::System.Configuration.ConfigurationManager.ConnectionStrings["SCFV4ConnectionString"].ConnectionString, mappingSource)
 		{
 			OnCreated();
 		}
@@ -504,14 +504,6 @@ namespace SSM.Models
 			get
 			{
 				return this.GetTable<SalePlan>();
-			}
-		}
-		
-		public System.Data.Linq.Table<SaleType> SaleTypes
-		{
-			get
-			{
-				return this.GetTable<SaleType>();
 			}
 		}
 		
@@ -840,6 +832,14 @@ namespace SSM.Models
 			get
 			{
 				return this.GetTable<CRMVisit>();
+			}
+		}
+		
+		public System.Data.Linq.Table<SaleType> SaleTypes
+		{
+			get
+			{
+				return this.GetTable<SaleType>();
 			}
 		}
 		
@@ -17426,6 +17426,8 @@ namespace SSM.Models
 		
 		private bool _IsRequest;
 		
+		private long _SaleTypeId;
+		
 		private EntitySet<InvoideIssued> _InvoideIssueds;
 		
 		private EntitySet<SOAInvoice> _SOAInvoices;
@@ -17620,6 +17622,8 @@ namespace SSM.Models
     partial void OnIsRevisedChanged();
     partial void OnIsRequestChanging(bool value);
     partial void OnIsRequestChanged();
+    partial void OnSaleTypeIdChanging(long value);
+    partial void OnSaleTypeIdChanged();
     #endregion
 		
 		public Revenue()
@@ -19414,6 +19418,26 @@ namespace SSM.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SaleTypeId", DbType="BigInt")]
+		public long SaleTypeId
+		{
+			get
+			{
+				return this._SaleTypeId;
+			}
+			set
+			{
+				if ((this._SaleTypeId != value))
+				{
+					this.OnSaleTypeIdChanging(value);
+					this.SendPropertyChanging();
+					this._SaleTypeId = value;
+					this.SendPropertyChanged("SaleTypeId");
+					this.OnSaleTypeIdChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Revenue_InvoideIssued", Storage="_InvoideIssueds", ThisKey="Id", OtherKey="RevenueId")]
 		public EntitySet<InvoideIssued> InvoideIssueds
 		{
@@ -19984,168 +20008,6 @@ namespace SSM.Models
 		}
 	}
 	
-	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.SaleType")]
-	public partial class SaleType : INotifyPropertyChanging, INotifyPropertyChanged
-	{
-		
-		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
-		
-		private long _Id;
-		
-		private string _Name;
-		
-		private System.Nullable<decimal> _Value;
-		
-		private System.Nullable<bool> _Active;
-		
-		private EntitySet<CRMCustomer> _CRMCustomers;
-		
-    #region Extensibility Method Definitions
-    partial void OnLoaded();
-    partial void OnValidate(System.Data.Linq.ChangeAction action);
-    partial void OnCreated();
-    partial void OnIdChanging(long value);
-    partial void OnIdChanged();
-    partial void OnNameChanging(string value);
-    partial void OnNameChanged();
-    partial void OnValueChanging(System.Nullable<decimal> value);
-    partial void OnValueChanged();
-    partial void OnActiveChanging(System.Nullable<bool> value);
-    partial void OnActiveChanged();
-    #endregion
-		
-		public SaleType()
-		{
-			this._CRMCustomers = new EntitySet<CRMCustomer>(new Action<CRMCustomer>(this.attach_CRMCustomers), new Action<CRMCustomer>(this.detach_CRMCustomers));
-			OnCreated();
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
-		public long Id
-		{
-			get
-			{
-				return this._Id;
-			}
-			set
-			{
-				if ((this._Id != value))
-				{
-					this.OnIdChanging(value);
-					this.SendPropertyChanging();
-					this._Id = value;
-					this.SendPropertyChanged("Id");
-					this.OnIdChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(50)")]
-		public string Name
-		{
-			get
-			{
-				return this._Name;
-			}
-			set
-			{
-				if ((this._Name != value))
-				{
-					this.OnNameChanging(value);
-					this.SendPropertyChanging();
-					this._Name = value;
-					this.SendPropertyChanged("Name");
-					this.OnNameChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Value", DbType="Money")]
-		public System.Nullable<decimal> Value
-		{
-			get
-			{
-				return this._Value;
-			}
-			set
-			{
-				if ((this._Value != value))
-				{
-					this.OnValueChanging(value);
-					this.SendPropertyChanging();
-					this._Value = value;
-					this.SendPropertyChanged("Value");
-					this.OnValueChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Active", DbType="Bit")]
-		public System.Nullable<bool> Active
-		{
-			get
-			{
-				return this._Active;
-			}
-			set
-			{
-				if ((this._Active != value))
-				{
-					this.OnActiveChanging(value);
-					this.SendPropertyChanging();
-					this._Active = value;
-					this.SendPropertyChanged("Active");
-					this.OnActiveChanged();
-				}
-			}
-		}
-		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="SaleType_CRMCustomer", Storage="_CRMCustomers", ThisKey="Id", OtherKey="SaleTypeId")]
-		public EntitySet<CRMCustomer> CRMCustomers
-		{
-			get
-			{
-				return this._CRMCustomers;
-			}
-			set
-			{
-				this._CRMCustomers.Assign(value);
-			}
-		}
-		
-		public event PropertyChangingEventHandler PropertyChanging;
-		
-		public event PropertyChangedEventHandler PropertyChanged;
-		
-		protected virtual void SendPropertyChanging()
-		{
-			if ((this.PropertyChanging != null))
-			{
-				this.PropertyChanging(this, emptyChangingEventArgs);
-			}
-		}
-		
-		protected virtual void SendPropertyChanged(String propertyName)
-		{
-			if ((this.PropertyChanged != null))
-			{
-				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-			}
-		}
-		
-		private void attach_CRMCustomers(CRMCustomer entity)
-		{
-			this.SendPropertyChanging();
-			entity.SaleType = this;
-		}
-		
-		private void detach_CRMCustomers(CRMCustomer entity)
-		{
-			this.SendPropertyChanging();
-			entity.SaleType = null;
-		}
-	}
-	
 	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.ServerFile")]
 	public partial class ServerFile : INotifyPropertyChanging, INotifyPropertyChanged
 	{
@@ -20544,6 +20406,8 @@ namespace SSM.Models
 		
 		private System.Nullable<int> _ControlStep;
 		
+		private long _SaleTypeId;
+		
 		private EntitySet<ArriveNotice> _ArriveNotices;
 		
 		private EntitySet<AuthorLetter> _AuthorLetters;
@@ -20678,6 +20542,8 @@ namespace SSM.Models
     partial void OnIsControlChanged();
     partial void OnControlStepChanging(System.Nullable<int> value);
     partial void OnControlStepChanged();
+    partial void OnSaleTypeIdChanging(long value);
+    partial void OnSaleTypeIdChanged();
     #endregion
 		
 		public Shipment()
@@ -21512,6 +21378,26 @@ namespace SSM.Models
 					this._ControlStep = value;
 					this.SendPropertyChanged("ControlStep");
 					this.OnControlStepChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SaleTypeId", DbType="BigInt")]
+		public long SaleTypeId
+		{
+			get
+			{
+				return this._SaleTypeId;
+			}
+			set
+			{
+				if ((this._SaleTypeId != value))
+				{
+					this.OnSaleTypeIdChanging(value);
+					this.SendPropertyChanging();
+					this._SaleTypeId = value;
+					this.SendPropertyChanged("SaleTypeId");
+					this.OnSaleTypeIdChanged();
 				}
 			}
 		}
@@ -35111,13 +34997,13 @@ namespace SSM.Models
 		
 		private EntityRef<CRMStatus> _CRMStatus;
 		
-		private EntityRef<SaleType> _SaleType;
-		
 		private EntityRef<Province> _Province;
 		
 		private EntityRef<User> _User;
 		
 		private EntityRef<User> _User1;
+		
+		private EntityRef<SaleType> _SaleType;
 		
     #region Extensibility Method Definitions
     partial void OnLoaded();
@@ -35180,10 +35066,10 @@ namespace SSM.Models
 			this._CRMJobCategory = default(EntityRef<CRMJobCategory>);
 			this._CRMSource = default(EntityRef<CRMSource>);
 			this._CRMStatus = default(EntityRef<CRMStatus>);
-			this._SaleType = default(EntityRef<SaleType>);
 			this._Province = default(EntityRef<Province>);
 			this._User = default(EntityRef<User>);
 			this._User1 = default(EntityRef<User>);
+			this._SaleType = default(EntityRef<SaleType>);
 			OnCreated();
 		}
 		
@@ -35860,40 +35746,6 @@ namespace SSM.Models
 			}
 		}
 		
-		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="SaleType_CRMCustomer", Storage="_SaleType", ThisKey="SaleTypeId", OtherKey="Id", IsForeignKey=true)]
-		public SaleType SaleType
-		{
-			get
-			{
-				return this._SaleType.Entity;
-			}
-			set
-			{
-				SaleType previousValue = this._SaleType.Entity;
-				if (((previousValue != value) 
-							|| (this._SaleType.HasLoadedOrAssignedValue == false)))
-				{
-					this.SendPropertyChanging();
-					if ((previousValue != null))
-					{
-						this._SaleType.Entity = null;
-						previousValue.CRMCustomers.Remove(this);
-					}
-					this._SaleType.Entity = value;
-					if ((value != null))
-					{
-						value.CRMCustomers.Add(this);
-						this._SaleTypeId = value.Id;
-					}
-					else
-					{
-						this._SaleTypeId = default(Nullable<long>);
-					}
-					this.SendPropertyChanged("SaleType");
-				}
-			}
-		}
-		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Province_CRMCustomer", Storage="_Province", ThisKey="CrmProvinceId", OtherKey="Id", IsForeignKey=true)]
 		public Province Province
 		{
@@ -35992,6 +35844,40 @@ namespace SSM.Models
 						this._ModifyById = default(Nullable<long>);
 					}
 					this.SendPropertyChanged("User1");
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="SaleType_CRMCustomer", Storage="_SaleType", ThisKey="SaleTypeId", OtherKey="Id", IsForeignKey=true)]
+		public SaleType SaleType
+		{
+			get
+			{
+				return this._SaleType.Entity;
+			}
+			set
+			{
+				SaleType previousValue = this._SaleType.Entity;
+				if (((previousValue != value) 
+							|| (this._SaleType.HasLoadedOrAssignedValue == false)))
+				{
+					this.SendPropertyChanging();
+					if ((previousValue != null))
+					{
+						this._SaleType.Entity = null;
+						previousValue.CRMCustomers.Remove(this);
+					}
+					this._SaleType.Entity = value;
+					if ((value != null))
+					{
+						value.CRMCustomers.Add(this);
+						this._SaleTypeId = value.Id;
+					}
+					else
+					{
+						this._SaleTypeId = default(Nullable<long>);
+					}
+					this.SendPropertyChanged("SaleType");
 				}
 			}
 		}
@@ -37848,6 +37734,216 @@ namespace SSM.Models
 		{
 			this.SendPropertyChanging();
 			entity.CRMVisit = null;
+		}
+	}
+	
+	[global::System.Data.Linq.Mapping.TableAttribute(Name="dbo.SaleType")]
+	public partial class SaleType : INotifyPropertyChanging, INotifyPropertyChanged
+	{
+		
+		private static PropertyChangingEventArgs emptyChangingEventArgs = new PropertyChangingEventArgs(String.Empty);
+		
+		private long _Id;
+		
+		private string _Name;
+		
+		private System.Nullable<decimal> _Value;
+		
+		private System.Nullable<decimal> _ParentValue;
+		
+		private System.Nullable<bool> _Active;
+		
+		private System.Nullable<long> _ParentId;
+		
+		private EntitySet<CRMCustomer> _CRMCustomers;
+		
+    #region Extensibility Method Definitions
+    partial void OnLoaded();
+    partial void OnValidate(System.Data.Linq.ChangeAction action);
+    partial void OnCreated();
+    partial void OnIdChanging(long value);
+    partial void OnIdChanged();
+    partial void OnNameChanging(string value);
+    partial void OnNameChanged();
+    partial void OnValueChanging(System.Nullable<decimal> value);
+    partial void OnValueChanged();
+    partial void OnParentValueChanging(System.Nullable<decimal> value);
+    partial void OnParentValueChanged();
+    partial void OnActiveChanging(System.Nullable<bool> value);
+    partial void OnActiveChanged();
+    partial void OnParentIdChanging(System.Nullable<long> value);
+    partial void OnParentIdChanged();
+    #endregion
+		
+		public SaleType()
+		{
+			this._CRMCustomers = new EntitySet<CRMCustomer>(new Action<CRMCustomer>(this.attach_CRMCustomers), new Action<CRMCustomer>(this.detach_CRMCustomers));
+			OnCreated();
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Id", AutoSync=AutoSync.OnInsert, DbType="BigInt NOT NULL IDENTITY", IsPrimaryKey=true, IsDbGenerated=true)]
+		public long Id
+		{
+			get
+			{
+				return this._Id;
+			}
+			set
+			{
+				if ((this._Id != value))
+				{
+					this.OnIdChanging(value);
+					this.SendPropertyChanging();
+					this._Id = value;
+					this.SendPropertyChanged("Id");
+					this.OnIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Name", DbType="NVarChar(50) NOT NULL", CanBeNull=false)]
+		public string Name
+		{
+			get
+			{
+				return this._Name;
+			}
+			set
+			{
+				if ((this._Name != value))
+				{
+					this.OnNameChanging(value);
+					this.SendPropertyChanging();
+					this._Name = value;
+					this.SendPropertyChanged("Name");
+					this.OnNameChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Value", DbType="Money")]
+		public System.Nullable<decimal> Value
+		{
+			get
+			{
+				return this._Value;
+			}
+			set
+			{
+				if ((this._Value != value))
+				{
+					this.OnValueChanging(value);
+					this.SendPropertyChanging();
+					this._Value = value;
+					this.SendPropertyChanged("Value");
+					this.OnValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ParentValue", DbType="Money")]
+		public System.Nullable<decimal> ParentValue
+		{
+			get
+			{
+				return this._ParentValue;
+			}
+			set
+			{
+				if ((this._ParentValue != value))
+				{
+					this.OnParentValueChanging(value);
+					this.SendPropertyChanging();
+					this._ParentValue = value;
+					this.SendPropertyChanged("ParentValue");
+					this.OnParentValueChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_Active", DbType="Bit")]
+		public System.Nullable<bool> Active
+		{
+			get
+			{
+				return this._Active;
+			}
+			set
+			{
+				if ((this._Active != value))
+				{
+					this.OnActiveChanging(value);
+					this.SendPropertyChanging();
+					this._Active = value;
+					this.SendPropertyChanged("Active");
+					this.OnActiveChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_ParentId", DbType="BigInt")]
+		public System.Nullable<long> ParentId
+		{
+			get
+			{
+				return this._ParentId;
+			}
+			set
+			{
+				if ((this._ParentId != value))
+				{
+					this.OnParentIdChanging(value);
+					this.SendPropertyChanging();
+					this._ParentId = value;
+					this.SendPropertyChanged("ParentId");
+					this.OnParentIdChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="SaleType_CRMCustomer", Storage="_CRMCustomers", ThisKey="Id", OtherKey="SaleTypeId")]
+		public EntitySet<CRMCustomer> CRMCustomers
+		{
+			get
+			{
+				return this._CRMCustomers;
+			}
+			set
+			{
+				this._CRMCustomers.Assign(value);
+			}
+		}
+		
+		public event PropertyChangingEventHandler PropertyChanging;
+		
+		public event PropertyChangedEventHandler PropertyChanged;
+		
+		protected virtual void SendPropertyChanging()
+		{
+			if ((this.PropertyChanging != null))
+			{
+				this.PropertyChanging(this, emptyChangingEventArgs);
+			}
+		}
+		
+		protected virtual void SendPropertyChanged(String propertyName)
+		{
+			if ((this.PropertyChanged != null))
+			{
+				this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+			}
+		}
+		
+		private void attach_CRMCustomers(CRMCustomer entity)
+		{
+			this.SendPropertyChanging();
+			entity.SaleType = this;
+		}
+		
+		private void detach_CRMCustomers(CRMCustomer entity)
+		{
+			this.SendPropertyChanging();
+			entity.SaleType = null;
 		}
 	}
 }

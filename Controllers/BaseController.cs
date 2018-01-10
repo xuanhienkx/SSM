@@ -24,10 +24,7 @@ namespace SSM.Controllers
             currentUser = (User)Session[AccountController.USER_SESSION_ID];
         }
 
-        protected User CurrenUser
-        {
-            get { return currentUser ?? (User)Session[AccountController.USER_SESSION_ID]; }
-        }
+        protected User CurrenUser => currentUser ?? (User)Session[AccountController.USER_SESSION_ID];
 
         protected ActionResult NotPermistion()
         {
@@ -66,8 +63,7 @@ namespace SSM.Controllers
 
         protected List<long> UListAvilibelUserId()
         {
-            var listIdUser = new List<long>();
-            listIdUser.Add(CurrenUser.Id);
+            var listIdUser = new List<long> {CurrenUser.Id};
             if (UsersModel.isAdminNComDirctor(CurrenUser))
             {
                 listIdUser = new List<long>();
@@ -82,7 +78,7 @@ namespace SSM.Controllers
         protected void SetCookiePager(int pageSize, string actionPage)
         {
             HttpCookie nCookie = Cookie ?? new HttpCookie(PAGE_SIZE_APP);
-            nCookie[actionPage] = string.Format("{0}", pageSize);
+            nCookie[actionPage] = $"{pageSize}";
             nCookie["LastVisit"] = DateTime.Now.ToString("F");
             nCookie.Expires = DateTime.Now.AddYears(1);
             if (Cookie == null)

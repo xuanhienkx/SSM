@@ -87,8 +87,6 @@ namespace SSM.Controllers
 
         private void GetDefaultData()
         {
-
-
             saleTypes = saleTypes ?? UsersServices1.getAllSaleTypes(true);
             agents = agents != null && agents.Any() ? agents : agentService.GetAll(a => a.IsActive && (CurrenUser.IsAdmin() || a.IsHideUser == false)).OrderBy(x => x.AbbName);
             areas = areas != null && areas.Any() ? areas : areaService.GetAll(x => x.IsSee == true && (CurrenUser.IsAdmin() || x.IsHideUser == false)).OrderBy(x => x.AreaAddress);

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?><Database Name="SCFV4" Class="DataClasses1DataContext" xmlns="http://schemas.microsoft.com/linqtosql/dbml/2007">
-  <Connection Mode="WebSettings" ConnectionString="Data Source=.;Initial Catalog=SCFV4;User ID=sa;MultipleActiveResultSets=True;Application Name=phaplocal" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="SSMConnectionString" Provider="System.Data.SqlClient" />
+  <Connection Mode="WebSettings" ConnectionString="Data Source=localhost;Initial Catalog=SCFV4;Persist Security Info=True;User ID=sa;MultipleActiveResultSets=True;Application Name=phaplocal" SettingsObjectName="System.Configuration.ConfigurationManager.ConnectionStrings" SettingsPropertyName="SCFV4ConnectionString" Provider="System.Data.SqlClient" />
   <Table Name="dbo.Agent" Member="Agents">
     <Type Name="Agent">
       <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
@@ -802,6 +802,7 @@
       <Column Name="IsControl" Type="System.Boolean" DbType="bit" CanBeNull="true" />
       <Column Name="IsRevised" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
       <Column Name="IsRequest" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
+      <Column Name="SaleTypeId" Type="System.Int64" DbType="BigInt" CanBeNull="false" />
       <Association Name="Revenue_InvoideIssued" Member="InvoideIssueds" ThisKey="Id" OtherKey="RevenueId" Type="InvoideIssued" />
       <Association Name="Revenue_SOAInvoice" Member="SOAInvoices" ThisKey="Id" OtherKey="RevenueId" Type="SOAInvoice" />
       <Association Name="Agent_Revenue" Member="Agent" ThisKey="InvAgentId1" OtherKey="Id" Type="Agent" IsForeignKey="true" />
@@ -823,15 +824,6 @@
       <Association Name="Company_SalePlan" Member="Company" ThisKey="OfficeId" OtherKey="Id" Type="Company" IsForeignKey="true" />
       <Association Name="Department_SalePlan" Member="Department" ThisKey="DeptId" OtherKey="Id" Type="Department" IsForeignKey="true" />
       <Association Name="User_SalePlan" Member="User" ThisKey="UserId" OtherKey="Id" Type="User" IsForeignKey="true" />
-    </Type>
-  </Table>
-  <Table Name="dbo.SaleType" Member="SaleTypes">
-    <Type Name="SaleType">
-      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
-      <Column Name="Name" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="Value" Type="System.Decimal" DbType="Money" CanBeNull="true" />
-      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
-      <Association Name="SaleType_CRMCustomer" Member="CRMCustomers" ThisKey="Id" OtherKey="SaleTypeId" Type="CRMCustomer" />
     </Type>
   </Table>
   <Table Name="dbo.ServerFile" Member="ServerFiles">
@@ -892,6 +884,7 @@
       <Column Name="UserListInControl" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
       <Column Name="IsControl" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
       <Column Name="ControlStep" Type="System.Int32" DbType="Int" CanBeNull="true" />
+      <Column Name="SaleTypeId" Type="System.Int64" DbType="BigInt" CanBeNull="false" />
       <Association Name="Shipment_ArriveNotice" Member="ArriveNotices" ThisKey="Id" OtherKey="ShipmentId" Type="ArriveNotice" />
       <Association Name="Shipment_AuthorLetter" Member="AuthorLetters" ThisKey="Id" OtherKey="ShipmentId" Type="AuthorLetter" />
       <Association Name="Shipment_BillLanding" Member="BillLandings" ThisKey="Id" OtherKey="ShipmentId" Type="BillLanding" />
@@ -1520,10 +1513,10 @@
       <Association Name="CRMJobCategory_CRMCustomer" Member="CRMJobCategory" ThisKey="CrmCategoryId" OtherKey="Id" Type="CRMJobCategory" IsForeignKey="true" DeleteRule="SET NULL" />
       <Association Name="CRMSource_CRMCustomer" Member="CRMSource" ThisKey="CrmSourceId" OtherKey="Id" Type="CRMSource" IsForeignKey="true" DeleteRule="SET NULL" />
       <Association Name="CRMStatus_CRMCustomer" Member="CRMStatus" ThisKey="CrmStatusId" OtherKey="Id" Type="CRMStatus" IsForeignKey="true" DeleteRule="CASCADE" />
-      <Association Name="SaleType_CRMCustomer" Member="SaleType" ThisKey="SaleTypeId" OtherKey="Id" Type="SaleType" IsForeignKey="true" />
       <Association Name="Province_CRMCustomer" Member="Province" ThisKey="CrmProvinceId" OtherKey="Id" Type="Province" IsForeignKey="true" />
       <Association Name="User_CRMCustomer" Member="User" ThisKey="CreatedById" OtherKey="Id" Type="User" IsForeignKey="true" />
       <Association Name="User_CRMCustomer1" Member="User1" ThisKey="ModifyById" OtherKey="Id" Type="User" IsForeignKey="true" />
+      <Association Name="SaleType_CRMCustomer" Member="SaleType" ThisKey="SaleTypeId" OtherKey="Id" Type="SaleType" IsForeignKey="true" />
     </Type>
   </Table>
   <Table Name="dbo.Province" Member="Provinces">
@@ -1601,6 +1594,17 @@
       <Association Name="CRMEventType_CRMVisit" Member="CRMEventType" ThisKey="EventTypeId" OtherKey="Id" Type="CRMEventType" IsForeignKey="true" />
       <Association Name="User_CRMVisit" Member="User" ThisKey="CreatedById" OtherKey="Id" Type="User" IsForeignKey="true" />
       <Association Name="User_CRMVisit1" Member="User1" ThisKey="ModifiedById" OtherKey="Id" Type="User" IsForeignKey="true" />
+    </Type>
+  </Table>
+  <Table Name="dbo.SaleType" Member="SaleTypes">
+    <Type Name="SaleType">
+      <Column Name="Id" Type="System.Int64" DbType="BigInt NOT NULL IDENTITY" IsPrimaryKey="true" IsDbGenerated="true" CanBeNull="false" />
+      <Column Name="Name" Type="System.String" DbType="NVarChar(50) NOT NULL" CanBeNull="false" />
+      <Column Name="Value" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="ParentValue" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="Active" Type="System.Boolean" DbType="Bit" CanBeNull="true" />
+      <Column Name="ParentId" Type="System.Int64" DbType="BigInt" CanBeNull="true" />
+      <Association Name="SaleType_CRMCustomer" Member="CRMCustomers" ThisKey="Id" OtherKey="SaleTypeId" Type="CRMCustomer" />
     </Type>
   </Table>
   <Function Name="dbo.sp_postpv" Method="sp_postpv">
