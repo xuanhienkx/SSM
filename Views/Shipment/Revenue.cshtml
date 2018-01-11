@@ -29,8 +29,8 @@
                                     <div class="ButtonZone1">
                                         @Html.ActionLink("SHIPMENT", "Edit", "Shipment", new { id = Model.Id }, new { Class = "RevenueLink" })
                                         <input id="Revenue" type="button" value="REVENUE" title="Revenue" style="background-color: #ED1B2E;" />
-                                        <input id="DocumentsButton" type="button" value="DOCUMENTS" title="Documents" />                           
-                                        @Html.ActionLink("CLOSE", "Index", "Shipment", new { id = 0 }, new{ @class="btn btn-primary bt-close"})
+                                        <input id="DocumentsButton" type="button" value="DOCUMENTS" title="Documents" />
+                                        @Html.ActionLink("CLOSE", "Index", "Shipment", new { id = 0 }, new { @class = "btn btn-primary bt-close" })
                                     </div>
                                     @{ Html.RenderPartial("_DocumentMenu", Model); }
                                 </td>
@@ -43,17 +43,17 @@
                                 <td class="refid">
                                     @if (Model.Shipment.IsMainShipment)
                                     {
-                                    @Html.HiddenFor(m => m.Id)
-                                    <input type="text" disabled="disabled" name="idControl" id="idControl" value="@string.Format("C{0}", Model.Id)" />
+                                        @Html.HiddenFor(m => m.Id)
+                                        <input type="text" disabled="disabled" name="idControl" id="idControl" value="@string.Format("C{0}", Model.Id)" />
                                     }
                                     else if (Model.Shipment.ShipmentRef != null)
                                     {
-                                    @Html.HiddenFor(m => m.Id)
-                                    <input type="text" disabled="disabled" title="@Model.Shipment.ShipmentRef" name="idControlsup" id="idControlsup" value="@string.Format("{0}C", Model.Id)" />
+                                        @Html.HiddenFor(m => m.Id)
+                                        <input type="text" disabled="disabled" title="@Model.Shipment.ShipmentRef" name="idControlsup" id="idControlsup" value="@string.Format("{0}C", Model.Id)" />
                                     }
                                     else
                                     {
-                                    @Html.TextBoxFor(m => m.Id, new { disabled = "disabled", @class = "RevenueInput" })
+                                        @Html.TextBoxFor(m => m.Id, new { disabled = "disabled", @class = "RevenueInput" })
                                     }
 
                                 </td>
@@ -67,7 +67,7 @@
                                         @Html.HiddenFor(m => m.IsRevised)
                                         @if (Model != null)
                                         {
-                                        @Html.TextBoxFor(m => m.Shipment.MT81.VoucherNo, new { @readonly = "readonly", @class = "RevenueInput disabled" })
+                                            @Html.TextBoxFor(m => m.Shipment.MT81.VoucherNo, new { @readonly = "readonly", @class = "RevenueInput disabled" })
                                         }
                                     </div>
                                 </td>
@@ -78,7 +78,7 @@
                                     <label class="RevenueLabel">Service</label>
                                 </td>
                                 <td>
-                                    <input type="text" class="RevenueInput disabled" readonly="readonly"   value="@ViewData["Servicename"]" />
+                                    <input type="text" class="RevenueInput disabled" readonly="readonly" value="@ViewData["Servicename"]" />
                                 </td>
                                 <td style="width: 130px;">
                                     <label class="RevenueLabel">@ViewData["DateShpLabel"]</label>
@@ -177,7 +177,7 @@
                                     <textarea rows="2" cols="40" disabled="disabled">@Html.Raw(ViewBag.HisgoryMessage.Replace(";", "\n")) </textarea>
                                     @if (!string.IsNullOrEmpty(ViewBag.HisgoryMessage))
                                     {
-                                    <button class="btn btn-link" id="HistoryView">View History</button>
+                                        <button class="btn btn-link" id="HistoryView">View History</button>
                                     }
                                 </td>
                             </tr>
@@ -250,13 +250,13 @@
                                 <td>
                                     @if (Model.IsTrading)
                                     {
-                                    @Html.HiddenFor(m => m.INAutoValue1)
-                                    @Html.TextBoxFor(model => model.INAutoValue1, new { Class = "Shipment ShipmentPayable IncomVI", disabled = "disabled", id = "INAutoValue1k" })
-                                    <span style="" class="orderRefInput" onclick=" return ShowOrderRevenue(); ">Ref</span>
+                                        @Html.HiddenFor(m => m.INAutoValue1)
+                                        @Html.TextBoxFor(model => model.INAutoValue1, new { Class = "Shipment ShipmentPayable IncomVI", disabled = "disabled", id = "INAutoValue1k" })
+                                        <span style="" class="orderRefInput" onclick=" return ShowOrderRevenue(); ">Ref</span>
                                     }
                                     else
                                     {
-                                    @Html.TextBoxFor(model => model.INAutoValue1, new { Class = "Shipment ShipmentPayable IncomVI", OnBlur = "formatMoneyNumber(this);" })
+                                        @Html.TextBoxFor(model => model.INAutoValue1, new { Class = "Shipment ShipmentPayable IncomVI", OnBlur = "formatMoneyNumber(this);" })
                                     }
 
                                 </td>
@@ -350,13 +350,13 @@
                                 <td>
                                     @if (Model.IsTrading)
                                     {
-                                    @Html.HiddenFor(m => m.EXManualValue1)
-                                    @Html.TextBoxFor(model => model.EXManualValue1, new { Class = "Shipment ShipmentPayable ExpenseVI", disabled = "disabled", id = "EXManualValue1k" })
-                                    <span style="" class="orderRefInput" onclick=" return ShowOrderRevenue(); ">Ref</span>
+                                        @Html.HiddenFor(m => m.EXManualValue1)
+                                        @Html.TextBoxFor(model => model.EXManualValue1, new { Class = "Shipment ShipmentPayable ExpenseVI", disabled = "disabled", id = "EXManualValue1k" })
+                                        <span style="" class="orderRefInput" onclick=" return ShowOrderRevenue(); ">Ref</span>
                                     }
                                     else
                                     {
-                                    @Html.TextBoxFor(model => model.EXManualValue1, new { Class = "Shipment ShipmentPayable ExpenseVI", OnBlur = "formatMoneyNumber(this);" })
+                                        @Html.TextBoxFor(model => model.EXManualValue1, new { Class = "Shipment ShipmentPayable ExpenseVI", OnBlur = "formatMoneyNumber(this);" })
                                     }
 
                                 </td>
@@ -426,20 +426,20 @@
                                             </tr>
                                             <tr>
                                                 <td></td>
-                                                <td>Request</td>
-                                                <td>Approved</td>
+                                                <td>Approved SaleType</td>
+                                                @* <td>Approved</td>*@
                                                 <td colspan="2" style="text-align: center">Bonus</td>
                                             </tr>
                                             <tr>
                                                 <td></td>
-                                                <td>
-                                                    <input disabled="disabled" value="@ViewData["saletype"]" class="ShipmentInputShort" />
-                                                </td>
-                                                <td>
-                                                    @Html.DropDownListFor(m => m.BonRequest, new SelectList(saleTypes, "Value", "Name"), new { @class = "RevenueInv" })
+                                                @* <td>
+                                                        <input disabled="disabled" value="@ViewData["saletype"]" class="ShipmentInputShort" />
+                                                    </td>*@
+                                                <td colspan="2">
+                                                    @Html.DropDownListFor(m => m.BonRequest, new SelectList(saleTypes, "Value", "Name"), new { @class = "RevenueInv", style = "width:225px" })
 
                                                 </td>
-                                                <td>@Html.TextBoxFor(m => m.BonApprove, new { ReadOnly = "true", Class = "RevenueInvText" })%</td>
+                                                <td>@Html.TextBoxFor(m => m.BonApprove, new { ReadOnly = "true", Class = "RevenueInvText number1" })%</td>
                                                 <td>@Html.TextBoxFor(m => m.AmountBonus2, new { ReadOnly = "true", Class = "RevenueInv Shipment" })</td>
                                             </tr>
                                         </table>
@@ -453,21 +453,21 @@
                                                     {
                                                         if (Model.IsRequest)
                                                         {
-                                                    <input type="button" class="DisabledButton" disabled="disabled" value="Get Back" style="width: 75px;" />
+                                                            <input type="button" class="DisabledButton" disabled="disabled" value="Get Back" style="width: 75px;" />
                                                         }
                                                         else
                                                         {
-                                                    <input type="button" value="Get Back" onclick=" javascript:submitFormR('GetBack');" style="width: 75px; background-color: #ED1B2E;" />
+                                                            <input type="button" value="Get Back" onclick=" javascript:submitFormR('GetBack');" style="width: 75px; background-color: #ED1B2E;" />
                                                         }
 
-                                                    <br />
-                                                    <input type="submit" value="Submit" style="width: 75px;" />
+                                                        <br />
+                                                        <input type="submit" value="Submit" style="width: 75px;" />
                                                     }
                                                     else
                                                     {
-                                                    <input type="button" class="DisabledButton" disabled="disabled" value="Get Back" style="width: 75px;" />
-                                                    <br />
-                                                    <input type="button" class="DisabledButton" disabled="disabled" value="Submit" style="width: 75px;" />
+                                                        <input type="button" class="DisabledButton" disabled="disabled" value="Get Back" style="width: 75px;" />
+                                                        <br />
+                                                        <input type="button" class="DisabledButton" disabled="disabled" value="Submit" style="width: 75px;" />
                                                     }
                                                     <input type="button" value="Save" onclick=" javascript:submitFormR('Update'); " style="width: 75px; background-color: #ED1B2E;" />
                                                 </td>
@@ -476,23 +476,23 @@
                                                     <br />
                                                     @if (directorAction)
                                                     {
-                                                    <input type="button" value="Cancel" onclick=" javascript:submitFormR('Cancel'); " style="width: 75px; background-color: #ED1B2E;" />
-                                                    <br />
+                                                        <input type="button" value="Cancel" onclick=" javascript:submitFormR('Cancel'); " style="width: 75px; background-color: #ED1B2E;" />
+                                                        <br />
                                                         if (!isNobill && Model.IsRevised == false)
                                                         {
-                                                    <input type="button" value="Approve" onclick=" javascript:submitFormR('Approve'); " style="width: 75px;" />
+                                                            <input type="button" value="Approve" onclick=" javascript:submitFormR('Approve'); " style="width: 75px;" />
                                                         }
                                                         else
                                                         {
-                                                    <input type="button" class="DisabledButton" disabled="disabled" value="Approve" style="width: 75px;" />
+                                                            <input type="button" class="DisabledButton" disabled="disabled" value="Approve" style="width: 75px;" />
                                                         }
 
                                                     }
                                                     else
                                                     {
-                                                    <input type="button" class="DisabledButton" disabled="disabled" value="Cancel" style="width: 75px;" />
-                                                    <br />
-                                                    <input type="button" class="DisabledButton" disabled="disabled" value="Approve" style="width: 75px;" />
+                                                        <input type="button" class="DisabledButton" disabled="disabled" value="Cancel" style="width: 75px;" />
+                                                        <br />
+                                                        <input type="button" class="DisabledButton" disabled="disabled" value="Approve" style="width: 75px;" />
                                                     }
                                                 </td>
                                                 <td style="border: 2px solid #BFBFBF;">
@@ -583,15 +583,15 @@
                                     <td colspan="3">
                                         @if ((accountAction || current.CheckingRevenue) && Model.Shipment.RevenueStatus.Equals(ShipmentModel.RevenueStatusCollec.Submited.ToString()))
                                         {
-                                        <input type="button" value="Acct Check Revenue" id="AccountantCheck" onclick="javascript: submitFormR('AccountantCheck');" />
+                                            <input type="button" value="Acct Check Revenue" id="AccountantCheck" onclick="javascript: submitFormR('AccountantCheck');" />
                                         }
                                         @if (accountAction)
                                         {
-                                        <input type="submit" value="Acct Update Invoice" /><br />
+                                            <input type="submit" value="Acct Update Invoice" /><br />
                                         }
                                         else
                                         {
-                                        <input type="button" disabled="disabled" class="DisabledButton" value="Acct Update Invoice" /><br />
+                                            <input type="button" disabled="disabled" class="DisabledButton" value="Acct Update Invoice" /><br />
                                         }
                                     </td>
                                 </tr>

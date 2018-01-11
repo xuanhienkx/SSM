@@ -89,6 +89,7 @@
         InitFormat: function () {
 
             jQuery(".number2").number(true, 2);
+            jQuery(".number1").number(true, 1);
             jQuery(".number").autoNumeric({
                 mDec: 2,
                 aPad: false,

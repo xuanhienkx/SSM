@@ -68,7 +68,7 @@
                             <tr>
                                 @Html.HiddenFor(m => m.Id)
                                 <td><label class="ShipmentLabel">SaleType</label></td>
-                                <td>@Html.TextBoxFor(m => m.SaleType, new { Class = "ShipmentInput" })</td>
+                                <td>@Html.TextBoxFor(m => m.SaleType, new { Class = "ShipmentInput" ,style= "width:480px", maxlength=50})</td>
                             </tr>
                             <tr>
                                 <td><label class="ShipmentLabel">Bonus(%)</label></td>

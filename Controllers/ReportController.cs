@@ -544,46 +544,51 @@ namespace SSM.Controllers
             return Number1 / Number2;
         }
 
-        private List<PerformModel> getAllPerformModel(List<SaleType> SaleTypes)
+        private List<PerformModel> getAllPerformModel(List<SaleType> saleTypes)
         {
-            List<PerformModel> PerformModels = new List<PerformModel>();
-            foreach (SaleType SaleType1 in SaleTypes)
+            var performModels = new List<PerformModel>();
+            foreach (var saleType1 in saleTypes)
             {
-                PerformModel PerformModel1 = new PerformModel();
-                PerformModel1.SaleType = SaleType1.Name;
-                PerformModel1.Profit = 0;
-                PerformModel1.Bonus = 0;
-                PerformModels.Add(PerformModel1);
+                var performModel1 = new PerformModel
+                {
+                    SaleType = saleType1.Name,
+                    Profit = 0,
+                    Bonus = 0
+                };
+                performModels.Add(performModel1);
             }
-            return PerformModels;
+            return performModels;
         }
 
-        private List<PerformanceReport> reportProcessNew(IEnumerable<PerformanceReport> ReportsResult)
+        private List<PerformanceReport> reportProcessNew(IEnumerable<PerformanceReport> reportsResult)
         {
-            List<PerformanceReport> ReportProcess = new List<PerformanceReport>(12);
-            List<SaleType> SaleTypes = UserService1.getAllSaleTypes(false).ToList();
+            var reportProcess = new List<PerformanceReport>(12);
+            var saleTypes = UserService1.getAllSaleTypes(false).ToList();
 
 
-            if (ReportsResult != null && ReportsResult.Count() > 0)
+            var performanceReports = reportsResult as PerformanceReport[] ?? reportsResult.ToArray();
+            if (performanceReports.Any())
             {
                 for (int i = 1; i <= 12; i++)
                 {
-                    PerformanceReport PerformanceReport1 = new PerformanceReport();
-                    PerformanceReport1.Month = i;
-                    PerformanceReport1.PerformModels = getAllPerformModel(SaleTypes);
-                    foreach (PerformanceReport Report in ReportsResult)
+                    var performanceReport1 = new PerformanceReport
                     {
-                        if (Report.Month == i)
+                        Month = i,
+                        PerformModels = getAllPerformModel(saleTypes)
+                    };
+                    foreach (var report in performanceReports)
+                    {
+                        if (report.Month == i)
                         {
-                            PerformanceReport1.Plan = Report.Plan;
+                            performanceReport1.Plan = report.Plan;
 
-                            PerformanceReport1.setPerform(Report.PerformModel1);
+                            performanceReport1.setPerform(report.PerformModel1);
 
-                            PerformanceReport1.ProfitHandel += Report.ProfitHandel;
-                            PerformanceReport1.ProfitSale += Report.ProfitSale;
+                            performanceReport1.ProfitHandel += report.ProfitHandel;
+                            performanceReport1.ProfitSale += report.ProfitSale;
 
-                            PerformanceReport1.PerformPS = divisible(PerformanceReport1.ProfitSale * 100, PerformanceReport1.Plan);
-                            PerformanceReport1.PerformPH = divisible(PerformanceReport1.ProfitHandel * 100, PerformanceReport1.Plan);
+                            performanceReport1.PerformPS = divisible(performanceReport1.ProfitSale * 100, performanceReport1.Plan);
+                            performanceReport1.PerformPH = divisible(performanceReport1.ProfitHandel * 100, performanceReport1.Plan);
                             // PerformanceReport1.SumBonus += Report.PerformModel1.Bonus;
                             //PerformanceReport1.PerformSumProfit = divisible(PerformanceReport1.SumProfit * 100, PerformanceReport1.Plan);
                         }
@@ -597,20 +602,22 @@ namespace SSM.Controllers
 
                         PerformanceReport1.PerformSumProfit = divisible(PerformanceReport1.SumProfit * 100, PerformanceReport1.Plan);
                     }*/
-                    ReportProcess.Add(PerformanceReport1);
+                    reportProcess.Add(performanceReport1);
                 }
             }
             else
             {
                 for (int i = 1; i <= 12; i++)
                 {
-                    PerformanceReport PerformanceReport1 = new PerformanceReport();
-                    PerformanceReport1.Month = i;
-                    PerformanceReport1.PerformModels = getAllPerformModel(SaleTypes);
-                    ReportProcess.Add(PerformanceReport1);
+                    var performanceReport1 = new PerformanceReport
+                    {
+                        Month = i,
+                        PerformModels = getAllPerformModel(saleTypes)
+                    };
+                    reportProcess.Add(performanceReport1);
                 }
             }
-            return ReportProcess;
+            return reportProcess;
         }
         private List<PerformanceReport> reportProcess(IEnumerable<PerformanceReport> ReportsResult)
         {
@@ -808,13 +815,30 @@ namespace SSM.Controllers
         public ActionResult DepartmentReport()
         {
             int Year = DateTime.Now.Year;
-            DepartmentportModel model = new DepartmentportModel();
-            model.Year = DateTime.Now.Year;
-            model.DeptId = (int)CurrenUser.Department.Id;
+            DepartmentportModel model = new DepartmentportModel
+            {
+                Year = DateTime.Now.Year,
+                DeptId = (int) CurrenUser.Department.Id
+            };
             Session["DepartmentportModel"] = model;
             IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportDept(model.DeptId, Year);
+            return ProcessDeparment(model, ReportsResult);
+        }
+        [HttpPost]
+        public ActionResult DepartmentReport(DepartmentportModel model)
+        {
+            int year = model.Year;
+            int deptId = model.DeptId;
+            Session["DepartmentportModel"] = model;
+            IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportDept(deptId, year);
+            return ProcessDeparment(model, ReportsResult); 
+
+        }
+
+        private ActionResult ProcessDeparment(DepartmentportModel model, IEnumerable<PerformanceReport> reportsResult)
+        {
             List<PerformanceReport> ReportProcess = new List<PerformanceReport>(12);
-            ReportProcess = reportProcessNew(ReportsResult);
+            ReportProcess = reportProcessNew(reportsResult);
             ViewData["ListDepts"] = new SelectList(UserService1.GetAllDepartmentActive(CurrenUser), "Id", "DeptName");
             ViewData["ReportProcess"] = ReportProcess;
             List<ReportYearModel> ListReport1 = new List<ReportYearModel>();
@@ -829,13 +853,13 @@ namespace SSM.Controllers
                 ReportYearModel1 = new ReportYearModel();
                 ReportYearModel2 = new ReportYearModel();
                 long Id = UserItem.Id;
-                double TotalPlanYear = UserService1.getReportYear(Id, Year);
+                double TotalPlanYear = UserService1.getReportYear(Id, model.Year);
                 ReportYearModel1.SaleName = UserItem.FullName;
                 ReportYearModel2.SaleName = UserItem.FullName;
                 ReportYearModel1.Plan = TotalPlanYear.ToString();
                 ReportYearModel1.PlanPerMonth = (TotalPlanYear / 12).ToString("0");
-                ReportsResult = ReportService1.getSaleReport(Id, Year);
-                ReportProcess = reportProcess(ReportsResult);
+               var userReportsResult = ReportService1.getSaleReport(Id, model.Year);
+                ReportProcess = reportProcess(userReportsResult);
                 double TotalPerform = 0;
                 double Perform = 0;
                 for (int i = 0; i < 12; i++)
@@ -845,54 +869,54 @@ namespace SSM.Controllers
                     TotalEachMonth[i + 1] += Perform;
                 }
                 Perform = ReportProcess.ElementAt(0).ProfitSale + ReportProcess.ElementAt(0).ProfitHandel;
-                ReportYearModel1.Jan = Perform.ToString();
+                ReportYearModel1.Jan = Perform.ToString("N2");
                 ReportYearModel2.Jan = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(1).ProfitSale + ReportProcess.ElementAt(1).ProfitHandel;
-                ReportYearModel1.Feb = Perform.ToString();
+                ReportYearModel1.Feb = Perform.ToString("N2");
                 ReportYearModel2.Feb = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(2).ProfitSale + ReportProcess.ElementAt(2).ProfitHandel;
-                ReportYearModel1.Mar = Perform.ToString();
+                ReportYearModel1.Mar = Perform.ToString("N2");
                 ReportYearModel2.Mar = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(3).ProfitSale + ReportProcess.ElementAt(3).ProfitHandel;
-                ReportYearModel1.Apr = Perform.ToString();
+                ReportYearModel1.Apr = Perform.ToString("N2");
                 ReportYearModel2.Apr = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(4).ProfitSale + ReportProcess.ElementAt(4).ProfitHandel;
-                ReportYearModel1.May = Perform.ToString();
+                ReportYearModel1.May = Perform.ToString("N2");
                 ReportYearModel2.May = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(5).ProfitSale + ReportProcess.ElementAt(5).ProfitHandel;
-                ReportYearModel1.Jun = Perform.ToString();
+                ReportYearModel1.Jun = Perform.ToString("N2");
                 ReportYearModel2.Jun = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(6).ProfitSale + ReportProcess.ElementAt(6).ProfitHandel;
-                ReportYearModel1.Jul = Perform.ToString();
+                ReportYearModel1.Jul = Perform.ToString("N2");
                 ReportYearModel2.Jul = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(7).ProfitSale + ReportProcess.ElementAt(7).ProfitHandel;
-                ReportYearModel1.Aug = Perform.ToString();
+                ReportYearModel1.Aug = Perform.ToString("N2");
                 ReportYearModel2.Aug = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(8).ProfitSale + ReportProcess.ElementAt(8).ProfitHandel;
-                ReportYearModel1.Sep = Perform.ToString();
+                ReportYearModel1.Sep = Perform.ToString("N2");
                 ReportYearModel2.Sep = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(9).ProfitSale + ReportProcess.ElementAt(9).ProfitHandel;
-                ReportYearModel1.Oct = Perform.ToString();
+                ReportYearModel1.Oct = Perform.ToString("N2");
                 ReportYearModel2.Oct = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(10).ProfitSale + ReportProcess.ElementAt(10).ProfitHandel;
-                ReportYearModel1.Nov = Perform.ToString();
+                ReportYearModel1.Nov = Perform.ToString("N2");
                 ReportYearModel2.Nov = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(11).ProfitSale + ReportProcess.ElementAt(11).ProfitHandel;
-                ReportYearModel1.Dec = Perform.ToString();
+                ReportYearModel1.Dec = Perform.ToString("N2");
                 ReportYearModel2.Dec = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
-                ReportYearModel1.Total = TotalPerform + "";
+                ReportYearModel1.Total = TotalPerform.ToString("N2");
                 ReportYearModel1.Remain = rounFloor(TotalPlanYear - TotalPerform).ToString("0.00") + "";
                 ReportYearModel2.Total = divisible(TotalPerform * 100, TotalPlanYear).ToString("0.00") + "%";
                 ReportYearModel2.Remain = rounFloor(100 - divisible(TotalPerform * 100, TotalPlanYear)).ToString("0.00") + "%";
@@ -904,198 +928,48 @@ namespace SSM.Controllers
             }
             ReportYearModel1 = new ReportYearModel();
             ReportYearModel2 = new ReportYearModel();
-            ReportYearModel1.Plan = TotalEachMonth[0] + "";
+            ReportYearModel1.Plan = TotalEachMonth[0].ToString("N2");
             ReportYearModel1.PlanPerMonth = (TotalEachMonth[0] / 12).ToString("0");
-            ReportYearModel1.Total = "" + TotalEachMonth[13];
+            ReportYearModel1.Total =TotalEachMonth[13].ToString("N2");
             ReportYearModel1.Remain = "" + rounFloor(TotalEachMonth[0] - TotalEachMonth[13]);
 
             ReportYearModel2.Total = divisible(TotalEachMonth[13] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
             ReportYearModel2.Remain = rounFloor(100 - divisible(TotalEachMonth[13] * 100, TotalEachMonth[0])).ToString("0.00") + "%";
 
-            ReportYearModel1.Jan = TotalEachMonth[1].ToString();
+            ReportYearModel1.Jan = TotalEachMonth[1].ToString("N2");
             ReportYearModel2.Jan = divisible(TotalEachMonth[1] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Feb = TotalEachMonth[2].ToString();
+            ReportYearModel1.Feb = TotalEachMonth[2].ToString("N2");
             ReportYearModel2.Feb = divisible(TotalEachMonth[2] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Mar = TotalEachMonth[3].ToString();
+            ReportYearModel1.Mar = TotalEachMonth[3].ToString("N2");
             ReportYearModel2.Mar = divisible(TotalEachMonth[3] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Apr = TotalEachMonth[4].ToString();
+            ReportYearModel1.Apr = TotalEachMonth[4].ToString("N2");
             ReportYearModel2.Apr = divisible(TotalEachMonth[4] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.May = TotalEachMonth[5].ToString();
+            ReportYearModel1.May = TotalEachMonth[5].ToString("N2");
             ReportYearModel2.May = divisible(TotalEachMonth[5] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Jun = TotalEachMonth[6].ToString();
+            ReportYearModel1.Jun = TotalEachMonth[6].ToString("N2");
             ReportYearModel2.Jun = divisible(TotalEachMonth[6] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Jul = TotalEachMonth[7].ToString();
+            ReportYearModel1.Jul = TotalEachMonth[7].ToString("N2");
             ReportYearModel2.Jul = divisible(TotalEachMonth[7] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Aug = TotalEachMonth[8].ToString();
+            ReportYearModel1.Aug = TotalEachMonth[8].ToString("N2");
             ReportYearModel2.Aug = divisible(TotalEachMonth[8] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Sep = TotalEachMonth[9].ToString();
+            ReportYearModel1.Sep = TotalEachMonth[9].ToString("N2");
             ReportYearModel2.Sep = divisible(TotalEachMonth[9] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Oct = TotalEachMonth[10].ToString();
+            ReportYearModel1.Oct = TotalEachMonth[10].ToString("N2");
             ReportYearModel2.Oct = divisible(TotalEachMonth[10] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
             ReportYearModel1.Nov = TotalEachMonth[11].ToString();
             ReportYearModel2.Nov = divisible(TotalEachMonth[11] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Dec = TotalEachMonth[12].ToString();
-            ReportYearModel2.Dec = divisible(TotalEachMonth[12] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-            ReportYearModel1.SaleName = "Total";
-            ReportYearModel2.SaleName = "Total";
-            ListReport1.Add(ReportYearModel1);
-            ListReport2.Add(ReportYearModel2);
-            ViewData["ListReport1"] = ListReport1;
-            ViewData["ListReport2"] = ListReport2;
-            return View(model);
-        }
-        [HttpPost]
-        public ActionResult DepartmentReport(DepartmentportModel model)
-        {
-            int Year = model.Year;
-            int DeptId = model.DeptId;
-            Session["DepartmentportModel"] = model;
-            IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportDept(DeptId, Year);
-            List<PerformanceReport> ReportProcess = new List<PerformanceReport>(12);
-            ReportProcess = reportProcessNew(ReportsResult);
-            ViewData["ListDepts"] = new SelectList(UserService1.GetAllDepartmentActive(CurrenUser), "Id", "DeptName");
-            ViewData["ReportProcess"] = ReportProcess;
-
-            List<ReportYearModel> ListReport1 = new List<ReportYearModel>();
-            List<ReportYearModel> ListReport2 = new List<ReportYearModel>();
-            EntitySet<User> ListUser = UserService1.getDepartmentById(DeptId).Users;
-
-            double[] TotalEachMonth = new double[14];
-            ReportYearModel ReportYearModel1 = null;
-            ReportYearModel ReportYearModel2 = null;
-            foreach (User UserItem in ListUser)
-            {
-                ReportYearModel1 = new ReportYearModel();
-                ReportYearModel2 = new ReportYearModel();
-                long Id = UserItem.Id;
-                double TotalPlanYear = UserService1.getReportYear(Id, Year);
-                ReportYearModel1.SaleName = UserItem.FullName;
-                ReportYearModel2.SaleName = UserItem.FullName;
-                ReportYearModel1.Plan = TotalPlanYear.ToString();
-                ReportYearModel1.PlanPerMonth = (TotalPlanYear / 12).ToString("0");
-                ReportsResult = ReportService1.getSaleReport(Id, Year);
-                ReportProcess = reportProcess(ReportsResult);
-                double TotalPerform = 0;
-                double Perform = 0;
-                for (int i = 0; i < 12; i++)
-                {
-                    Perform = ReportProcess.ElementAt(i).ProfitSale + ReportProcess.ElementAt(i).ProfitHandel;
-                    TotalPerform += Perform;
-                    TotalEachMonth[i + 1] += Perform;
-                }
-                Perform = ReportProcess.ElementAt(0).ProfitSale + ReportProcess.ElementAt(0).ProfitHandel;
-                ReportYearModel1.Jan = Perform.ToString();
-                ReportYearModel2.Jan = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(1).ProfitSale + ReportProcess.ElementAt(1).ProfitHandel;
-                ReportYearModel1.Feb = Perform.ToString();
-                ReportYearModel2.Feb = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(2).ProfitSale + ReportProcess.ElementAt(2).ProfitHandel;
-                ReportYearModel1.Mar = Perform.ToString();
-                ReportYearModel2.Mar = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(3).ProfitSale + ReportProcess.ElementAt(3).ProfitHandel;
-                ReportYearModel1.Apr = Perform.ToString();
-                ReportYearModel2.Apr = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(4).ProfitSale + ReportProcess.ElementAt(4).ProfitHandel;
-                ReportYearModel1.May = Perform.ToString();
-                ReportYearModel2.May = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(5).ProfitSale + ReportProcess.ElementAt(5).ProfitHandel;
-                ReportYearModel1.Jun = Perform.ToString();
-                ReportYearModel2.Jun = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(6).ProfitSale + ReportProcess.ElementAt(6).ProfitHandel;
-                ReportYearModel1.Jul = Perform.ToString();
-                ReportYearModel2.Jul = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(7).ProfitSale + ReportProcess.ElementAt(7).ProfitHandel;
-                ReportYearModel1.Aug = Perform.ToString();
-                ReportYearModel2.Aug = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(8).ProfitSale + ReportProcess.ElementAt(8).ProfitHandel;
-                ReportYearModel1.Sep = Perform.ToString();
-                ReportYearModel2.Sep = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(9).ProfitSale + ReportProcess.ElementAt(9).ProfitHandel;
-                ReportYearModel1.Oct = Perform.ToString();
-                ReportYearModel2.Oct = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(10).ProfitSale + ReportProcess.ElementAt(10).ProfitHandel;
-                ReportYearModel1.Nov = Perform.ToString();
-                ReportYearModel2.Nov = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(11).ProfitSale + ReportProcess.ElementAt(11).ProfitHandel;
-                ReportYearModel1.Dec = Perform.ToString();
-                ReportYearModel2.Dec = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                ReportYearModel1.Total = TotalPerform + "";
-                ReportYearModel1.Remain = rounFloor(TotalPlanYear - TotalPerform).ToString("0.00") + "";
-                ReportYearModel2.Total = divisible(TotalPerform * 100, TotalPlanYear).ToString("0.00") + "%";
-                ReportYearModel2.Remain = rounFloor(100 - divisible(TotalPerform * 100, TotalPlanYear)).ToString("0.00") + "%";
-
-                TotalEachMonth[0] += TotalPlanYear;
-                TotalEachMonth[13] += TotalPerform;
-                ListReport1.Add(ReportYearModel1);
-                ListReport2.Add(ReportYearModel2);
-            }
-            ReportYearModel1 = new ReportYearModel();
-            ReportYearModel2 = new ReportYearModel();
-            ReportYearModel1.Plan = TotalEachMonth[0] + "";
-            ReportYearModel1.PlanPerMonth = (TotalEachMonth[0] / 12).ToString("0");
-            ReportYearModel1.Total = "" + TotalEachMonth[13];
-            ReportYearModel1.Remain = "" + rounFloor(TotalEachMonth[0] - TotalEachMonth[13]);
-
-            ReportYearModel2.Total = divisible(TotalEachMonth[13] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-            ReportYearModel2.Remain = rounFloor(100 - divisible(TotalEachMonth[13] * 100, TotalEachMonth[0])).ToString("0.00") + "%";
-
-            ReportYearModel1.Jan = TotalEachMonth[1].ToString();
-            ReportYearModel2.Jan = divisible(TotalEachMonth[1] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Feb = TotalEachMonth[2].ToString();
-            ReportYearModel2.Feb = divisible(TotalEachMonth[2] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Mar = TotalEachMonth[3].ToString();
-            ReportYearModel2.Mar = divisible(TotalEachMonth[3] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Apr = TotalEachMonth[4].ToString();
-            ReportYearModel2.Apr = divisible(TotalEachMonth[4] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.May = TotalEachMonth[5].ToString();
-            ReportYearModel2.May = divisible(TotalEachMonth[5] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Jun = TotalEachMonth[6].ToString();
-            ReportYearModel2.Jun = divisible(TotalEachMonth[6] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Jul = TotalEachMonth[7].ToString();
-            ReportYearModel2.Jul = divisible(TotalEachMonth[7] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Aug = TotalEachMonth[8].ToString();
-            ReportYearModel2.Aug = divisible(TotalEachMonth[8] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Sep = TotalEachMonth[9].ToString();
-            ReportYearModel2.Sep = divisible(TotalEachMonth[9] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Oct = TotalEachMonth[10].ToString();
-            ReportYearModel2.Oct = divisible(TotalEachMonth[10] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Nov = TotalEachMonth[11].ToString();
-            ReportYearModel2.Nov = divisible(TotalEachMonth[11] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Dec = TotalEachMonth[12].ToString();
+            ReportYearModel1.Dec = TotalEachMonth[12].ToString("N2");
             ReportYearModel2.Dec = divisible(TotalEachMonth[12] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
             ReportYearModel1.SaleName = "Total";
             ReportYearModel2.SaleName = "Total";
@@ -1257,167 +1131,30 @@ namespace SSM.Controllers
         }
         public ActionResult OfficeReport()
         {
-            int Year = DateTime.Now.Year;
-            OfficeReportModel model = new OfficeReportModel();
-            model.Year = DateTime.Now.Year;
-            model.OfficeId = (int)CurrenUser.Company.Id;
-            Session["OfficeReportModel"] = model;
-            IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportOffice(model.OfficeId, Year);
-            List<PerformanceReport> ReportProcess = new List<PerformanceReport>(12);
-            ReportProcess = reportProcessNew(ReportsResult);
-            ViewData["ListOffices"] = new SelectList(UserService1.getAllCompany(), "Id", "CompanyName");
-            ViewData["ReportProcess"] = ReportProcess;
-            List<ReportYearModel> ListReport1 = new List<ReportYearModel>();
-            List<ReportYearModel> ListReport2 = new List<ReportYearModel>();
-            EntitySet<Department> ListDept = UserService1.getCompanyById(model.OfficeId).Departments;
-
-            double[] TotalEachMonth = new double[14];
-            ReportYearModel ReportYearModel1 = null;
-            ReportYearModel ReportYearModel2 = null;
-            foreach (Department DeptItem in ListDept)
+            int year = DateTime.Now.Year;
+            var model = new OfficeReportModel
             {
-                if (!DeptItem.IsActive) continue;
-                ReportYearModel1 = new ReportYearModel();
-                ReportYearModel2 = new ReportYearModel();
-                long Id = DeptItem.Id;
-                double TotalPlanYear = UserService1.getReportYearDept(Id, Year);
-                ReportYearModel1.SaleName = DeptItem.DeptName;
-                ReportYearModel2.SaleName = DeptItem.DeptName;
-                ReportYearModel1.Plan = TotalPlanYear.ToString();
-                ReportYearModel1.PlanPerMonth = (TotalPlanYear / 12).ToString("0");
-                ReportsResult = ReportService1.getSaleReportDept(Id, Year);
-                ReportProcess = reportProcessNew(ReportsResult);
-                double TotalPerform = 0;
-                double Perform = 0;
-                for (int i = 0; i < 12; i++)
-                {
-                    Perform = ReportProcess.ElementAt(i).ProfitSale + ReportProcess.ElementAt(i).ProfitHandel;
-                    TotalPerform += Perform;
-                    TotalEachMonth[i + 1] += Perform;
-                }
-                Perform = ReportProcess.ElementAt(0).ProfitSale + ReportProcess.ElementAt(0).ProfitHandel;
-                ReportYearModel1.Jan = Perform.ToString();
-                ReportYearModel2.Jan = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
+                Year = year,
+                OfficeId = (int) CurrenUser.Company.Id
+            };
+            Session["OfficeReportModel"] = model;
 
-                Perform = ReportProcess.ElementAt(1).ProfitSale + ReportProcess.ElementAt(1).ProfitHandel;
-                ReportYearModel1.Feb = Perform.ToString();
-                ReportYearModel2.Feb = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(2).ProfitSale + ReportProcess.ElementAt(2).ProfitHandel;
-                ReportYearModel1.Mar = Perform.ToString();
-                ReportYearModel2.Mar = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(3).ProfitSale + ReportProcess.ElementAt(3).ProfitHandel;
-                ReportYearModel1.Apr = Perform.ToString();
-                ReportYearModel2.Apr = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(4).ProfitSale + ReportProcess.ElementAt(4).ProfitHandel;
-                ReportYearModel1.May = Perform.ToString();
-                ReportYearModel2.May = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(5).ProfitSale + ReportProcess.ElementAt(5).ProfitHandel;
-                ReportYearModel1.Jun = Perform.ToString();
-                ReportYearModel2.Jun = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(6).ProfitSale + ReportProcess.ElementAt(6).ProfitHandel;
-                ReportYearModel1.Jul = Perform.ToString();
-                ReportYearModel2.Jul = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(7).ProfitSale + ReportProcess.ElementAt(7).ProfitHandel;
-                ReportYearModel1.Aug = Perform.ToString();
-                ReportYearModel2.Aug = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(8).ProfitSale + ReportProcess.ElementAt(8).ProfitHandel;
-                ReportYearModel1.Sep = Perform.ToString();
-                ReportYearModel2.Sep = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(9).ProfitSale + ReportProcess.ElementAt(9).ProfitHandel;
-                ReportYearModel1.Oct = Perform.ToString();
-                ReportYearModel2.Oct = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(10).ProfitSale + ReportProcess.ElementAt(10).ProfitHandel;
-                ReportYearModel1.Nov = Perform.ToString();
-                ReportYearModel2.Nov = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                Perform = ReportProcess.ElementAt(11).ProfitSale + ReportProcess.ElementAt(11).ProfitHandel;
-                ReportYearModel1.Dec = Perform.ToString();
-                ReportYearModel2.Dec = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
-
-                ReportYearModel1.Total = TotalPerform + "";
-                ReportYearModel1.Remain = rounFloor(TotalPlanYear - TotalPerform).ToString("0.00") + "";
-                ReportYearModel2.Total = divisible(TotalPerform * 100, TotalPlanYear).ToString("0.00") + "%";
-                ReportYearModel2.Remain = rounFloor(100 - divisible(TotalPerform * 100, TotalPlanYear)).ToString("0.00") + "%";
-
-                TotalEachMonth[0] += TotalPlanYear;
-                TotalEachMonth[13] += TotalPerform;
-                ListReport1.Add(ReportYearModel1);
-                ListReport2.Add(ReportYearModel2);
-            }
-            ReportYearModel1 = new ReportYearModel();
-            ReportYearModel2 = new ReportYearModel();
-            ReportYearModel1.Plan = TotalEachMonth[0] + "";
-            ReportYearModel1.PlanPerMonth = (TotalEachMonth[0] / 12).ToString("0");
-            ReportYearModel1.Total = "" + TotalEachMonth[13];
-            ReportYearModel1.Remain = "" + rounFloor(TotalEachMonth[0] - TotalEachMonth[13]);
-
-            ReportYearModel2.Total = divisible(TotalEachMonth[13] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-            ReportYearModel2.Remain = rounFloor(100 - divisible(TotalEachMonth[13] * 100, TotalEachMonth[0])).ToString("0.00") + "%";
-
-            ReportYearModel1.Jan = TotalEachMonth[1].ToString();
-            ReportYearModel2.Jan = divisible(TotalEachMonth[1] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Feb = TotalEachMonth[2].ToString();
-            ReportYearModel2.Feb = divisible(TotalEachMonth[2] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Mar = TotalEachMonth[3].ToString();
-            ReportYearModel2.Mar = divisible(TotalEachMonth[3] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Apr = TotalEachMonth[4].ToString();
-            ReportYearModel2.Apr = divisible(TotalEachMonth[4] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.May = TotalEachMonth[5].ToString();
-            ReportYearModel2.May = divisible(TotalEachMonth[5] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Jun = TotalEachMonth[6].ToString();
-            ReportYearModel2.Jun = divisible(TotalEachMonth[6] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Jul = TotalEachMonth[7].ToString();
-            ReportYearModel2.Jul = divisible(TotalEachMonth[7] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Aug = TotalEachMonth[8].ToString();
-            ReportYearModel2.Aug = divisible(TotalEachMonth[8] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Sep = TotalEachMonth[9].ToString();
-            ReportYearModel2.Sep = divisible(TotalEachMonth[9] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Oct = TotalEachMonth[10].ToString();
-            ReportYearModel2.Oct = divisible(TotalEachMonth[10] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Nov = TotalEachMonth[11].ToString();
-            ReportYearModel2.Nov = divisible(TotalEachMonth[11] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-
-            ReportYearModel1.Dec = TotalEachMonth[12].ToString();
-            ReportYearModel2.Dec = divisible(TotalEachMonth[12] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
-            ReportYearModel1.SaleName = "Total";
-            ReportYearModel2.SaleName = "Total";
-            ListReport1.Add(ReportYearModel1);
-            ListReport2.Add(ReportYearModel2);
-            ViewData["ListReport1"] = ListReport1;
-            ViewData["ListReport2"] = ListReport2;
-            return View(model);
+            return ProsessOfficePreport(model);
         }
         [HttpPost]
         public ActionResult OfficeReport(OfficeReportModel model)
+        { 
+            Session["OfficeReportModel"] = model; 
+            return ProsessOfficePreport(model);
+        }
+
+        private ActionResult ProsessOfficePreport(OfficeReportModel model)
         {
-            int Year = model.Year;
-            int OfficeId = model.OfficeId;
-            Session["OfficeReportModel"] = model;
-            IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportOffice(OfficeId, Year);
+            IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportOffice(model.OfficeId, model.Year);
             List<PerformanceReport> ReportProcess = new List<PerformanceReport>(12);
             ReportProcess = reportProcessNew(ReportsResult);
             ViewData["ListOffices"] = new SelectList(UserService1.getAllCompany(), "Id", "CompanyName");
             ViewData["ReportProcess"] = ReportProcess;
-
             List<ReportYearModel> ListReport1 = new List<ReportYearModel>();
             List<ReportYearModel> ListReport2 = new List<ReportYearModel>();
             EntitySet<Department> ListDept = UserService1.getCompanyById(model.OfficeId).Departments;
@@ -1431,12 +1168,12 @@ namespace SSM.Controllers
                 ReportYearModel1 = new ReportYearModel();
                 ReportYearModel2 = new ReportYearModel();
                 long Id = DeptItem.Id;
-                double TotalPlanYear = UserService1.getReportYearDept(Id, Year);
+                double TotalPlanYear = UserService1.getReportYearDept(Id, model.Year);
                 ReportYearModel1.SaleName = DeptItem.DeptName;
                 ReportYearModel2.SaleName = DeptItem.DeptName;
-                ReportYearModel1.Plan = TotalPlanYear.ToString();
-                ReportYearModel1.PlanPerMonth = (TotalPlanYear / 12).ToString("0");
-                ReportsResult = ReportService1.getSaleReportDept(Id, Year);
+                ReportYearModel1.Plan = TotalPlanYear.ToString("N0");
+                ReportYearModel1.PlanPerMonth = (TotalPlanYear / 12).ToString("N");
+                ReportsResult = ReportService1.getSaleReportDept(Id, model.Year);
                 ReportProcess = reportProcessNew(ReportsResult);
                 double TotalPerform = 0;
                 double Perform = 0;
@@ -1447,54 +1184,54 @@ namespace SSM.Controllers
                     TotalEachMonth[i + 1] += Perform;
                 }
                 Perform = ReportProcess.ElementAt(0).ProfitSale + ReportProcess.ElementAt(0).ProfitHandel;
-                ReportYearModel1.Jan = Perform.ToString();
+                ReportYearModel1.Jan = Perform.ToString("N0");
                 ReportYearModel2.Jan = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(1).ProfitSale + ReportProcess.ElementAt(1).ProfitHandel;
-                ReportYearModel1.Feb = Perform.ToString();
+                ReportYearModel1.Feb = Perform.ToString("N0");
                 ReportYearModel2.Feb = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(2).ProfitSale + ReportProcess.ElementAt(2).ProfitHandel;
-                ReportYearModel1.Mar = Perform.ToString();
+                ReportYearModel1.Mar = Perform.ToString("N0");
                 ReportYearModel2.Mar = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(3).ProfitSale + ReportProcess.ElementAt(3).ProfitHandel;
-                ReportYearModel1.Apr = Perform.ToString();
+                ReportYearModel1.Apr = Perform.ToString("N0");
                 ReportYearModel2.Apr = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(4).ProfitSale + ReportProcess.ElementAt(4).ProfitHandel;
-                ReportYearModel1.May = Perform.ToString();
+                ReportYearModel1.May = Perform.ToString("N0");
                 ReportYearModel2.May = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(5).ProfitSale + ReportProcess.ElementAt(5).ProfitHandel;
-                ReportYearModel1.Jun = Perform.ToString();
+                ReportYearModel1.Jun = Perform.ToString("N0");
                 ReportYearModel2.Jun = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(6).ProfitSale + ReportProcess.ElementAt(6).ProfitHandel;
-                ReportYearModel1.Jul = Perform.ToString();
+                ReportYearModel1.Jul = Perform.ToString("N0");
                 ReportYearModel2.Jul = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(7).ProfitSale + ReportProcess.ElementAt(7).ProfitHandel;
-                ReportYearModel1.Aug = Perform.ToString();
+                ReportYearModel1.Aug = Perform.ToString("N0");
                 ReportYearModel2.Aug = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(8).ProfitSale + ReportProcess.ElementAt(8).ProfitHandel;
-                ReportYearModel1.Sep = Perform.ToString();
+                ReportYearModel1.Sep = Perform.ToString("N0");
                 ReportYearModel2.Sep = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(9).ProfitSale + ReportProcess.ElementAt(9).ProfitHandel;
-                ReportYearModel1.Oct = Perform.ToString();
+                ReportYearModel1.Oct = Perform.ToString("N0");
                 ReportYearModel2.Oct = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(10).ProfitSale + ReportProcess.ElementAt(10).ProfitHandel;
-                ReportYearModel1.Nov = Perform.ToString();
+                ReportYearModel1.Nov = Perform.ToString("N0");
                 ReportYearModel2.Nov = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 Perform = ReportProcess.ElementAt(11).ProfitSale + ReportProcess.ElementAt(11).ProfitHandel;
-                ReportYearModel1.Dec = Perform.ToString();
+                ReportYearModel1.Dec = Perform.ToString("N0");
                 ReportYearModel2.Dec = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
-                ReportYearModel1.Total = TotalPerform + "";
+                ReportYearModel1.Total = TotalPerform.ToString("N0");
                 ReportYearModel1.Remain = rounFloor(TotalPlanYear - TotalPerform).ToString("0.00") + "";
                 ReportYearModel2.Total = divisible(TotalPerform * 100, TotalPlanYear).ToString("0.00") + "%";
                 ReportYearModel2.Remain = rounFloor(100 - divisible(TotalPerform * 100, TotalPlanYear)).ToString("0.00") + "%";
@@ -1506,48 +1243,48 @@ namespace SSM.Controllers
             }
             ReportYearModel1 = new ReportYearModel();
             ReportYearModel2 = new ReportYearModel();
-            ReportYearModel1.Plan = TotalEachMonth[0] + "";
+            ReportYearModel1.Plan = TotalEachMonth[0].ToString("N0");
             ReportYearModel1.PlanPerMonth = (TotalEachMonth[0] / 12).ToString("0");
-            ReportYearModel1.Total = "" + TotalEachMonth[13];
+            ReportYearModel1.Total = "" + TotalEachMonth[13].ToString("N0");
             ReportYearModel1.Remain = "" + rounFloor(TotalEachMonth[0] - TotalEachMonth[13]);
 
             ReportYearModel2.Total = divisible(TotalEachMonth[13] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
             ReportYearModel2.Remain = rounFloor(100 - divisible(TotalEachMonth[13] * 100, TotalEachMonth[0])).ToString("0.00") + "%";
 
-            ReportYearModel1.Jan = TotalEachMonth[1].ToString();
+            ReportYearModel1.Jan = TotalEachMonth[1].ToString("N0");
             ReportYearModel2.Jan = divisible(TotalEachMonth[1] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Feb = TotalEachMonth[2].ToString();
+            ReportYearModel1.Feb = TotalEachMonth[2].ToString("N0");
             ReportYearModel2.Feb = divisible(TotalEachMonth[2] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Mar = TotalEachMonth[3].ToString();
+            ReportYearModel1.Mar = TotalEachMonth[3].ToString("N0");
             ReportYearModel2.Mar = divisible(TotalEachMonth[3] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Apr = TotalEachMonth[4].ToString();
+            ReportYearModel1.Apr = TotalEachMonth[4].ToString("N0");
             ReportYearModel2.Apr = divisible(TotalEachMonth[4] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.May = TotalEachMonth[5].ToString();
+            ReportYearModel1.May = TotalEachMonth[5].ToString("N0");
             ReportYearModel2.May = divisible(TotalEachMonth[5] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Jun = TotalEachMonth[6].ToString();
+            ReportYearModel1.Jun = TotalEachMonth[6].ToString("N0");
             ReportYearModel2.Jun = divisible(TotalEachMonth[6] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Jul = TotalEachMonth[7].ToString();
+            ReportYearModel1.Jul = TotalEachMonth[7].ToString("N0");
             ReportYearModel2.Jul = divisible(TotalEachMonth[7] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Aug = TotalEachMonth[8].ToString();
+            ReportYearModel1.Aug = TotalEachMonth[8].ToString("N0");
             ReportYearModel2.Aug = divisible(TotalEachMonth[8] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Sep = TotalEachMonth[9].ToString();
+            ReportYearModel1.Sep = TotalEachMonth[9].ToString("N0");
             ReportYearModel2.Sep = divisible(TotalEachMonth[9] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Oct = TotalEachMonth[10].ToString();
+            ReportYearModel1.Oct = TotalEachMonth[10].ToString("N0");
             ReportYearModel2.Oct = divisible(TotalEachMonth[10] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Nov = TotalEachMonth[11].ToString();
+            ReportYearModel1.Nov = TotalEachMonth[11].ToString("N0");
             ReportYearModel2.Nov = divisible(TotalEachMonth[11] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
 
-            ReportYearModel1.Dec = TotalEachMonth[12].ToString();
+            ReportYearModel1.Dec = TotalEachMonth[12].ToString("N0");
             ReportYearModel2.Dec = divisible(TotalEachMonth[12] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
             ReportYearModel1.SaleName = "Total";
             ReportYearModel2.SaleName = "Total";
@@ -1557,7 +1294,6 @@ namespace SSM.Controllers
             ViewData["ListReport2"] = ListReport2;
             return View(model);
         }
-
         public ActionResult RepostSummary()
         {
             SalePerformamceModel performamceModel = null;
