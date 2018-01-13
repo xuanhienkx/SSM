@@ -26,7 +26,8 @@ namespace SSM.Models
         IEnumerable<QuantityUnits> getQuantityUnitsSales(long DeptId1, SalePerformamceModel SalePerformamceModel1, DateTime SearchDate1, DateTime SearchDateTo);
         IEnumerable<QuantityUnits> getQuantityUnits(long UserId1, SalePerformamceModel SalePerformamceModel1, DateTime SearchDate1, DateTime SearchDateTo);
         IEnumerable<Shipment> getAllShipment(SalePerformamceModel SalePerformamceModel1, DateTime SearchDate1, DateTime SearchDateTo, long ComId);
-        IEnumerable<PerformanceReport> getSaleReportOffice(long OfficeId, int Year);
+        IEnumerable<PerformanceReport> getSaleReportOffice(long OfficeId, int Year); IList<PlanModelMonth> GetPlanYear(long id, int year, TypeOfPlan type = TypeOfPlan.User);
+        IList<MonthOfYearReport> GetOrderMountYear(long id, int year, TypeOfPlan type = TypeOfPlan.User);
     }
     public class ReportServicesImpl : ReportServices
     {
@@ -915,5 +916,81 @@ namespace SSM.Models
             }
             return null;
         }
+        public IList<PlanModelMonth> GetPlanYear(long id, int year, TypeOfPlan type = TypeOfPlan.User)
+        {
+            List<SalePlan> list;
+            var result = new List<PlanModelMonth>();
+            for (int i = 1; i <= 12; i++)
+            {
+                result.Add(new PlanModelMonth(i, 0));
+            }
+            switch (type)
+            {
+                case TypeOfPlan.User:
+                    list = db.SalePlans.Where(x => x.PlanMonth.Value.Year == year && x.UserId == id).ToList();
+                    break;
+                case TypeOfPlan.Department:
+                    list = db.SalePlans.Where(x => x.PlanMonth.Value.Year == year && x.User.DeptId == id).ToList();
+                    break;
+                case TypeOfPlan.Company:
+                default:
+                    list = db.SalePlans.Where(x => x.PlanMonth.Value.Year == year && x.User.ComId == id).ToList();
+                    break;
+            }
+            if (list.Any())
+            {
+                foreach (var item in list)
+                {
+                    if (item?.PlanValue != null && item.PlanValue.Value > 0)
+                        result[item.PlanMonth.Value.Month - 1].PValue = item.PlanValue.Value;
+                }
+            }
+            return result.OrderBy(x => x.Month).ToList();
+        }
+
+        public IList<MonthOfYearReport> GetOrderMountYear(long id, int year, TypeOfPlan type = TypeOfPlan.User)
+        {
+            var query = db.Revenues.Where(x => x.Shipment.DateShp.Value.Year == year);
+            switch (type)
+            {
+                case TypeOfPlan.User:
+                    query = query.Where(x => x.Shipment.SaleId == id);
+                    break;
+                case TypeOfPlan.Department:
+                    query = query.Where(x => x.Shipment.User.DeptId == id);
+                    break;
+                case TypeOfPlan.Company:
+                default:
+                    query = query.Where(x => x.Shipment.User.ComId == id);
+                    break;
+            }
+            var planOfYear = GetPlanYear(id, year, type);
+            var orders = query.GroupBy(g => new { g.Shipment.DateShp.Value.Month, g.SaleType })
+                .Select(r => new
+                {
+                    Month = r.Key.Month,
+                    SaleType = r.Key.SaleType,
+                    Profit = r.Sum(x => x.Earning),
+                    Bonus = r.Where(a => a.Shipment.RevenueStatus.Equals(ShipmentModel.RevenueStatusCollec.Approved.ToString()))
+                            .Sum(x => x.Earning)
+
+                }).ToList();
+
+
+            var result = (from pl in planOfYear
+                          join at in orders on pl.Month equals at.Month into temp
+                          from at in temp.DefaultIfEmpty()
+                          select new MonthOfYearReport()
+                          {
+                              Month = pl.Month,
+                              PlanValue = pl.PValue,
+                              SaleType = at.SaleType,
+                              Profit = at.Profit ?? 0,
+                              Perform = (pl.PValue == 0) ? 0 : at.Profit ?? 0 / pl.PValue,
+                              Bonus = at.Bonus ?? 0
+                          });
+            return result.ToList();
+        }
+
     }
 }

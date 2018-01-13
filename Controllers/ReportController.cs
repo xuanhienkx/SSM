@@ -565,8 +565,7 @@ namespace SSM.Controllers
             var reportProcess = new List<PerformanceReport>(12);
             var saleTypes = UserService1.getAllSaleTypes(false).ToList();
 
-
-            var performanceReports = reportsResult as PerformanceReport[] ?? reportsResult.ToArray();
+            var performanceReports = reportsResult.ToList();
             if (performanceReports.Any())
             {
                 for (int i = 1; i <= 12; i++)
@@ -841,6 +840,7 @@ namespace SSM.Controllers
             ReportProcess = reportProcessNew(reportsResult);
             ViewData["ListDepts"] = new SelectList(UserService1.GetAllDepartmentActive(CurrenUser), "Id", "DeptName");
             ViewData["ReportProcess"] = ReportProcess;
+            ViewData["YearPlan"] = ReportService1.GetPlanYear(model.DeptId,model.Year,  TypeOfPlan.Department);
             List<ReportYearModel> ListReport1 = new List<ReportYearModel>();
             List<ReportYearModel> ListReport2 = new List<ReportYearModel>();
             EntitySet<User> ListUser = UserService1.getDepartmentById(model.DeptId).Users;
@@ -1146,15 +1146,15 @@ namespace SSM.Controllers
         { 
             Session["OfficeReportModel"] = model; 
             return ProsessOfficePreport(model);
-        }
-
+        } 
+         
         private ActionResult ProsessOfficePreport(OfficeReportModel model)
-        {
+        { 
+            ViewData["ListOffices"] = new SelectList(UserService1.getAllCompany(), "Id", "CompanyName"); 
             IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportOffice(model.OfficeId, model.Year);
             List<PerformanceReport> ReportProcess = new List<PerformanceReport>(12);
             ReportProcess = reportProcessNew(ReportsResult);
-            ViewData["ListOffices"] = new SelectList(UserService1.getAllCompany(), "Id", "CompanyName");
-            ViewData["ReportProcess"] = ReportProcess;
+            ViewData["ReportProcess"] = ReportProcess;  
             List<ReportYearModel> ListReport1 = new List<ReportYearModel>();
             List<ReportYearModel> ListReport2 = new List<ReportYearModel>();
             EntitySet<Department> ListDept = UserService1.getCompanyById(model.OfficeId).Departments;
@@ -1232,7 +1232,7 @@ namespace SSM.Controllers
                 ReportYearModel2.Dec = divisible(Perform * 100, TotalPlanYear).ToString("0.00") + "%";
 
                 ReportYearModel1.Total = TotalPerform.ToString("N0");
-                ReportYearModel1.Remain = rounFloor(TotalPlanYear - TotalPerform).ToString("0.00") + "";
+                ReportYearModel1.Remain = rounFloor(TotalPlanYear - TotalPerform).ToString("N2");
                 ReportYearModel2.Total = divisible(TotalPerform * 100, TotalPlanYear).ToString("0.00") + "%";
                 ReportYearModel2.Remain = rounFloor(100 - divisible(TotalPerform * 100, TotalPlanYear)).ToString("0.00") + "%";
 
@@ -1246,7 +1246,7 @@ namespace SSM.Controllers
             ReportYearModel1.Plan = TotalEachMonth[0].ToString("N0");
             ReportYearModel1.PlanPerMonth = (TotalEachMonth[0] / 12).ToString("0");
             ReportYearModel1.Total = "" + TotalEachMonth[13].ToString("N0");
-            ReportYearModel1.Remain = "" + rounFloor(TotalEachMonth[0] - TotalEachMonth[13]);
+            ReportYearModel1.Remain = "" + rounFloor(TotalEachMonth[0] - TotalEachMonth[13]).ToString("N2");
 
             ReportYearModel2.Total = divisible(TotalEachMonth[13] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
             ReportYearModel2.Remain = rounFloor(100 - divisible(TotalEachMonth[13] * 100, TotalEachMonth[0])).ToString("0.00") + "%";
@@ -1341,9 +1341,7 @@ namespace SSM.Controllers
             }
 
             var viewPerformancesCom = performanceService.GetPerformancesCom(searchDate, searchDateTo, comId);
-            ViewData["ViewPerformancesCom"] = summaryViewPerformance(viewPerformancesCom.ToList());
-            /* var quantityUnits1Com = ReportService1.getQuantityUnitsCom(viewPerformancesCom, searchDate, searchDateTo);
-             ViewData["QuantityUnits1Com"] = quantityUnits1Com.ToList();*/
+            ViewData["ViewPerformancesCom"] = summaryViewPerformance(viewPerformancesCom.ToList()); 
         }
     }
 }
