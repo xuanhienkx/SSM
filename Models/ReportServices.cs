@@ -26,7 +26,8 @@ namespace SSM.Models
         IEnumerable<QuantityUnits> getQuantityUnitsSales(long DeptId1, SalePerformamceModel SalePerformamceModel1, DateTime SearchDate1, DateTime SearchDateTo);
         IEnumerable<QuantityUnits> getQuantityUnits(long UserId1, SalePerformamceModel SalePerformamceModel1, DateTime SearchDate1, DateTime SearchDateTo);
         IEnumerable<Shipment> getAllShipment(SalePerformamceModel SalePerformamceModel1, DateTime SearchDate1, DateTime SearchDateTo, long ComId);
-        IEnumerable<PerformanceReport> getSaleReportOffice(long OfficeId, int Year); IList<PlanModelMonth> GetPlanYear(long id, int year, TypeOfPlan type = TypeOfPlan.User);
+        IEnumerable<PerformanceReport> getSaleReportOffice(long OfficeId, int Year);
+        IList<PlanModelMonth> GetPlanYear(long id, int year, TypeOfPlan type = TypeOfPlan.User);
         IList<MonthOfYearReport> GetOrderMountYear(long id, int year, TypeOfPlan type = TypeOfPlan.User);
     }
     public class ReportServicesImpl : ReportServices
@@ -703,44 +704,38 @@ namespace SSM.Models
             try
             {
                 IEnumerable<PerformanceReport> results = from
-                        reportPerform in
-                        (from Shipment1 in db.Shipments
-                            where UserId == Shipment1.SaleId.Value && Shipment1.DateShp.Value.Year == Year
-                                  && Shipment1.IsMainShipment == false
-                            group Shipment1 by new {Shipment1.DateShp.Value.Month, Shipment1.Revenue.SaleType}
-                            into _group
-                            select new
-                            {
-                                Month = _group.Key.Month,
-                                SaleType = _group.Key.SaleType,
-                                profit = _group.Sum(sh => sh.Revenue != null ? sh.Revenue.Earning : 0),
-                                Bonus = _group
-                                    .Where(x => x.RevenueStatus.Equals(ShipmentModel.RevenueStatusCollec.Approved))
-                                    .Sum(sh => sh.Revenue != null ? sh.Revenue.AmountBonus2 : 0)
-                            })
-                    join
-
-                        reportPlan in
-                        (from SalePlan1 in db.SalePlans
-                            where (SalePlan1.UserId != null && SalePlan1.UserId.Value == UserId) &&
-                                  SalePlan1.PlanMonth.Value.Year == Year
-                            select new
-                            {
-                                Month = SalePlan1.PlanMonth.Value.Month,
-                                UserPlan = SalePlan1.PlanValue
-                            })
-                        on reportPerform.Month equals reportPlan.Month into _leftjoins
-                    from _leftjoin in _leftjoins.DefaultIfEmpty()
-                    select new PerformanceReport(reportPerform.Month,
-                        Convert.ToDouble(_leftjoin.UserPlan ?? 0),
-                        reportPerform.SaleType != null
-                            ? reportPerform.SaleType.ToString()
-                            : ShipmentModel.SaleTypes.Sales.ToString(),
-                        Convert.ToDouble(reportPerform.profit != null ? reportPerform.profit : 0),
-                        Convert.ToDouble(reportPerform.Bonus != null ? reportPerform.Bonus : 0)
+                                                             reportPlan in
+                                                             (from SalePlan1 in db.SalePlans
+                                                              where (SalePlan1.UserId != null && SalePlan1.UserId.Value == UserId) && SalePlan1.PlanMonth.Value.Year == Year
+                                                              select new
+                                                              {
+                                                                  Month = SalePlan1.PlanMonth.Value.Month,
+                                                                  UserPlan = SalePlan1.PlanValue
+                                                              })
+                                                         join
+                                                 reportPerform in
+                                                             (from Shipment1 in db.Shipments
+                                                              where UserId == Shipment1.SaleId.Value && Shipment1.DateShp.Value.Year == Year
+                                                              && Shipment1.IsMainShipment == false
+                                                              group Shipment1 by new { Shipment1.DateShp.Value.Month, Shipment1.Revenue.SaleType }
+                                                                  into _group
+                                                              select new
+                                                              {
+                                                                  Month = _group.Key.Month,
+                                                                  SaleType = _group.Key.SaleType,
+                                                                  profit = _group.Sum(sh => sh.Revenue != null ? sh.Revenue.Earning : 0),
+                                                                  Bonus = _group.Where(x => x.RevenueStatus.Equals(ShipmentModel.RevenueStatusCollec.Approved)).Sum(sh => sh.Revenue != null ? sh.Revenue.AmountBonus2 : 0)
+                                                              }) on reportPlan.Month equals reportPerform.Month into _leftjoins
+                                                         from _leftjoin in _leftjoins.DefaultIfEmpty()
+                                                         select new PerformanceReport(reportPlan.Month,
+                                                             Convert.ToDouble(reportPlan.UserPlan != null ? reportPlan.UserPlan : 0),
+                                                             _leftjoin.SaleType != null ? _leftjoin.SaleType.ToString() : ShipmentModel.SaleTypes.Sales.ToString(),
+                                                             Convert.ToDouble(_leftjoin.profit != null ? _leftjoin.profit : 0),
+                                                             Convert.ToDouble(_leftjoin.Bonus != null ? _leftjoin.Bonus : 0)
 
 
-                    );
+                                                             );
+                 
                 return results;
             }
             catch (Exception e)
@@ -830,14 +825,11 @@ namespace SSM.Models
                 IEnumerable<PerformanceReport> results = from
                                                              reportPlan in
                                                              (from SalePlan1 in db.SalePlans
-                                                              where (SalePlan1.User != null && SalePlan1.User.DeptId == DeptId) && SalePlan1.PlanMonth.Value.Year == Year
-                                                              group SalePlan1 by new { SalePlan1.User.DeptId, SalePlan1.PlanMonth.Value.Month }
-                                                              into _g
+                                                              where (SalePlan1.DeptId != null && SalePlan1.Department.Id == DeptId) && SalePlan1.PlanMonth.Value.Year == Year
                                                               select new
                                                               {
-                                                                  Month = _g.Key.Month,
-                                                                  UserPlan = _g.Sum(x => x.PlanValue),
-                                                                  DeptId = _g.Key.DeptId
+                                                                  Month = SalePlan1.PlanMonth.Value.Month,
+                                                                  UserPlan = SalePlan1.PlanValue
                                                               })
 
 
