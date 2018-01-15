@@ -26,7 +26,9 @@ namespace SSM.Controllers
         private IServicesTypeServices servicesType;
         private List<ServicesType> servicesList;
         private IPerformanceReportService performanceService;
+        private IReportSalePlanServices reportSalePlanServices;
         List<SaleType> SaleTypes;
+
         protected override void Initialize(RequestContext requestContext)
         {
             base.Initialize(requestContext);
@@ -38,6 +40,7 @@ namespace SSM.Controllers
             servicesType = new ServicesTypeServices();
             performanceService = new PerformanceReportService();
             SaleTypes = SaleTypes ?? UserService1.getAllSaleTypes(false).ToList();
+            reportSalePlanServices = new ReportSalePlanServices();
             GetDefaultList();
         }
 
@@ -49,14 +52,14 @@ namespace SSM.Controllers
             InitA.Id = 0;
             InitA.AbbName = "--All Agents--";
             Agents.Add(InitA);
-            Agents.AddRange(agentService.GetAll(x => x.IsActive &&  x.IsSee && (CurrenUser.IsAdmin() || x.IsHideUser == false)).OrderBy(x => x.AbbName));
+            Agents.AddRange(agentService.GetAll(x => x.IsActive && x.IsSee && (CurrenUser.IsAdmin() || x.IsHideUser == false)).OrderBy(x => x.AbbName));
             ViewData["Agents"] = new SelectList(Agents, "Id", "AbbName");
             List<Customer> Cnees = new List<Customer>();
             Customer InitC = new Customer();
             InitC.Id = 0;
             InitC.CompanyName = "--All Cnees--";
             Cnees.Add(InitC);
-            Cnees.AddRange(customerServices.GetAll(x => (x.CustomerType == CustomerType.Cnee.ToString()|| x.CustomerType==CustomerType.ShipperCnee.ToString()) && x.IsSee && (CurrenUser.IsAdmin() || x.IsHideUser == false)).OrderByDescending(x => x.CompanyName));
+            Cnees.AddRange(customerServices.GetAll(x => (x.CustomerType == CustomerType.Cnee.ToString() || x.CustomerType == CustomerType.ShipperCnee.ToString()) && x.IsSee && (CurrenUser.IsAdmin() || x.IsHideUser == false)).OrderByDescending(x => x.CompanyName));
             ViewData["Cnees"] = new SelectList(Cnees, "Id", "CompanyName");
             List<Customer> Shippers = new List<Customer>();
             Customer Shipper1 = new Customer();
@@ -128,7 +131,7 @@ namespace SSM.Controllers
                 }
                 else
                 {
-                    ViewPerformance ViewPerformanceExisted = results.Find(delegate(ViewPerformance ViewPerformance2)
+                    ViewPerformance ViewPerformanceExisted = results.Find(delegate (ViewPerformance ViewPerformance2)
                     {
                         return ViewPerformance2.Equals(ViewPerformance1);
                     });
@@ -817,11 +820,31 @@ namespace SSM.Controllers
             DepartmentportModel model = new DepartmentportModel
             {
                 Year = DateTime.Now.Year,
-                DeptId = (int) CurrenUser.Department.Id
+                DeptId = (int)CurrenUser.Department.Id
             };
             Session["DepartmentportModel"] = model;
             IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportDept(model.DeptId, Year);
             return ProcessDeparment(model, ReportsResult);
+        }
+        public ActionResult DepartmentSalePlanReport()
+        {
+            int year = DateTime.Now.Year;
+            DepartmentportModel model = new DepartmentportModel
+            {
+                Year = DateTime.Now.Year,
+                DeptId = (int)(CurrenUser.DeptId ?? 0)
+            };
+            Session["DepartmentSalePlanReport"] = model;
+            return ProcessDeparmentSalePlan(model);
+        }
+
+        private ActionResult ProcessDeparmentSalePlan(DepartmentportModel model)
+        {
+            ViewData["ListDepts"] = new SelectList(UserService1.GetAllDepartmentActive(CurrenUser), "Id", "DeptName");
+            ViewData["ReportProcess"] = reportSalePlanServices.GetOrderMountYear(model.DeptId, model.Year, TypeOfPlan.Department);
+            ViewData["ReportProcessDetail"] = reportSalePlanServices.GetAllUserOfDept(model.DeptId, model.Year);
+              return View(model);
+
         }
         [HttpPost]
         public ActionResult DepartmentReport(DepartmentportModel model)
@@ -830,7 +853,7 @@ namespace SSM.Controllers
             int deptId = model.DeptId;
             Session["DepartmentportModel"] = model;
             IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportDept(deptId, year);
-            return ProcessDeparment(model, ReportsResult); 
+            return ProcessDeparment(model, ReportsResult);
 
         }
 
@@ -840,7 +863,6 @@ namespace SSM.Controllers
             ReportProcess = reportProcessNew(reportsResult);
             ViewData["ListDepts"] = new SelectList(UserService1.GetAllDepartmentActive(CurrenUser), "Id", "DeptName");
             ViewData["ReportProcess"] = ReportProcess;
-            ViewData["YearPlan"] = ReportService1.GetPlanYear(model.DeptId,model.Year,  TypeOfPlan.Department);
             List<ReportYearModel> ListReport1 = new List<ReportYearModel>();
             List<ReportYearModel> ListReport2 = new List<ReportYearModel>();
             EntitySet<User> ListUser = UserService1.getDepartmentById(model.DeptId).Users;
@@ -858,7 +880,7 @@ namespace SSM.Controllers
                 ReportYearModel2.SaleName = UserItem.FullName;
                 ReportYearModel1.Plan = TotalPlanYear.ToString();
                 ReportYearModel1.PlanPerMonth = (TotalPlanYear / 12).ToString("0");
-               var userReportsResult = ReportService1.getSaleReport(Id, model.Year);
+                var userReportsResult = ReportService1.getSaleReport(Id, model.Year);
                 ReportProcess = reportProcess(userReportsResult);
                 double TotalPerform = 0;
                 double Perform = 0;
@@ -930,7 +952,7 @@ namespace SSM.Controllers
             ReportYearModel2 = new ReportYearModel();
             ReportYearModel1.Plan = TotalEachMonth[0].ToString("N2");
             ReportYearModel1.PlanPerMonth = (TotalEachMonth[0] / 12).ToString("0");
-            ReportYearModel1.Total =TotalEachMonth[13].ToString("N2");
+            ReportYearModel1.Total = TotalEachMonth[13].ToString("N2");
             ReportYearModel1.Remain = "" + rounFloor(TotalEachMonth[0] - TotalEachMonth[13]);
 
             ReportYearModel2.Total = divisible(TotalEachMonth[13] * 100, TotalEachMonth[0]).ToString("0.00") + "%";
@@ -1135,7 +1157,7 @@ namespace SSM.Controllers
             var model = new OfficeReportModel
             {
                 Year = year,
-                OfficeId = (int) CurrenUser.Company.Id
+                OfficeId = (int)CurrenUser.Company.Id
             };
             Session["OfficeReportModel"] = model;
 
@@ -1143,18 +1165,18 @@ namespace SSM.Controllers
         }
         [HttpPost]
         public ActionResult OfficeReport(OfficeReportModel model)
-        { 
-            Session["OfficeReportModel"] = model; 
+        {
+            Session["OfficeReportModel"] = model;
             return ProsessOfficePreport(model);
-        } 
-         
+        }
+
         private ActionResult ProsessOfficePreport(OfficeReportModel model)
-        { 
-            ViewData["ListOffices"] = new SelectList(UserService1.getAllCompany(), "Id", "CompanyName"); 
+        {
+            ViewData["ListOffices"] = new SelectList(UserService1.getAllCompany(), "Id", "CompanyName");
             IEnumerable<PerformanceReport> ReportsResult = ReportService1.getSaleReportOffice(model.OfficeId, model.Year);
             List<PerformanceReport> ReportProcess = new List<PerformanceReport>(12);
             ReportProcess = reportProcessNew(ReportsResult);
-            ViewData["ReportProcess"] = ReportProcess;  
+            ViewData["ReportProcess"] = ReportProcess;
             List<ReportYearModel> ListReport1 = new List<ReportYearModel>();
             List<ReportYearModel> ListReport2 = new List<ReportYearModel>();
             EntitySet<Department> ListDept = UserService1.getCompanyById(model.OfficeId).Departments;
@@ -1341,7 +1363,7 @@ namespace SSM.Controllers
             }
 
             var viewPerformancesCom = performanceService.GetPerformancesCom(searchDate, searchDateTo, comId);
-            ViewData["ViewPerformancesCom"] = summaryViewPerformance(viewPerformancesCom.ToList()); 
+            ViewData["ViewPerformancesCom"] = summaryViewPerformance(viewPerformancesCom.ToList());
         }
     }
 }

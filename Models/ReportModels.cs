@@ -194,6 +194,18 @@ namespace SSM.Models
         public int Month { get; set; }
         public decimal PValue { get; set; }
     }
+    public class PlanUnitMonthModel
+    {
+        public PlanUnitMonthModel(long id,string name, decimal value)
+        {
+            Id = id;
+            Name = name;
+            PValue = value;
+        }
+        public long Id { get; set; }
+        public string Name { get; set; }
+        public decimal PValue { get; set; }
+    }
     public class PerformanceReport
     {
         public List<PerformModel> PerformModels { get; set; }
@@ -348,4 +360,25 @@ namespace SSM.Models
         public decimal Bonus { get; set; }
         public decimal Perform { get; set; }
     }
+
+    public class ReportDetailYearModel
+    {
+        public string Name { get; set; }
+        public decimal Plan { get; set; }
+        public decimal PlanPerMonth { get; set; }
+        public int Month { get; set; }
+        public decimal Profit { get; set; }
+        public decimal Bonus { get; set; }
+        public decimal Perform { get; set; }
+
+        public decimal Total { get; set; }
+        public decimal Remain { get; set; }
+    }
+
+    public class TotalReportPlan
+    {
+        public string PlanYear { get; set; }
+        public IList<PlanModelMonth> Months { get; set; }
+        public decimal TotalPlanMonth=> Months.Any() ? Months.Sum(x => x.PValue) : 0;
+    } 
 }

@@ -377,6 +377,7 @@
     <Compile Include="Models\RequestPayment.cs" />
     <Compile Include="Models\ShipmentModel.cs" />
     <Compile Include="Services\ProvinceService.cs" />
+    <Compile Include="Services\ReportSalePlanServices.cs" />
     <Compile Include="Services\RevenueServices.cs" />
     <Compile Include="Services\ServerFileService.cs" />
     <Compile Include="Services\ShipmentServices.cs" />
@@ -834,6 +835,7 @@
     <Content Include="Views\CRM\_ListSalesTrading.cshtml" />
     <Content Include="Views\CRM\_crmSettingView.cshtml" />
     <Content Include="Views\CRMEvent\Detail.cshtml" />
+    <Content Include="Views\Report\DepartmentSalePlanReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\VerifyArgument.cs" />

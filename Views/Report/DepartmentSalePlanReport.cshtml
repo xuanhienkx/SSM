@@ -1,0 +1,64 @@
+﻿@using SSM.Models
+@model SSM.Models.DepartmentportModel
+
+@{
+    ViewBag.Title = "title";
+
+    var listDepts = (SelectList)ViewData["ListDepts"];
+    var reports = (IList<MonthOfYearReport>)ViewData["ReportProcess"];
+    var reportsDetail = (IList<ReportDetailYearModel>)ViewData["ReportProcessDetail"];
+    decimal total = 0,totalSale = 0, totalMonth = 0;
+}
+
+<div class="SectionBlock Expanded BoxL1">
+    <div class="BoxL2">
+        <div class="BoxL3">
+            <div class="BoxL4">
+                <table id="ResultList" border="" cellpadding="2" cellspacing="0" class="tableNormal">
+                    <tr>
+                        <th></th>
+                        <th>Jan</th>
+                        <th>Feb</th>
+                        <th>Mar</th>
+                        <th>Apr</th>
+                        <th>May</th>
+                        <th>Jun</th>
+                        <th>Jul</th>
+                        <th>Aug</th>
+                        <th>Sep</th>
+                        <th>Oct</th>
+                        <th>Nov</th>
+                        <th>Dec</th>
+                        <th>Total</th>
+                    </tr>
+                    @foreach (var it in reports)
+                    { 
+                        <tr>
+                            <td><label class="Label"> @it.SaleType</label></td>
+                            @for (int m = 0; m < 12; m++)
+                            {
+                                <td>
+                                    @if (it.Month == m)
+                                    { 
+                                        <span>@it.PlanValue</span>
+                                    }
+                                    else
+                                    {
+                                        <span>0</span>
+                                    }
+                                </td>
+                            }
+                        </tr>
+                    }
+
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        jQuery("#ReportTab").addClass("Active");
+        jQuery('#ReportTab').activeThisNav();
+    });
+</script>
