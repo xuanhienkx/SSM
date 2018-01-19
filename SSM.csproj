@@ -629,6 +629,7 @@
     <Content Include="Content\themes\base\images\ui-icons_888888_256x240.png" />
     <Content Include="Content\themes\base\images\ui-icons_cd0a0a_256x240.png" />
     <Content Include="Content\themes\base\jquery-ui.css" />
+    <Content Include="sqlupdate\BaseData.sql" />
     <Content Include="sqlupdate\CityStateCountry\CityData.sql" />
     <Content Include="sqlupdate\CityStateCountry\CountryData.sql" />
     <Content Include="sqlupdate\CityStateCountry\regions.sql" />

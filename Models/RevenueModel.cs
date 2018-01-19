@@ -99,7 +99,8 @@ namespace SSM.Models
         public bool IsRequest { get; set; }
         public bool IsRevised { get; set; }
         public Shipment Shipment { get; set; }
-       
+        public long SaleTypeId { get; set; }
+
         public static Revenue ConvertModel(RevenueModel RevenueModel1)
         {
             Revenue Revenue1 = new Revenue();
@@ -289,6 +290,7 @@ namespace SSM.Models
             Revenue1.IsRevised = RevenueModel1.IsRevised;
             Revenue1.IsRequest = RevenueModel1.IsRequest;
             Revenue1.PaidToCarrier = RevenueModel1.PaidToCarrier;
+            Revenue1.SaleTypeId = RevenueModel1.SaleTypeId;
         }
         public static RevenueModel ConvertModel(Revenue Revenue1)
         {
@@ -381,6 +383,7 @@ namespace SSM.Models
             RevenueModel1.AccInvDate3 = Revenue1.AccInvDate3 != null ? Revenue1.AccInvDate3.Value.ToString("dd/MM/yyyy") : "";
             RevenueModel1.AccInvDate4 = Revenue1.AccInvDate4 != null ? Revenue1.AccInvDate4.Value.ToString("dd/MM/yyyy") : "";
             RevenueModel1.SaleType = Revenue1.SaleType;
+            RevenueModel1.SaleTypeId = Revenue1.SaleTypeId;
 
             RevenueModel1.ApproveId = Revenue1.ApproveId;
             if (Revenue1.User != null)
@@ -407,8 +410,8 @@ namespace SSM.Models
             }
             RevenueModel1.Shipment = Revenue1.Shipment;
             RevenueModel1.IsControl = Revenue1.IsControl ?? false;
-            RevenueModel1.IsRequest = Revenue1.IsRequest ;
-            RevenueModel1.IsRevised = Revenue1.IsRevised ;
+            RevenueModel1.IsRequest = Revenue1.IsRequest;
+            RevenueModel1.IsRevised = Revenue1.IsRevised;
             return RevenueModel1;
         }
         public static Revenue InitRevenue()

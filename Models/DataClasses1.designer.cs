@@ -17426,6 +17426,8 @@ namespace SSM.Models
 		
 		private bool _IsRequest;
 		
+		private long _SaleTypeId;
+		
 		private EntitySet<InvoideIssued> _InvoideIssueds;
 		
 		private EntitySet<SOAInvoice> _SOAInvoices;
@@ -17620,6 +17622,8 @@ namespace SSM.Models
     partial void OnIsRevisedChanged();
     partial void OnIsRequestChanging(bool value);
     partial void OnIsRequestChanged();
+    partial void OnSaleTypeIdChanging(long value);
+    partial void OnSaleTypeIdChanged();
     #endregion
 		
 		public Revenue()
@@ -19414,6 +19418,26 @@ namespace SSM.Models
 			}
 		}
 		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SaleTypeId", DbType="Bigint")]
+		public long SaleTypeId
+		{
+			get
+			{
+				return this._SaleTypeId;
+			}
+			set
+			{
+				if ((this._SaleTypeId != value))
+				{
+					this.OnSaleTypeIdChanging(value);
+					this.SendPropertyChanging();
+					this._SaleTypeId = value;
+					this.SendPropertyChanged("SaleTypeId");
+					this.OnSaleTypeIdChanged();
+				}
+			}
+		}
+		
 		[global::System.Data.Linq.Mapping.AssociationAttribute(Name="Revenue_InvoideIssued", Storage="_InvoideIssueds", ThisKey="Id", OtherKey="RevenueId")]
 		public EntitySet<InvoideIssued> InvoideIssueds
 		{
@@ -20544,6 +20568,8 @@ namespace SSM.Models
 		
 		private System.Nullable<int> _ControlStep;
 		
+		private long _SaleTypeId;
+		
 		private EntitySet<ArriveNotice> _ArriveNotices;
 		
 		private EntitySet<AuthorLetter> _AuthorLetters;
@@ -20678,6 +20704,8 @@ namespace SSM.Models
     partial void OnIsControlChanged();
     partial void OnControlStepChanging(System.Nullable<int> value);
     partial void OnControlStepChanged();
+    partial void OnSaleTypeIdChanging(long value);
+    partial void OnSaleTypeIdChanged();
     #endregion
 		
 		public Shipment()
@@ -21512,6 +21540,26 @@ namespace SSM.Models
 					this._ControlStep = value;
 					this.SendPropertyChanged("ControlStep");
 					this.OnControlStepChanged();
+				}
+			}
+		}
+		
+		[global::System.Data.Linq.Mapping.ColumnAttribute(Storage="_SaleTypeId", DbType="BigInt")]
+		public long SaleTypeId
+		{
+			get
+			{
+				return this._SaleTypeId;
+			}
+			set
+			{
+				if ((this._SaleTypeId != value))
+				{
+					this.OnSaleTypeIdChanging(value);
+					this.SendPropertyChanging();
+					this._SaleTypeId = value;
+					this.SendPropertyChanged("SaleTypeId");
+					this.OnSaleTypeIdChanged();
 				}
 			}
 		}
