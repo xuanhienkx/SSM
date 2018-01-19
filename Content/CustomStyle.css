@@ -329,7 +329,7 @@ fieldset[disabled] .btn-link {
     z-index: 99999999999999 !important;
 }
 
-.currency, .number2, .number, p.percents, .currency4, .currencyVn, .currency3 {
+.currency, .number1, .number2, .number, p.percents, .currency4, .currencyVn, .currency3 {
     text-align: right;
 }
 

@@ -63,19 +63,19 @@
                         </tr>
                         <tr>
                         <td><label class="Label">Plan of <%= Model.Year %></label></td>
-                        <td><%= ReportProcess.ElementAt(0).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(1).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(2).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(3).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(4).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(5).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(6).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(7).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(8).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(9).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(10).Plan %></td>
-                        <td><%= ReportProcess.ElementAt(11).Plan %></td>
-                        <td><%= TotalPlan%></td>
+                        <td><%= ReportProcess.ElementAt(0).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(1).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(2).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(3).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(4).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(5).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(6).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(7).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(8).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(9).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(10).Plan.ToString("N0") %></td>
+                        <td><%= ReportProcess.ElementAt(11).Plan.ToString("N0") %></td>
+                        <td><%= TotalPlan.ToString("N0")%></td>
                         </tr>
                         <%
                             for (int ti = 0; ti < totalSaleType; ti++)
@@ -95,7 +95,7 @@
                         <td><%= ReportProcess.ElementAt(9).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
                         <td><%= ReportProcess.ElementAt(10).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
                         <td><%= ReportProcess.ElementAt(11).PerformModels.ElementAt(ti).Profit.ToString("N0")%></td>
-                        <td><%= TotalProfiltSaleTypes[ti].ToString("N2")%></td>
+                        <td><%= TotalProfiltSaleTypes[ti].ToString("N0")%></td>
                         </tr>
                         <tr>
                         <td><label class="Label">Perform of <%= ReportProcess.ElementAt(1).PerformModels.ElementAt(ti).SaleType %>(%)</label></td>
@@ -111,7 +111,7 @@
                         <td><%= ReportProcess.ElementAt(9).PerformModels.ElementAt(ti).Perform.ToString("0.00") + "%"%></td>
                         <td><%= ReportProcess.ElementAt(10).PerformModels.ElementAt(ti).Perform.ToString("0.00") + "%"%></td>
                         <td><%= ReportProcess.ElementAt(11).PerformModels.ElementAt(ti).Perform.ToString("0.00") + "%"%></td>
-                        <td><%= (TotalPlan == 0 ? TotalPlan.ToString("0.00") : (TotalProfiltSaleTypes[ti] * 100 / TotalPlan).ToString("0.00")) + "%"%></td>
+                        <td><%= (TotalPlan == 0 ? TotalPlan.ToString("N0") : (TotalProfiltSaleTypes[ti] * 100 / TotalPlan).ToString("N0")) + "%"%></td>
                         </tr>
                                <%
                             }

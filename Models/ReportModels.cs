@@ -42,7 +42,7 @@ namespace SSM.Models
             return this.SaleType.GetHashCode();
         }
     }
-   
+
     public class ViewPerformance
     {
         public List<SaleTypePerform> SaleTypePerforms { get; set; }
@@ -73,7 +73,7 @@ namespace SSM.Models
 
         public ViewPerformance()
         {
-            
+
         }
         public ViewPerformance(long UserId, String Name, String Dept, decimal Perform, int Shipment, decimal bonus)
         {
@@ -133,7 +133,7 @@ namespace SSM.Models
             else
             {
                 SaleTypePerform SaleTypePerformRe = this.SaleTypePerforms.Find(
-                    delegate(SaleTypePerform SaleTypePerform2)
+                    delegate (SaleTypePerform SaleTypePerform2)
                     {
                         return SaleTypePerform2.SaleType == SaleTypePerform1.SaleType;
                     });
@@ -143,7 +143,8 @@ namespace SSM.Models
 
         }
     }
-    public class QuantityUnits {
+    public class QuantityUnits
+    {
         public String UnitName { get; set; }
         public double UnitCount { get; set; }
         public QuantityUnits(String UnitName1, double UnitCount1)
@@ -173,8 +174,26 @@ namespace SSM.Models
         public double Profit { get; set; }
         public double Perform { get; set; }
         public double Bonus { get; set; }
+        public int Month { get; set; }
     }
 
+    public enum TypeOfPlan
+    {
+        Company,
+        Department,
+        User 
+    }
+
+    public class PlanModelMonth
+    {
+        public PlanModelMonth(int month, decimal value)
+        {
+            Month = month;
+            PValue = value;
+        }
+        public int Month { get; set; }
+        public decimal PValue { get; set; }
+    }
     public class PerformanceReport
     {
         public List<PerformModel> PerformModels { get; set; }
@@ -222,7 +241,7 @@ namespace SSM.Models
             else
             {
                 PerformModel PerformModeRe = this.PerformModels.Find(
-                    delegate(PerformModel PerformModel2)
+                    delegate (PerformModel PerformModel2)
                     {
                         return PerformModel2.SaleType == PerformModel1.SaleType;
                     });
@@ -264,16 +283,19 @@ namespace SSM.Models
             this.SumBonus = 0;
         }
 
-         
+
     }
-    public class YearPlan {
+    public class YearPlan
+    {
         public double TotalPlan { get; set; }
-        public YearPlan(double YearPlan1) {
+        public YearPlan(double YearPlan1)
+        {
             this.TotalPlan = YearPlan1;
         }
     }
 
-    public class PersonReportModel {
+    public class PersonReportModel
+    {
         public int Year { get; set; }
         [Required]
         [DisplayName("Sale to report")]
@@ -296,7 +318,8 @@ namespace SSM.Models
         public int OfficeId { get; set; }
         public String Action { get; set; }
     }
-    public class ReportYearModel {
+    public class ReportYearModel
+    {
         public String SaleName { get; set; }
         public String Plan { get; set; }
         public String PlanPerMonth { get; set; }
@@ -314,5 +337,15 @@ namespace SSM.Models
         public String Dec { get; set; }
         public String Total { get; set; }
         public String Remain { get; set; }
+    }
+
+    public class MonthOfYearReport
+    {
+        public int Month { get; set; }
+        public string SaleType { get; set; }
+        public decimal PlanValue { get; set; }
+        public decimal Profit { get; set; }
+        public decimal Bonus { get; set; }
+        public decimal Perform { get; set; }
     }
 }
