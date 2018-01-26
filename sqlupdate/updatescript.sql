@@ -91,3 +91,38 @@ UPDATE SET
     PT.Saletype = TMP.Saletype; 
 
 go
+
+ALTER TABLE Revenue  
+ DROP CONSTRAINT DF__Revenue__BonAppr__3A4CA8FD
+ALTER TABLE Revenue 
+ALTER COLUMN BonApprove money null
+ALTER TABLE Revenue  
+ DROP CONSTRAINT DF__Revenue__BonRequ__3B40CD36;
+ALTER TABLE Revenue 
+ALTER COLUMN BonRequest money null
+
+select SaleType,BonRequest,BonApprove from Revenue where id=13321
+select SaleType,RevenueStatus from Shipment where id=13321
+
+
+select * from SaleType
+ select s.id, s.SaleType, r.SaleType,BonRequest,BonApprove
+  from Revenue r join Shipment s on r.Id= s.Id and  CreateDate>='2018-01-01' and RevenueStatus='Submited'
+  
+  
+	MERGE INTO Revenue PT
+USING ( select P.Id, P.Saletype,P.CreateDate,P.RevenueStatus from Shipment P) TMP
+ON (PT.Id = TMP.Id and  CreateDate>='2018-01-01' and RevenueStatus='Submited')
+WHEN MATCHED THEN 
+UPDATE SET 
+    PT.Saletype = TMP.Saletype; 
+
+go
+MERGE INTO Revenue PT 
+USING ( select P.Name, P.Value from SaleType P) TMP
+ON (PT.Saletype = TMP.Name and Pt.id>=13235)
+WHEN MATCHED THEN 
+UPDATE SET 
+    PT.BonRequest = TMP.Value, 
+	 PT.BonApprove = TMP.Value; 
+go	 

@@ -1,145 +1,145 @@
-﻿.BookDivBody
-{
-    color:#6E6D65;
-font-family:Arial;
-font-size:14px;
-width:701px;
-}
-.BookRefNo
-{
-    padding:25px 0;
-}
-.BookRefNoLabel
-{
-    float:right;
-    width: 120px;
-}
-.BookRefNoText
-{
-    float:right;
-    width: 120px;
-    font-weight:bold;
-} 
-.BookDate
-{
-    float:right;
-    width: 100px;
-    font-weight:bold;    
-}
-.BookDateText
-{
-    float:right;
-    width: 120px;
-}   
-.BookToLabel
-{
-    float:left;
-    font-weight:bold;
-    width:100px;
-}
-.BookToContent
-{
-    float:left;
-}
-.BookToContent .ShipmentTextArea 
-{
-    width: 300px;
+﻿.BookDivBody {
+    /*  color:#6E6D65;*/
+    color: black !important;
+    font-family: Arial;
+    font-size: 14px;
+    width: 701px;
 }
 
-.BookTo
-{
-    padding-bottom:30px;
+.BookRefNo {
+    padding: 25px 0;
 }
-.BookFromLabel
-{
-    float:left;
-    font-weight:bold;
-    width:100px;
+
+.BookRefNoLabel {
+    float: right;
+    width: 120px;
 }
-.BookFromContent
-{
-    float:left;
-    font-weight:bold;
+
+.BookRefNoText {
+    float: right;
+    width: 120px;
+    font-weight: bold;
 }
-.BookFromContent .ShipmentInput
-{
-    width:300px;
+
+.BookDate {
+    float: right;
+    width: 100px;
+    font-weight: bold;
 }
-.BookConfirmText
-{
-    clear:both;
-    font-weight:bold;
-    text-align:center;
-    padding:30px 0;
+
+.BookDateText {
+    float: right;
+    width: 120px;
+}
+
+.BookToLabel {
+    float: left;
+    font-weight: bold;
+    width: 100px;
+}
+
+.BookToContent {
+    float: left;
+}
+
+    .BookToContent .ShipmentTextArea {
+        width: 300px;
+    }
+
+.BookTo {
+    padding-bottom: 30px;
+}
+
+.BookFromLabel {
+    float: left;
+    font-weight: bold;
+    width: 100px;
+}
+
+.BookFromContent {
+    float: left;
+    font-weight: bold;
+}
+
+    .BookFromContent .ShipmentInput {
+        width: 300px;
+    }
+
+.BookConfirmText {
+    clear: both;
+    font-weight: bold;
+    text-align: center;
+    padding: 30px 0;
     font-size: 25px;
 }
-.ThankFor
-{
-    clear:right;
-    padding-bottom:15px;
-    
+
+.ThankFor {
+    clear: right;
+    padding-bottom: 15px;
 }
-.WouldLike
-{
-    padding-bottom:30px;
+
+.WouldLike {
+    padding-bottom: 30px;
 }
-.BookDestination
-{
-    float:left;
-    padding-left:15px;
-    width:200px;
-    height:36px;
+
+.BookDestination {
+    float: left;
+    padding-left: 15px;
+    width: 200px;
+    height: 36px;
 }
-.BookDestinationText
-{
-    float:left;
+
+.BookDestinationText {
+    float: left;
 }
-.BookFobCharge
-{
-    padding:15px 0 25px 15px;
+
+.BookFobCharge {
+    padding: 15px 0 25px 15px;
 }
-.BookFobChargeLabel
-{
-    float:left;
-    padding:5px 0 0 45px;
-    width:200px;
-    height:36px;
+
+.BookFobChargeLabel {
+    float: left;
+    padding: 5px 0 0 45px;
+    width: 200px;
+    height: 36px;
 }
-.BookFobChargeText
-{
-    float:left;
+
+.BookFobChargeText {
+    float: left;
 }
-.BookContact
-{
+
+.BookContact {
     padding: 40px 0 20px 0;
 }
-.BookContact .ShipmentInput
-{
-    width:250px;
+
+    .BookContact .ShipmentInput {
+        width: 250px;
+    }
+
+.BookContactLabel {
+    float: left;
+    width: 245px;
 }
-.BookContactLabel
-{
-    float:left;
-    width:245px;
+
+.BookContactText {
+    float: left;
+    font-weight: bold;
 }
-.BookContactText
-{
-    float:left;
-    font-weight:bold;
+
+.BookRegard {
+    padding-bottom: 20px;
 }
-.BookRegard
-{
-    padding-bottom:20px;
-}
+
 .PrintBookFobChargeLabel {
-    float:left;
-    height:26px;
-    padding:5px 0 0 45px;
-    width:200px;
+    float: left;
+    height: 26px;
+    padding: 5px 0 0 45px;
+    width: 200px;
 }
+
 .PrintBookDestination {
-    float:left;
-    height:26px;
-    padding-left:15px;
-    width:200px;
+    float: left;
+    height: 26px;
+    padding-left: 15px;
+    width: 200px;
 }

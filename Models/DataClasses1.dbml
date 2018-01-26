@@ -797,12 +797,11 @@
       <Column Name="Currency1" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="Currency2" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
       <Column Name="SaleType" Type="System.String" DbType="NVarChar(50)" CanBeNull="true" />
-      <Column Name="BonApprove" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
-      <Column Name="BonRequest" Type="System.Decimal" DbType="SmallMoney" CanBeNull="true" />
+      <Column Name="BonApprove" Type="System.Decimal" DbType="Money" CanBeNull="true" />
+      <Column Name="BonRequest" Type="System.Decimal" DbType="Money" CanBeNull="true" />
       <Column Name="IsControl" Type="System.Boolean" DbType="bit" CanBeNull="true" />
       <Column Name="IsRevised" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
       <Column Name="IsRequest" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
-      <Column Name="SaleTypeId" Type="System.Int64" DbType="Bigint" CanBeNull="false" />
       <Association Name="Revenue_InvoideIssued" Member="InvoideIssueds" ThisKey="Id" OtherKey="RevenueId" Type="InvoideIssued" />
       <Association Name="Revenue_SOAInvoice" Member="SOAInvoices" ThisKey="Id" OtherKey="RevenueId" Type="SOAInvoice" />
       <Association Name="Agent_Revenue" Member="Agent" ThisKey="InvAgentId1" OtherKey="Id" Type="Agent" IsForeignKey="true" />
@@ -893,7 +892,6 @@
       <Column Name="UserListInControl" Type="System.String" DbType="NVarChar(300)" CanBeNull="true" />
       <Column Name="IsControl" Type="System.Boolean" DbType="Bit" CanBeNull="false" />
       <Column Name="ControlStep" Type="System.Int32" DbType="Int" CanBeNull="true" />
-      <Column Name="SaleTypeId" Type="System.Int64" DbType="BigInt" CanBeNull="false" />
       <Association Name="Shipment_ArriveNotice" Member="ArriveNotices" ThisKey="Id" OtherKey="ShipmentId" Type="ArriveNotice" />
       <Association Name="Shipment_AuthorLetter" Member="AuthorLetters" ThisKey="Id" OtherKey="ShipmentId" Type="AuthorLetter" />
       <Association Name="Shipment_BillLanding" Member="BillLandings" ThisKey="Id" OtherKey="ShipmentId" Type="BillLanding" />

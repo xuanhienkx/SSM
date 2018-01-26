@@ -52,4 +52,13 @@ ALTER COLUMN FileName nvarchar(400);
 GO
 ALTER TABLE ServerFile
 ALTER COLUMN FileMimeType nvarchar(300);
---// chih
+
+--// Saletype not approve
+ALTER TABLE Revenue  
+ DROP CONSTRAINT DF__Revenue__BonAppr__3A4CA8FD
+ALTER TABLE Revenue 
+ALTER COLUMN BonApprove money null
+ALTER TABLE Revenue  
+ DROP CONSTRAINT DF__Revenue__BonRequ__3B40CD36;
+ALTER TABLE Revenue 
+ALTER COLUMN BonRequest money null

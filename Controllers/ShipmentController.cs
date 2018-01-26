@@ -945,7 +945,7 @@ namespace SSM.Controllers
             {
                 RevenueModel1 = new RevenueModel();
                 RevenueModel1.BonRequest = getBonRequest(Shipment1.SaleType);
-                RevenueModel1.BonApprove = (int)RevenueModel1.BonRequest;
+                RevenueModel1.BonApprove =  RevenueModel1.BonRequest;
                 RevenueModel1.Id = id;
                 RevenueModel1.PaidToCarrier = Shipment1.CarrierAirId.Value;
                 RevenueModel1.InvAgentId1 = 141;
@@ -956,9 +956,7 @@ namespace SSM.Controllers
                 RevenueModel1.SaleType = Shipment1.SaleType;
             }
 
-            RevenueModel1.SaleType = RevenueModel1.BonApprove > 0
-                ? getSaleType(RevenueModel1.BonApprove)
-                : getSaleType(RevenueModel1.BonRequest);
+            RevenueModel1.SaleType = getSaleType(RevenueModel1.BonRequest);
             ViewData["SaleType"] = RevenueModel1.SaleType;
             viewDocument(Shipment1);
             var history = historyService.GeModelLasted(id, new RevenueModel().GetType().ToString());
@@ -1020,7 +1018,8 @@ namespace SSM.Controllers
             {
                 Shipment Shipment1 = ShipmentServices1.GetShipmentById(id);
                 Revenue Revenue1 = ShipmentServices1.getRevenueById(RevenueModel1.Id);
-                RevenueModel1.SaleType = getSaleType(RevenueModel1.BonApprove);
+                RevenueModel1.SaleType = getSaleType(RevenueModel1.BonRequest);
+                RevenueModel1.BonApprove = RevenueModel1.BonRequest;
                 RevenueModel1.Shipment = Shipment1;
                 viewDocument(Shipment1);
                 displayActions(Shipment1);
