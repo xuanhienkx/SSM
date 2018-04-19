@@ -49,7 +49,7 @@ namespace SSM.Controllers
             InitA.Id = 0;
             InitA.AbbName = "--All Agents--";
             Agents.Add(InitA);
-            Agents.AddRange(agentService.GetAll(x => x.IsActive && x.IsSee && (CurrenUser.IsAdmin() || x.IsHideUser == false)).OrderBy(x => x.AbbName));
+            Agents.AddRange(agentService.GetAll(x => x.IsActive && (CurrenUser.IsAdmin() || x.IsHideUser == false)).OrderBy(x => x.AbbName));
             ViewData["Agents"] = new SelectList(Agents, "Id", "AbbName");
             List<Customer> Cnees = new List<Customer>();
             Customer InitC = new Customer();

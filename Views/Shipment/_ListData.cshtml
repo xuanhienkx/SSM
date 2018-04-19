@@ -101,12 +101,13 @@
         int count = 0;
         string classRequestRevied = "";
         string nobillClass = "";
+        string typeClass = "";
         string controlClass = "";
         long idMaster = 0;
         foreach (Shipment Shipment1 in Shipments1)
         {
             classRequestRevied = "";
-            nobillClass = "";
+            nobillClass = typeClass="";
             controlClass = "";
             count++;
             bool ood = count % 2 == 0;
@@ -121,6 +122,7 @@
             var colorStaus = lb == "S" ? "red" : lb == "A" ? "Blue" : lb == "C" ? "cyan" : "#fff";
             var rowClass = Shipment1.Id == revenue_id ? "GridYellowLight" : ood == true ? "GridLight" : String.Empty;
             nobillClass = nobill == true ? "bgorange" : "";
+            
             if (Shipment1.IsControl && Shipment1.IsMainShipment)
             {
                 idMaster = Shipment1.Id;
@@ -215,11 +217,11 @@
                     @Shipment1.User.FullName
                 </td>
                 <td>
-                    @if ((Shipment1.SaleType) == "Sales")
+                    @if ((Shipment1.SaleType) == "Sales" || Shipment1.SaleType.Contains("15%"))
                     {
                         <label style="font-weight: normal; color: Red">@Shipment1.SaleType</label>
                     }
-                    else if ((Shipment1.SaleType) == "MgrSales")
+                    else if ((Shipment1.SaleType) == "MgrSales" || Shipment1.SaleType.Contains("10%"))
                     {
                         <label style="font-weight: normal; color: #0E2BDF">@Shipment1.SaleType</label>
                     }
@@ -235,11 +237,11 @@
                     <td>
                         @if (Shipment1.Revenue != null)
                         {
-                            if ((Shipment1.Revenue.SaleType) == "Sales")
+                            if ((Shipment1.Revenue.SaleType) == "Sales" || Shipment1.Revenue.SaleType.Contains("15%"))
                             {
                                 <label style="font-weight: normal; color: Red">@Shipment1.Revenue.SaleType</label>
                             }
-                            else if ((Shipment1.Revenue.SaleType) == "MgrSales")
+                            else if ((Shipment1.Revenue.SaleType) == "MgrSales" || Shipment1.Revenue.SaleType.Contains("10%"))
                             {
                                 <label style="font-weight: normal; color: #0E2BDF">@Shipment1.Revenue.SaleType</label>
                             }

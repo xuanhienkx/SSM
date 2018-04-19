@@ -209,11 +209,11 @@
                         @Shipment1.User.FullName
                     </td>
                     <td>
-                        @if ((Shipment1.SaleType) == "Sales")
+                        @if ((Shipment1.SaleType) == "Sales" || Shipment1.SaleType.Contains("15%"))
                         {
                             <label style="font-weight: normal; color: Red">@Shipment1.SaleType</label>
                         }
-                        else if ((Shipment1.SaleType) == "MgrSales")
+                        else if ((Shipment1.SaleType) == "MgrSales" || Shipment1.SaleType.Contains("10%"))
                         {
                             <label style="font-weight: normal; color: #0E2BDF">@Shipment1.SaleType</label>
                         }
